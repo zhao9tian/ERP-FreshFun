@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true" scan="false" scanPeriod="30 seconds">
+
+    <appender name="all_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <File>/log/mylog_all_error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <FileNamePattern>./log/mylog_all_error.%i.log</FileNamePattern>
+            <MinIndex>1</MinIndex>
+            <MaxIndex>5</MaxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>5MB</MaxFileSize>
+        </triggeringPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern><![CDATA[
+		 %n%r [%d{yyyy-MM-dd HH:mm:ss}]-[%level]-[%thread]-%class:%method:%line-%m%n
+            ]]></Pattern>
+        </layout>
+    </appender>
+    <appender name="all_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <File>/log/mylog_all_info.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <FileNamePattern>./log/mylog_all_info.%i.log</FileNamePattern>
+            <MinIndex>1</MinIndex>
+            <MaxIndex>5</MaxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>5MB</MaxFileSize>
+        </triggeringPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern><![CDATA[
+		 %n%r [%d{yyyy-MM-dd HH:mm:ss}]-[%level]-[%thread]-%class:%method:%line-%m%n
+            ]]></Pattern>
+        </layout>
+    </appender>
+    <appender name="debug_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>/log/mylog_a_debug.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <FileNamePattern>./log/mylog_a_debug.%i.log</FileNamePattern>
+            <MinIndex>1</MinIndex>
+            <MaxIndex>5</MaxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>5MB</MaxFileSize>
+        </triggeringPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern><![CDATA[
+		 %n%r [%d{yyyy-MM-dd HH:mm:ss}]-[%level]-[%thread]-%class:%method:%line-%m%n
+            ]]></Pattern>
+        </layout>
+    </appender>
+    <appender name="info_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>/log/mylog_b_info.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <FileNamePattern>./log/mylog_b_info.%i.log</FileNamePattern>
+            <MinIndex>1</MinIndex>
+            <MaxIndex>5</MaxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>5MB</MaxFileSize>
+        </triggeringPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern><![CDATA[
+		 %n%r [%d{yyyy-MM-dd HH:mm:ss}]-[%level]-[%thread]-%class:%method:%line-%m%n
+            ]]></Pattern>
+        </layout>
+    </appender>
+    <appender name="warn_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>/log/mylog_c_warn.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <FileNamePattern>./log/mylog_c_warn.%i.log</FileNamePattern>
+            <MinIndex>1</MinIndex>
+            <MaxIndex>5</MaxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>5MB</MaxFileSize>
+        </triggeringPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern><![CDATA[
+		 %n%r [%d{yyyy-MM-dd HH:mm:ss}]-[%level]-[%thread]-%class:%method:%line-%m%n
+            ]]></Pattern>
+        </layout>
+    </appender>
+    <appender name="error_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>/log/mylog_d_error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <FileNamePattern>./log/mylog_c_error.%i.log</FileNamePattern>
+            <MinIndex>1</MinIndex>
+            <MaxIndex>5</MaxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>5MB</MaxFileSize>
+        </triggeringPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern><![CDATA[
+		 %n%r [%d{yyyy-MM-dd HH:mm:ss}]-[%level]-[%thread]-%class:%method:%line-%m%n
+            ]]></Pattern>
+        </layout>
+    </appender>
+
+    <logger name="com.ibatis" level="DEBUG" />
+    <logger name="com.ibatis.common.jdbc.SimpleDataSource" level="DEBUG" />
+    <logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG" />
+    <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" />
+    <logger name="java.sql.Connection" level="DEBUG" />
+    <logger name="java.sql.Statement" level="DEBUG" />
+    <logger name="java.sql.PreparedStatement" level="DEBUG" />
+    <logger name="org.apache.ibatis" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="log.debug_log" level="DEBUG">
+        <appender-ref ref="debug_log" />
+    </logger>
+
+    <logger name="log.info_log" level="INFO">
+        <appender-ref ref="info_log" />
+    </logger>
+
+    <logger name="log.warn_log" level="warn">
+        <appender-ref ref="warn_log" />
+    </logger>
+
+    <logger name="log.error_log" level="error">
+        <appender-ref ref="error_log" />
+    </logger>
+    <root>
+        <appender-ref ref="all_info" level="INFO" />
+        <appender-ref ref="all_error" />
+    </root>
+</configuration>

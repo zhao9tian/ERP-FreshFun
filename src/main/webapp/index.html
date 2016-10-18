@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax</title>
+    <script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+    <script type="text/javascript">
+        var url = '/ERP/goodsSort/saveAllGoodsSort.do';
+
+        var allSort = new Array();
+        allSort[0] = 56;
+        allSort[1] = 66;
+
+        $.ajax({
+            url : url ,
+            type : "post" ,
+            dataType : "JSON" ,
+            contentType : 'application/json;charset=UTF-8' ,
+            data : JSON.stringify(allSort),
+            success : function (data) {
+                console.log(data);
+            },
+            error : function (data) {
+                console.log(data);
+            }
+        })
+    </script>
+</head>
+<body>
+        welcome
+</body>
+</html>
