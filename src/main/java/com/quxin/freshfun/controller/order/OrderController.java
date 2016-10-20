@@ -50,10 +50,12 @@ public class OrderController {
         int currentPage = (page - 1) * pageSize;
         List<OrderDetailsPOJO> order = null;
         int size = 0;
+        int total = 0;
         switch (orderStatus){
             case 0:
                 order = orderService.selectBackstageOrders(currentPage,pageSize);
                 Integer count = orderService.selectBackstageOrdersCount();
+                total = count;
                 if(count % pageSize == 0){
                     size = count / pageSize;
                 }else{
@@ -63,6 +65,7 @@ public class OrderController {
             default :
                 order = orderService.selectOrderByOrderStatus(orderStatus,currentPage,pageSize);
                 Integer number = orderService.selectOrderByOrderStatusCount(orderStatus);
+                total = number;
                 if(number % pageSize == 0){
                     size = number / pageSize;
                 }else{
@@ -75,6 +78,7 @@ public class OrderController {
         map.put("code",1001);
         map.put("msg","请求成功");
         resultData.put("totalPage",size);
+        resultData.put("total",total);
         resultData.put("page",page);
         resultData.put("pageSize",pageSize);
         resultData.put("list",order);
