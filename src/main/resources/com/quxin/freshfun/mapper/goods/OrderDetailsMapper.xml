@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quxin.freshfun.dao.OrderDetailsMapper">
+  <resultMap id="BaseResultMap" type="com.quxin.freshfun.model.order.OrderDetailsPOJO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId"/>
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="order_details_id" jdbcType="VARCHAR" property="orderDetailsId" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="actual_price" jdbcType="INTEGER" property="actualPrice" />
+    <result column="delivery_num" jdbcType="VARCHAR" property="deliveryNum" />
+    <result column="address_id" jdbcType="INTEGER" property="addressId" />
+    <result column="delivery_name" jdbcType="VARCHAR" property="deliveryName" />
+    <result column="comment_id" jdbcType="INTEGER" property="commentId" />
+    <result column="payment_method" jdbcType="INTEGER" property="paymentMethod" />
+    <result column="pay_time" jdbcType="BIGINT" property="payTime" />
+    <result column="count" jdbcType="INTEGER" property="count"/>
+    <result column="order_detailscol" jdbcType="VARCHAR" property="orderDetailscol" />
+    <result column="comment_status" jdbcType="INTEGER" property="commentStatus"/>
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+    <result column="agent_id" jdbcType="BIGINT" property="agentId" />
+    <result column="agent_price" jdbcType="INTEGER" property="agentPrice"/>
+    <result column="fetcher_id" jdbcType="INTEGER" property="fetcherId" />
+    <result column="fetcher_price" jdbcType="INTEGER" property="fetcherPrice"/>
+    <result column="pay_plateform" jdbcType="INTEGER" property="payPlateform" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="create_date" jdbcType="BIGINT" property="createDate" />
+    <result column="update_date" jdbcType="BIGINT" property="updateDate" />
+    <result column="delivery_name" jdbcType="VARCHAR" property="deliveryName"/>
+    <result column="is_limit" jdbcType="INTEGER" property="isLimit"/>
+    <result column="recive_time" jdbcType="INTEGER" property="reciveTime"/>
+    <result column="delivery_time" jdbcType="BIGINT" property="deliveryTime"/>
+    <result column="goods_cost" jdbcType="INTEGER" property="goodsCost"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="tel" jdbcType="VARCHAR" property="tel"/>
+    <result column="city" jdbcType="VARCHAR" property="city"/>
+    <result column="address" jdbcType="VARCHAR" property="address"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    <result column="delivery_remark" jdbcType="VARCHAR" property="deliveryRemark"/>
+    <result column="extra" jdbcType="VARCHAR" property="extra"/>
+    <association property="goods" column="goods_id" select="com.quxin.freshfun.dao.GoodsMapper.selectGoodsById"></association>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id,user_id , order_id, order_details_id, goods_id, actual_price, delivery_num, delivery_name , address_id,
+    comment_id, payment_method, pay_time, comment_status, order_status, refund_status,
+    comment_status, pay_plateform, is_deleted, create_date, update_date
+  </sql>
+
+  <!--查询所有订单-->
+  <select id="selectBackstageOrders" resultMap="BaseResultMap">
+    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`goods_cost`,`remark` from order_details where is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize};
+  </select>
+  <!--查询所有订单数量-->
+  <select id="selectBackstageOrdersCount" resultType="java.lang.Integer" >
+    select count(id) from order_details where is_deleted = 0
+  </select>
+
+  <!--根据订单状态查询订单列表-->
+  <select id="selectOrderByOrderStatus" resultMap="BaseResultMap">
+    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`delivery_num`,`delivery_name`,`goods_cost`,`remark`,`name`,`tel`,`city`,`address`,`create_date`
+    from order_details where is_deleted = 0 and order_status = #{orderStatus}
+    order by create_date desc
+    limit #{currentPage},#{pageSize}
+  </select>
+  <!--查询待收货数量-->
+  <select id="selectOrderByOrderStatusCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(id) from order_details where is_deleted = 0 and order_status = #{orderStatus}
+  </select>
+
+  <!--订单发货-->
+  <update id="deliverOrder" parameterType="java.util.Map">
+    update order_details set delivery_num=#{deliveryNum},order_status = 50,delivery_name=#{deliveryName},delivery_time=#{deliveryTime},goods_cost=#{goodsCost},delivery_remark=#{deliveryRemark} where id = #{orderId}
+  </update>
+  <!--订单备注-->
+  <update id="orderRemark" parameterType="java.util.Map" >
+    update order_details set remark = #{remark} where id = #{orderId}
+  </update>
+
+</mapper>

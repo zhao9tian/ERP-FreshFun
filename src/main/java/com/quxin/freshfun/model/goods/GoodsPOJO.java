@@ -49,7 +49,30 @@ public class GoodsPOJO {
     private Long created ;
     /**编辑时间*/
     private Long updated;
+    /**
+     * 商品描述
+     */
+    private String goodsDes;
+    /**
+     * 前端显示金额
+     */
+    private String marketMoney;
 
+    public String getGoodsDes() {
+        return goodsDes;
+    }
+
+    public void setGoodsDes(String goodsDes) {
+        this.goodsDes = goodsDes;
+    }
+
+    public String getMarketMoney() {
+        return marketMoney;
+    }
+
+    public void setMarketMoney(String marketMoney) {
+        this.marketMoney = marketMoney;
+    }
 
     public Integer getId() {
         return id;

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quxin.freshfun.dao.UserBaseMapper" >
+
+    <!--根据userId查询用户信息-->
+    <select id="selectUserInfoByUserId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.user.UserInfoOutParam">
+        select user_id as userId,user_name as userName,user_head_img as userHeadImg,phone_number as phoneNumber,
+        device_id as deviceId,open_id as openId,union_id as unionId,login_type as loginType,source,
+        identity,fetcher_id as fetcherId,is_fetcher as isFetcher,city,province,country,created,updated from user_base where
+        user_id = #{userId} and is_deleted=0
+    </select>
+
+</mapper>

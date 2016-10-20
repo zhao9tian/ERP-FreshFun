@@ -1,4 +1,234 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quxin.freshfun.dao.GoodsMapper">
+
+	<!-- 根据商品编号查询商品信息 -->
+	<select id="selectGoodsById" parameterType="java.lang.Integer" resultType="com.quxin.freshfun.model.goods.GoodsOrderOut">
+		select id,goods_name as goodsName,goods_des as goodsDes,goods_img as goodsImg,shop_price as goodsShopPrice from goods where id = #{goodsId}
+	</select>
+	<!--添加商品规格-->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.quxin.freshfun.model.goods.GoodsStandard">
+		INSERT INTO goods_standard
+		(goods_id,
+		 <if test="name != null">
+			name,
+		 </if>
+		 <if test="brand != null">
+		 	brand,
+		 </if>
+		 <if test="productPlace != null">
+		 	product_place,
+		 </if>
+		 <if test="standard != null">
+		 	standard,
+		 </if>
+		 <if test="netContents != null">
+		 	net_contents,
+		 </if>
+		 <if test="shelfLife != null">
+		 	shelf_life,
+		 </if>
+		 <if test="storageMethod != null">
+		 	storage_method,
+		 </if>
+		 <if test="ingredientList != null">
+		 	ingredient_list,
+		 </if>
+		 <if test="sugary != null">
+		 	sugary,
+		 </if>
+		 <if test="organic != null">
+		 	organic,
+		 </if>
+		 <if test="isImport != null">
+		 	is_import,
+		 </if>
+		 <if test="boxPacked != null">
+		 	box_packed,
+		 </if>
+		 <if test="packageComponent != null">
+		 	package_component,
+		 </if>
+		 <if test="taste != null">
+		 	taste,
+		 </if>
+		 <if test="functional != null">
+		 	functional,
+		 </if>
+		 <if test="unsuitable != null">
+		 	unsuitable,
+		 </if>
+		 <if test="suitable != null">
+		 	suitable,
+		 </if>
+		 <if test="productForm != null">
+		 	product_form,
+		 </if>
+		 <if test="foodAdditives != null">
+		 	food_additives,
+		 </if>
+		 <if test="setCycle != null">
+		 	set_cycle,
+		 </if>
+		 <if test="factoryName != null">
+		 	factory_name,
+		 </if>
+		 <if test="factorySite != null">
+		 	factory_site,
+		 </if>
+		 <if test="productStandardNumber != null">
+		 	product_standard_number,
+		 </if>
+		 <if test="freshStorageTemperature != null">
+		 	fresh_storage_temperature,
+		 </if>
+		 <if test="proof != null">
+		 	proof,
+		 </if>
+		 <if test="adaptiveScene != null">
+		 	adaptive_scene,
+		 </if>
+		 <if test="packingMethod != null">
+		 	packing_method,
+		 </if>
+		 <if test="packingType != null">
+		 	packing_type,
+		 </if>
+		 <if test="wineStyle != null">
+		 	wine_style,
+		 </if>
+		 <if test="suitSpecification != null">
+		 	suit_specification,
+		 </if>
+		 <if test="decanteDuration != null">
+		 	decante_duration,
+		 </if>
+		 <if test="particularYear != null">
+		 	particular_year,
+		 </if>
+		 <if test="smell != null">
+		 	smell,
+		 </if>
+		 <if test="colourSort != null">
+		 	colour_sort,
+		 </if>
+		 <if test="styleType != null">
+		 	style_type,
+		 </if>
+		 <if test="size != null">
+			size
+		 </if>
+		 )
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		  #{goodsId},
+		 <if test="name != null">
+		  #{name},
+		 </if>
+		 <if test="brand != null">
+		  #{brand},
+		 </if>
+		 <if test="productPlace != null">
+		  #{productPlace},
+		 </if>
+		 <if test="standard != null">
+		  #{standard},
+		 </if>
+		 <if test="netContents != null">
+		  #{netContents},
+		 </if>
+		 <if test="shelfLife != null">
+		  #{shelfLife},
+		 </if>
+		 <if test="storageMethod != null">
+		  #{storageMethod},
+		 </if>
+		 <if test="ingredientList != null">
+		  #{ingredientList},
+		 </if>
+		 <if test="sugary != null">
+		  #{sugary},
+		 </if>
+		 <if test="organic != null">
+		  #{organic},
+		 </if>
+		 <if test="isImport != null">
+		  #{isImport},
+		 </if>
+		 <if test="boxPacked != null">
+		  #{boxPacked},
+		 </if>
+		 <if test="packageComponent != null">
+		  #{packageComponent},
+		 </if>
+		 <if test="taste != null">
+		  #{taste},
+		 </if>
+		 <if test="functional != null">
+		  #{functional},
+		 </if>
+		 <if test="unsuitable != null">
+		  #{unsuitable},
+		 </if>
+		 <if test="suitable != null">
+		  #{suitable},
+		 </if>
+		 <if test="productForm != null">
+		  #{productForm},
+		 </if>
+		 <if test="foodAdditives != null">
+		  #{foodAdditives},
+		 </if>
+		 <if test="setCycle != null">
+		  #{setCycle},
+		 </if>
+		 <if test="factoryName != null">
+		  #{factoryName},
+		 </if>
+		 <if test="factorySite != null">
+		  #{factorySite},
+		 </if>
+		 <if test="productStandardNumber != null">
+		  #{productStandardNumber},
+		 </if>
+		 <if test="freshStorageTemperature != null">
+		  #{freshStorageTemperature},
+		 </if>
+		 <if test="proof != null">
+		  #{proof},
+		 </if>
+		 <if test="adaptiveScene != null">
+		  #{adaptiveScene},
+		 </if>
+		 <if test="packingMethod != null">
+		  #{packingMethod},
+		 </if>
+		 <if test="packingType != null">
+		  #{packingType},
+		 </if>
+		 <if test="wineStyle != null">
+		  #{wineStyle},
+		 </if>
+		 <if test="suitSpecification != null">
+		  #{suitSpecification},
+		 </if>
+		 <if test="decanteDuration != null">
+		  #{decanteDuration},
+		 </if>
+		 <if test="particularYear != null">
+		  #{particularYear},
+		 </if>
+		 <if test="smell != null">
+		  #{smell},
+		 </if>
+		 <if test="colourSort != null">
+		  #{colourSort},
+		 </if>
+		 <if test="styleType != null">
+		  #{styleType},
+		 </if>
+		 <if test="size != null">
+		  #{size},
+		 </if>
+		</trim>
+	</insert>
 </mapper>
