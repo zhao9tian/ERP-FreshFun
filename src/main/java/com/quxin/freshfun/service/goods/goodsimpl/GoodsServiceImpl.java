@@ -1,13 +1,10 @@
-package com.quxin.freshfun.service.goods.goodsImpl;
+package com.quxin.freshfun.service.goods.goodsimpl;
 
 import com.quxin.freshfun.dao.GoodsMapper;
-import com.quxin.freshfun.model.goods.GoodsCategoryOut;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.service.goods.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 商品service实现类
@@ -24,4 +21,11 @@ public class GoodsServiceImpl implements GoodsService{
     public Boolean addGoods(GoodsPOJO goodsPOJO) {
         return null;
     }
+
+    @Override
+    public GoodsPOJO selectGoodsByGoodsId(Integer goodsId) {
+        return null;
+    }
+
+
 }

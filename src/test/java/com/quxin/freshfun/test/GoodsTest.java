@@ -1,9 +1,8 @@
 package com.quxin.freshfun.test;
 
 import com.quxin.freshfun.controller.goods.GoodsController;
-import com.quxin.freshfun.service.goods.GoodsService;
-import com.quxin.freshfun.service.goods.GoodsTypeService;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,13 +13,11 @@ public class GoodsTest extends TestBase {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private GoodsTypeService goodsTypeService;
 
     private GoodsController goodsController;
 
     @Before
     public void setUp() throws Exception {
-        goodsTypeService = getContext().getBean("goodsTypeService", GoodsTypeService.class);
         goodsController = getContext().getBean("goodsController", GoodsController.class);
     }
 
@@ -32,7 +29,6 @@ public class GoodsTest extends TestBase {
 
     @org.junit.Test
     public void TestGoods(){
-        goodsTypeService.insertTest();
 //        System.out.println(goodsController.getCategoryList());
     }
 

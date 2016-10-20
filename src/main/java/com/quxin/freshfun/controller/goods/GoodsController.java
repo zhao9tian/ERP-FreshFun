@@ -1,6 +1,6 @@
 package com.quxin.freshfun.controller.goods;
 
-import com.quxin.freshfun.model.goods.GoodsCategoryOut;
+import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.service.goods.GoodsService;
 import com.quxin.freshfun.utils.ResultUtil;
 import com.quxin.freshfun.utils.UploadUtils;
@@ -8,13 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,27 +30,40 @@ public class GoodsController {
     @Autowired
     private GoodsService goodsService;
 
-    @RequestMapping(value = "addGoods" , method = RequestMethod.POST)
+    /**
+     * 添加商品信息
+     * @param goodsInfo 商品信息
+     * @return 返回请求结果
+     */
+    @RequestMapping(value = "/addGoods", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String , Object> addGoods(){
+    public Map<String, Object> addGoods(@RequestBody Map<String , Object> goodsInfo) {
+        //TODO 检验入参
 
+        //保存商品信息
+        Map<String , Object> map = (Map<String, Object>) goodsInfo.get("CategoryInfo");
+        System.out.println(map.get("first"));
+        GoodsPOJO goodsPOJO = new GoodsPOJO();
+        Boolean isGoodsSuc = goodsService.addGoods(goodsPOJO);
+        return null;
+    }
+
+    //TODO 商品列表分页  搜索
+    @RequestMapping(value="/queryGoodsList" , method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String , Object> queryGoodsList(){
 
 
         return null;
     }
 
-    @RequestMapping(value = "getCategoryList" , method = RequestMethod.GET)
+    //TODO 商品编辑
+    @RequestMapping(value="/queryGoodsList" , method = RequestMethod.POST)
     @ResponseBody
-    public Map<String , Object> getCategoryList(){
-        Map<String , Object> result;
-        List<GoodsCategoryOut> categoryList = goodsService.getCategoryList();
-        if(categoryList != null && categoryList.size()>0){
-            result = ResultUtil.success(categoryList);
-        }else{
-            result = ResultUtil.fail(1004 ,"没有查询到分类信息");
-            logger.error("没有查询到分类信息");
-        }
-        return result;
+    public Map<String , Object> editGoodsList(){
+
+
+        return null;
     }
 
     /**
@@ -58,24 +71,23 @@ public class GoodsController {
      * @param request 页面请求
      * @return 返回请求结果
      */
-    @RequestMapping(value = "/uploadPic" ,method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadPic", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String , Object> uploadPic(HttpServletRequest request){
+    public Map<String, Object> uploadPic(HttpServletRequest request) {
         String imgPath;
         Map<String, Object> result;
         try {
             imgPath = UploadUtils.uploadPic(request);
-            if(imgPath == null){
-                result = ResultUtil.fail(1004 , "图片格式不对");
+            if (imgPath == null) {
+                result = ResultUtil.fail(1004, "图片格式不对");
                 logger.error("图片格式不对");
-            }else{
+            } else {
                 result = ResultUtil.success(imgPath);
             }
         } catch (IOException e) {
-            logger.error("获取图片InputStream异常",e);
-            return ResultUtil.fail(1004 , "获取图片InputStream异常");
+            logger.error("获取图片InputStream异常", e);
+            return ResultUtil.fail(1004, "获取图片InputStream异常");
         }
-
         return result;
     }
 

@@ -1,9 +1,6 @@
 package com.quxin.freshfun.service.goods;
 
-import com.quxin.freshfun.model.goods.GoodsCategoryOut;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
-
-import java.util.List;
 
 /**
  * 商品service
@@ -19,5 +16,12 @@ public interface GoodsService {
      */
     Boolean addGoods(GoodsPOJO goodsPOJO);
 
+    /**
+     * 根据商品Id查询商品信息
+     * @param goodsId 商品Id
+     * @return 商品所有信息
+     */
+    GoodsPOJO selectGoodsByGoodsId(Integer goodsId);
 
+//    List<>
 }

@@ -1,4 +1,4 @@
-package com.quxin.freshfun.service.goods.goodsImpl;
+package com.quxin.freshfun.service.goods.goodsimpl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -22,7 +22,7 @@ import java.util.List;
 @Service("goodsSortService")
 public class GoodsSortServiceImpl implements GoodsSortService {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private GoodsSortMapper goodsSortMapper;
@@ -37,7 +37,12 @@ public class GoodsSortServiceImpl implements GoodsSortService {
         List<GoodsPOJO> sortList = new ArrayList<>();
         if (sortArr != null && sortArr.size() > 0) {
             for (Object goodsId : sortArr) {
-                sortList.add(goodsSortMapper.selectGoodsPOJOById((Integer) goodsId));
+                GoodsPOJO goods = goodsSortMapper.selectGoodsPOJOById((Integer) goodsId);
+                if(goods == null){
+                    logger.error("商品Id为:"+goodsId+"的商品不存在或者已经下架");
+                }else{
+                    sortList.add(goods);
+                }
             }
             return sortList;
         } else {
