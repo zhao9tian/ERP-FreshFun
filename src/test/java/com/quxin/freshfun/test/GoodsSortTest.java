@@ -21,8 +21,6 @@ public class GoodsSortTest extends TestBase{
 
     private GoodsSortService goodsSortService;
 
-
-
     @Before
     public void setUp() throws Exception {
         goodsSortService = getContext().getBean("goodsSortService", GoodsSortService.class);
@@ -55,6 +53,6 @@ public class GoodsSortTest extends TestBase{
         g2.setSortId(111);
         g2.setGoodsId(222);
         allSort.add(g2);
-        goodsSortService.addAllGoodsSort(allSort);
+//        goodsSortService.addAllGoodsSort(allSort);
     }
 }

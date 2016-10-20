@@ -5,18 +5,39 @@
     <title>Ajax</title>
     <script type="text/javascript" src="js/jquery-1.7.2.js"></script>
     <script type="text/javascript">
-        var url = '/ERP/goodsSort/saveAllGoodsSort.do';
+        var url = '/ERP-FreshFun/goods/addGoods.do';
+        var allData ={
+            CategoryInfo : {  // 类目信息，类目枚举列表见文档 "商品类目约定.md"
+            first: 1111,
+            second: 12321
+            },
+            CategoryList :  [1,2,3,4],
+            basicInfo:{ //商品基本信息
+                title: "", // 商品标题
+                subTitle: "", // 商品副标题
+                authorString: "", //悦选小编说
+                sellPrice: "99", //商品售价
+                originalPrice: "99", //商品原价
+                costPrice: "99" // 成本价
+            },
+            picInfo:{ // 商品图片信息，所有的图片，都直接回传CDN返回的地址。
+                mainPic: "/image/XXX", // 主图
+                carouselPics: ['/image/XXX', '/image/XXX'], // 轮播图列表
+                detailPics: ['/image/XXX', '/image/XXX'] // 详情页图片，注意按数组顺序，前面的在前面显示。
+            },
+            isPublish : true
+        }
 
-        var allSort = new Array();
-        allSort[0] = 56;
-        allSort[1] = 66;
+        var cmd =  [
+                {"storeId":"0a1", "address":"西斗门路2号","goods":[{"goodsId":"1"}, {"goodsId":"2"}, {"goodsId":"3"}]},
+            {"storeId":"0a1", "address":"西斗门路2号", "goods":[{"goodsId":"4"}, {"goodsId":"4"}, {"goodsId":"5"}]}]
 
         $.ajax({
             url : url ,
             type : "post" ,
             dataType : "JSON" ,
             contentType : 'application/json;charset=UTF-8' ,
-            data : JSON.stringify(allSort),
+            data : JSON.stringify(allData),
             success : function (data) {
                 console.log(data);
             },

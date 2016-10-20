@@ -2,10 +2,9 @@ package com.quxin.freshfun.service.goods.goodsImpl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.quxin.freshfun.constant.GoodsConstant;
 import com.quxin.freshfun.dao.GoodsSortMapper;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
-import com.quxin.freshfun.model.goods.GoodsSortParam;
 import com.quxin.freshfun.model.goods.GoodsSortPOJO;
 import com.quxin.freshfun.service.goods.GoodsSortService;
 import org.slf4j.Logger;
@@ -27,28 +26,28 @@ public class GoodsSortServiceImpl implements GoodsSortService {
 
     @Autowired
     private GoodsSortMapper goodsSortMapper;
+
     @Override
     public List<GoodsPOJO> querySortGoods() {
-        String sortValue = goodsSortMapper.selectPictureWall("pictureWall");
-        if(sortValue == null || "".equals(sortValue)){
+        String sortValue = goodsSortMapper.selectPictureWall(GoodsConstant.PICTURE_WALL);
+        if (sortValue == null || "".equals(sortValue)) {
             return null;
         }
         JSONArray sortArr = JSON.parseArray(sortValue);
-        List<Integer> sortList = new ArrayList();
-        if(sortArr != null && sortArr.size() > 0){
-            for(Object goodsId : sortArr){
-                sortList.add((Integer) goodsId);
+        List<GoodsPOJO> sortList = new ArrayList<>();
+        if (sortArr != null && sortArr.size() > 0) {
+            for (Object goodsId : sortArr) {
+                sortList.add(goodsSortMapper.selectGoodsPOJOById((Integer) goodsId));
             }
-            return goodsSortMapper.selectSortGoods(sortList);
-        }else{
+            return sortList;
+        } else {
             return null;
         }
-
     }
 
     @Override
     public GoodsPOJO querySortGoodsById(Integer goodId) {
-        if (goodId == null){
+        if (goodId == null) {
             logger.error("goodsId不能为空");
             return null;
         }
@@ -56,36 +55,39 @@ public class GoodsSortServiceImpl implements GoodsSortService {
     }
 
     @Override
-    public Boolean addAllGoodsSort(List allSort) {
-        Boolean b = false ;
-        if(allSort != null && allSort.size() > 0){
+    public Boolean addAllGoodsSort(List<Integer> allSort) {
+        Boolean b = false;
+        if (allSort != null && allSort.size() > 0) {
             Integer[] sort = new Integer[allSort.size()];
-            if(allSort.size() > 20){
+            if (allSort.size() > 20) {
                 logger.error("排序对象总数大于20");
-            }else{
-                for(int i = 0 ; i < allSort.size() ; i++){
-                    sort[i] = (Integer) allSort.get(i);
+            } else {
+                for (int i = 0; i < allSort.size(); i++) {
+                    sort[i] = allSort.get(i);
                 }
                 GoodsSortPOJO goodsSortPOJO = new GoodsSortPOJO();
-                goodsSortPOJO.setSortKey("pictureWall");
+                goodsSortPOJO.setSortKey(GoodsConstant.PICTURE_WALL);
                 goodsSortPOJO.setSortValue(JSON.toJSONString(sort));
-                String sortValue = goodsSortMapper.selectPictureWall("pictureWall");
-                if(sortValue != null && !"".equals(sortValue)){
-                    Integer num =goodsSortMapper.updateGoodsSort(goodsSortPOJO);
-                    if(num == 0){
+                //判断是插入还是编辑
+                String sortValue = goodsSortMapper.selectPictureWall(GoodsConstant.PICTURE_WALL);
+                if (sortValue != null && !"".equals(sortValue)) {
+                    //编辑
+                    Integer num = goodsSortMapper.updateGoodsSort(goodsSortPOJO);
+                    if (num == 0) {
                         logger.error("插入排序对象失败");
-                        return false ;
+                        return false;
                     }
-                }else{
+                } else {
+                    //插入
                     Integer num = goodsSortMapper.insertGoodsSort(goodsSortPOJO);
-                    if(num == 0){
+                    if (num == 0) {
                         logger.error("插入排序对象失败");
-                        return false ;
+                        return false;
                     }
                 }
-                b= true ;
+                b = true;
             }
-        }else{
+        } else {
             logger.error("排序对象为空");
         }
         return b;

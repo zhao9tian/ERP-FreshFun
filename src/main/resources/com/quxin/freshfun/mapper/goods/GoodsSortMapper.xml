@@ -2,20 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quxin.freshfun.dao.GoodsSortMapper">
 
-	<!--查询所有排序商品 -->
-	<select id="selectSortGoods" parameterType="java.util.List" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
-		select id , goods_name as goodsName , goods_img as goodsImg , shop_price as goodsShopPrice , goods_cost as goodsCost
-		from goods where id in
-		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">	#{item}	</foreach>
-		and is_on_sale = 1
-	</select>
-
 	<!--根据商品Id查询商品信息-->
 	<select id="selectGoodsPOJOById" parameterType="java.lang.Integer" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
 		select id , goods_name as goodsName , goods_img as goodsImg , shop_price as goodsShopPrice , goods_cost as goodsCost
 		from goods where id = #{goodsId} and is_on_sale = 1
 	</select>
-
+	<!--查询排序的json字符串-->
 	<select id="selectPictureWall" parameterType="java.lang.String" resultType="java.lang.String">
 		select sort_value from goods_sort where sort_key = #{sort_key}
 	</select>

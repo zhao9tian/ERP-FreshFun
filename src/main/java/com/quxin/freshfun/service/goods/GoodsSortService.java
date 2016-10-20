@@ -1,7 +1,6 @@
 package com.quxin.freshfun.service.goods;
 
 import com.quxin.freshfun.model.goods.GoodsPOJO;
-import com.quxin.freshfun.model.goods.GoodsSortParam;
 
 import java.util.List;
 
@@ -29,5 +28,5 @@ public interface GoodsSortService {
      * @param allSort 排序对象
      * @return 返回是否插入成功
      */
-    Boolean addAllGoodsSort(List allSort);
+    Boolean addAllGoodsSort(List<Integer> allSort);
 }

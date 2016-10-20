@@ -2,9 +2,6 @@ package com.quxin.freshfun.dao;
 
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.goods.GoodsSortPOJO;
-import com.quxin.freshfun.model.goods.GoodsSortParam;
-
-import java.util.List;
 
 /**
  * dao层数据
@@ -12,17 +9,11 @@ import java.util.List;
  */
 public interface GoodsSortMapper {
 
-    /**
-     * 查询排序商品
-     * @return 返回排序商品
-     * @param sortList
-     */
-    List<GoodsPOJO> selectSortGoods(List<Integer> sortList);
 
     /**
      * 根据商品Id查询商品基本信息
-     * @param goodId
-     * @return
+     * @param goodId 商品Id
+     * @return 返回商品信息
      */
     GoodsPOJO selectGoodsPOJOById(Integer goodId);
 

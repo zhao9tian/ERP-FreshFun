@@ -9,9 +9,4 @@ import java.util.List;
  */
 public interface GoodsMapper {
 
-	/**
-	 * 查询分类信息列表
-	 * @return 返回类目列表
-	 */
-	List<GoodsCategoryOut> selectCategoryList();
 }
