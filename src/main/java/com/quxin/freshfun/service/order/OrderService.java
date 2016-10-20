@@ -4,6 +4,7 @@ import com.quxin.freshfun.model.order.OrderDetailsPOJO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gsix on 2016/10/20.
@@ -33,4 +34,9 @@ public interface OrderService {
      * @return
      */
     Integer selectOrderByOrderStatusCount(Integer orderStatus);
+    /**
+     * 订单评论
+     * @return
+     */
+    Integer orderRemark(String orderId,String remark);
 }

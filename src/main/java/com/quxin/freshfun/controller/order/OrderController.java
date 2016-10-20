@@ -7,6 +7,7 @@ import com.quxin.freshfun.service.order.OrderService;
 import com.quxin.freshfun.utils.MoneyFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -79,6 +80,39 @@ public class OrderController {
         resultData.put("list",order);
         resultMap.put("status",map);
         resultMap.put("data",resultData);
+        return resultMap;
+    }
+
+    /**
+     * 订单备注
+     * @param orderId
+     * @param remark
+     * @return
+     */
+    @RequestMapping("/orderRemark")
+    @ResponseBody
+    public Map<String,Object> orderRemark(String orderId,String remark){
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        if(StringUtils.isEmpty(orderId) || StringUtils.isEmpty(remark)){
+            map.put("code",1004);
+            map.put("msg","传入参数不正确");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        Integer status = orderService.orderRemark(orderId, remark);
+        if(status == null || status <= 0){
+            map.put("code",1004);
+            map.put("msg","备注失败");
+            resultMap.put("status",map);
+            return resultMap;
+        }else{
+            map.put("code",1001);
+            map.put("msg","请求成功");
+            resultMap.put("status",map);
+            resultMap.put("data",status);
+        }
+
         return resultMap;
     }
 

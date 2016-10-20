@@ -1,5 +1,6 @@
 package com.quxin.freshfun.service.order.impl;
 
+import com.google.common.collect.Maps;
 import com.quxin.freshfun.dao.OrderDetailsMapper;
 import com.quxin.freshfun.dao.UserBaseMapper;
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
@@ -8,8 +9,10 @@ import com.quxin.freshfun.service.order.OrderService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gsix on 2016/10/20.
@@ -32,9 +35,15 @@ public class OrderImpl implements OrderService {
         List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectBackstageOrders(currentPage, pageSize);
         for (OrderDetailsPOJO order : orderDetails) {
             UserInfoOutParam userInfo = userBaseMapper.selectUserInfoByUserId(order.getUserId());
-            order.setName(userInfo.getUserName());
-            order.setUserId(null);
-            order.setGoodsId(null);
+            if(userInfo != null) {
+                if(userInfo.getUserName() != null) {
+                    order.setNickName(userInfo.getUserName());
+                    order.setUserId(null);
+                    order.setGoodsId(null);
+                }
+            }else{
+                order.setNickName("");
+            }
         }
         return orderDetails;
     }
@@ -56,8 +65,15 @@ public class OrderImpl implements OrderService {
         List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectOrderByOrderStatus(orderStatus, currentPage, pageSize);
         for (OrderDetailsPOJO order: orderDetails) {
             UserInfoOutParam userInfo = userBaseMapper.selectUserInfoByUserId(order.getUserId());
-            order.setName(userInfo.getUserName());
-            userInfo.setUserId(null);
+            if(userInfo != null){
+                if(userInfo.getUserName() != null) {
+                    order.setNickName(userInfo.getUserName());
+                    order.setUserId(null);
+                }
+            }else{
+                order.setNickName("");
+            }
+
         }
         return orderDetails;
     }
@@ -65,5 +81,16 @@ public class OrderImpl implements OrderService {
     @Override
     public Integer selectOrderByOrderStatusCount(Integer orderStatus) {
         return orderDetailsMapper.selectOrderByOrderStatusCount(orderStatus);
+    }
+
+    @Override
+    public Integer orderRemark(String orderId,String remark) {
+        if(StringUtils.isEmpty(orderId) || StringUtils.isEmpty(remark)){
+            return null;
+        }
+        Map<String,Object> map = Maps.newHashMap();
+        map.put("orderId",orderId);
+        map.put("remark",remark);
+        return orderDetailsMapper.orderRemark(map);
     }
 }
