@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 商品单元测试
  * Created by qucheng on 2016/10/18.
  */
 public class GoodsTest extends TestBase {
@@ -29,6 +30,8 @@ public class GoodsTest extends TestBase {
 
     @org.junit.Test
     public void TestGoods(){
+        logger.error("摸摸大，打印在控制台的");
+        logger.info("设置info才能在文件里面");
 //        System.out.println(goodsController.getCategoryList());
     }
 

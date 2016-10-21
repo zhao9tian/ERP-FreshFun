@@ -1,7 +1,6 @@
 package com.quxin.freshfun.controller.order;
 
 import com.quxin.freshfun.model.goods.GoodsOrderOut;
-import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
 import com.quxin.freshfun.service.order.OrderService;
 import com.quxin.freshfun.utils.MoneyFormatUtils;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 后台订单管理
  * Created by gsix on 2016/10/20.
  */
 @Controller
@@ -26,9 +26,11 @@ public class OrderController {
     private OrderService orderService;
 
     /**
-     * 所有订单
-     * @param page
-     * @return
+     * 查询所有订单
+     * @param page 当前页
+     * @param pageSize 页面大小
+     * @param orderStatus 订单状态
+     * @return  返回请求结果
      */
     @RequestMapping("/selectBackstageOrders")
     @ResponseBody
@@ -49,9 +51,9 @@ public class OrderController {
             return resultMap;
         }
         int currentPage = (page - 1) * pageSize;
-        List<OrderDetailsPOJO> order = null;
-        int size = 0;
-        int total = 0;
+        List<OrderDetailsPOJO> order;
+        int size;
+        int total;
         switch (orderStatus){
             case 0:
                 order = orderService.selectBackstageOrders(currentPage,pageSize);
@@ -90,9 +92,9 @@ public class OrderController {
 
     /**
      * 订单备注
-     * @param orderId
-     * @param remark
-     * @return
+     * @param orderId 订单Id
+     * @param remark 备注内容
+     * @return 请求结果
      */
     @RequestMapping("/orderRemark")
     @ResponseBody
@@ -107,7 +109,7 @@ public class OrderController {
             return resultMap;
         }
         String utfRemark = new String(remark.getBytes("iso-8859-1") , "utf-8");
-        Integer status = orderService.orderRemark(orderId, remark);
+        Integer status = orderService.orderRemark(orderId, utfRemark);
         if(status == null || status <= 0){
             map.put("code",1004);
             map.put("msg","备注失败");
@@ -119,16 +121,15 @@ public class OrderController {
             resultMap.put("status",map);
             resultMap.put("data",status);
         }
-
         return resultMap;
     }
 
     /**
      * 后台设置金额格式
-     * @param order
-     * @return
+     * @param order 订单内容
+     * @return 订单列表
      */
-    public List<OrderDetailsPOJO> setBackstageMoney(List<OrderDetailsPOJO> order){
+    private List<OrderDetailsPOJO> setBackstageMoney(List<OrderDetailsPOJO> order){
         for (OrderDetailsPOJO o: order) {
             GoodsOrderOut goods = o.getGoods();
             if(goods.getGoodsShopPrice() != null) {
