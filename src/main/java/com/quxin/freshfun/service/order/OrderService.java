@@ -35,6 +35,12 @@ public interface OrderService {
      */
     Integer selectOrderByOrderStatusCount(Integer orderStatus);
     /**
+     * 发货
+     * @param order
+     * @return
+     */
+    Integer deliverOrder(OrderDetailsPOJO order);
+    /**
      * 订单评论
      * @return
      */

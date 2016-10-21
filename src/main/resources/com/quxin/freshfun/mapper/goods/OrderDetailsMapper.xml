@@ -70,8 +70,9 @@
 
   <!--订单发货-->
   <update id="deliverOrder" parameterType="java.util.Map">
-    update order_details set delivery_num=#{deliveryNum},order_status = 50,delivery_name=#{deliveryName},delivery_time=#{deliveryTime},goods_cost=#{goodsCost},delivery_remark=#{deliveryRemark} where id = #{orderId}
+    update order_details set delivery_num=#{deliveryNum},order_status = 50,delivery_name=#{deliveryName},delivery_time=#{deliveryTime},goods_cost=#{goodsCost} where id = #{orderId}
   </update>
+
   <!--订单备注-->
   <update id="orderRemark" parameterType="java.util.Map" >
     update order_details set remark = #{remark} where id = #{orderId}

@@ -84,6 +84,22 @@ public class OrderImpl implements OrderService {
     }
 
     @Override
+    public Integer deliverOrder(OrderDetailsPOJO order) {
+        if(StringUtils.isEmpty(order.getActualMoney()) || StringUtils.isEmpty(order.getOrderId())) {
+            return 0;
+        }
+        Long currentDate = System.currentTimeMillis()/1000;
+        Map<String,Object> map = Maps.newHashMap();
+        map.put("orderId",order.getOrderId());
+        map.put("deliveryNum",order.getDeliveryNum());
+        map.put("deliveryName",order.getDeliveryName());
+        map.put("deliveryTime",currentDate);
+        Double goodsCost = Double.parseDouble(order.getActualMoney())*100;
+        map.put("goodsCost",goodsCost.intValue());
+        return orderDetailsMapper.deliverOrder(map);
+    }
+
+    @Override
     public Integer orderRemark(String orderId,String remark) {
         if(StringUtils.isEmpty(orderId) || StringUtils.isEmpty(remark)){
             return null;

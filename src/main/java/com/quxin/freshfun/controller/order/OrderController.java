@@ -7,7 +7,9 @@ import com.quxin.freshfun.utils.MoneyFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.UnsupportedEncodingException;
@@ -87,6 +89,37 @@ public class OrderController {
         resultData.put("list",order);
         resultMap.put("status",map);
         resultMap.put("data",resultData);
+        return resultMap;
+    }
+
+    /**
+     * 发货
+     * @param order
+     * @return
+     */
+    @RequestMapping(value="/selectFinishOrderCount",method={RequestMethod.POST})
+    @ResponseBody
+    public Map<String, Object> deliverOrder(@RequestBody OrderDetailsPOJO order){
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        if(StringUtils.isEmpty(order.getOrderId())||StringUtils.isEmpty(order.getActualMoney())||StringUtils.isEmpty(order.getDeliveryNum())||StringUtils.isEmpty(order.getDeliveryName())){
+            map.put("code",1004);
+            map.put("msg","参数有误");
+            resultMap.put("status",map);
+            return resultMap;
+        }else{
+            int orderStatus = orderService.deliverOrder(order);
+            if(orderStatus <= 0){
+                map.put("code",1004);
+                map.put("msg","发货失败");
+                resultMap.put("status",map);
+            }else{
+                map.put("code",1001);
+                map.put("msg","请求成功");
+                resultMap.put("status",map);
+            }
+            resultMap.put("data",orderStatus);
+        }
         return resultMap;
     }
 

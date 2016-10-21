@@ -36,6 +36,13 @@ public interface OrderDetailsMapper {
     Integer selectOrderByOrderStatusCount(Integer orderStatus);
 
     /**
+     * 发货
+     * @param map
+     * @return
+     */
+    Integer deliverOrder(Map<String,Object> map);
+
+    /**
      * 订单评论
      * @return
      */
