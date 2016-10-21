@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,15 +96,17 @@ public class OrderController {
      */
     @RequestMapping("/orderRemark")
     @ResponseBody
-    public Map<String,Object> orderRemark(String orderId,String remark){
+    public Map<String,Object> orderRemark(String orderId,String remark) throws UnsupportedEncodingException {
         Map<String, Object>  map = new HashMap<>();
         Map<String, Object>  resultMap = new HashMap<>();
+
         if(StringUtils.isEmpty(orderId) || StringUtils.isEmpty(remark)){
             map.put("code",1004);
             map.put("msg","传入参数不正确");
             resultMap.put("status",map);
             return resultMap;
         }
+        String utfRemark = new String(remark.getBytes("iso-8859-1") , "utf-8");
         Integer status = orderService.orderRemark(orderId, remark);
         if(status == null || status <= 0){
             map.put("code",1004);

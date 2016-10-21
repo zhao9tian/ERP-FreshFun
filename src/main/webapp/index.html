@@ -6,9 +6,10 @@
     <script type="text/javascript" src="js/jquery-1.7.2.js"></script>
     <script type="text/javascript">
         var url = '/ERP-FreshFun/goods/addGoods.do';
+        var url1 = '/ERP-FreshFun/goods/testluanma.do';
         var allData ={
             CategoryInfo : {  // 类目信息，类目枚举列表见文档 "商品类目约定.md"
-            first: 1111,
+            first: "呵呵",
             second: 12321
             },
             CategoryList :  [1,2,3,4],
@@ -33,11 +34,12 @@
             {"storeId":"0a1", "address":"西斗门路2号", "goods":[{"goodsId":"4"}, {"goodsId":"4"}, {"goodsId":"5"}]}]
 
         $.ajax({
-            url : url ,
+            url : url1 ,
             type : "post" ,
             dataType : "JSON" ,
             contentType : 'application/json;charset=UTF-8' ,
-            data : JSON.stringify(allData),
+            data : JSON.stringify({chinese:"中文"}
+                   ),
             success : function (data) {
                 console.log(data);
             },
