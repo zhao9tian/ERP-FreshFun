@@ -94,10 +94,10 @@ public class OrderController {
 
     /**
      * 发货
-     * @param order
-     * @return
+     * @param order 物流信息
+     * @return 请求是否成功
      */
-    @RequestMapping(value="/selectFinishOrderCount",method={RequestMethod.POST})
+    @RequestMapping(value="/deliverOrder",method={RequestMethod.POST})
     @ResponseBody
     public Map<String, Object> deliverOrder(@RequestBody OrderDetailsPOJO order){
         Map<String, Object>  map = new HashMap<>();
