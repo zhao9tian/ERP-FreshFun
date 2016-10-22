@@ -30,7 +30,7 @@ public class GoodsTest extends TestBase {
 
     @org.junit.Test
     public void TestGoods(){
-        logger.error("摸摸大，打印在控制台的");
+        logger.error("打印在控制台的");
         logger.info("设置info才能在文件里面");
 //        System.out.println(goodsController.getCategoryList());
     }

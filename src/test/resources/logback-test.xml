@@ -1,16 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<?xml version="1.0" encoding="UTF-8" ?>
 
+<!-- scan="true"    当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。 -->
+<!--  scanPeriod="30 seconds"   设置每30秒自动扫描,若没有指定具体单位则以milliseconds为标准(单位:milliseconds, seconds, minutes or hours)  -->
+<!-- debug="false"当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。-->
+<configuration  scan="true" scanPeriod="30 seconds">
+    <!-- 上下文名称  -->
+    <contextName>test</contextName>
+
+    <!-- ch.qos.logback.core.ConsoleAppender 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d [%t] %5p \(%F:%L\) %M\(\) - %m%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!--不指定level将继承root的  ，不指定appender  且未设置addtivity 默认true会将自身的logger信息向上级root传递 -->
-    <logger name="com.quxin.freshfun.dao" level="DEBUG" />
-
-    <root level="warn">
+    <root level="WARN">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
