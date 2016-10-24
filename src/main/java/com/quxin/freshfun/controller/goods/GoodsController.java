@@ -66,29 +66,6 @@ public class GoodsController {
         return null;
     }
 
-    /**
-     * 上传图片
-     * @param request 页面请求
-     * @return 返回请求结果
-     */
-    @RequestMapping(value = "/uploadPic", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> uploadPic(HttpServletRequest request) {
-        String imgPath;
-        Map<String, Object> result;
-        try {
-            imgPath = UploadUtils.uploadPic(request);
-            if (imgPath == null) {
-                result = ResultUtil.fail(1004, "图片格式不对");
-                logger.error("图片格式不对");
-            } else {
-                result = ResultUtil.success(imgPath);
-            }
-        } catch (IOException e) {
-            logger.error("获取图片InputStream异常", e);
-            return ResultUtil.fail(1004, "获取图片InputStream异常");
-        }
-        return result;
-    }
+
 
 }

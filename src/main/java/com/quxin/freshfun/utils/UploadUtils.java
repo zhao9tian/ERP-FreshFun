@@ -9,14 +9,12 @@ import java.util.*;
 
 /**
  * 图片上传类
- *
  * @author qucheng
  */
 public class UploadUtils {
 
     /**
      * 上传图片
-     *
      * @param request 请求
      * @return 返回上传路径
      * @throws IOException 获取图片InputStream异常
@@ -30,7 +28,7 @@ public class UploadUtils {
             if (!"".equals(file.getOriginalFilename())) {
                 if (filterFileType(file.getOriginalFilename())) {
                     String picName = file.getOriginalFilename();
-                    String editFileName = UUID.randomUUID() + picName.substring(picName.lastIndexOf("."), picName.length());
+                    String editFileName = UUID.randomUUID() + picName.substring(picName.lastIndexOf("."));
                     String path = createDirs() + "/" + editFileName;
                     imgPath = OSSUtils.uploadPic(file.getInputStream(), path);
                     break;
@@ -44,7 +42,6 @@ public class UploadUtils {
 
     /**
      * 生成文件保存目录
-     *
      * @return 图片相对项目的路径
      */
     private static String createDirs() {
@@ -57,22 +54,22 @@ public class UploadUtils {
 
     /**
      * 过滤上传的文件的类型
-     *
      * @param originalFilename 带后缀的文件名
      * @return 是否是图片格式
      */
     private static Boolean filterFileType(String originalFilename) {
-        String contentType = null;
+        Boolean bool = false;
         if (originalFilename != null && !"".equals(originalFilename)) {
-            contentType = originalFilename.substring(originalFilename.lastIndexOf(".") + 1, originalFilename.length());
+            if(originalFilename.lastIndexOf(".") != -1){
+                String contentType = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+                List<String> fileTypes = new ArrayList<>();
+                fileTypes.add("jpg");
+                fileTypes.add("jpeg");
+                fileTypes.add("png");
+                fileTypes.add("gif");
+                bool = fileTypes.contains(contentType);
+            }
         }
-        Boolean bool;
-        List<String> fileTypes = new ArrayList<>();
-        fileTypes.add("jpg");
-        fileTypes.add("jpeg");
-        fileTypes.add("png");
-        fileTypes.add("gif");
-        bool = fileTypes.contains(contentType);
         return bool;
     }
 
