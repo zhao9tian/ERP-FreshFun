@@ -34,6 +34,18 @@ public interface OrderService {
      * @return
      */
     Integer selectOrderByOrderStatusCount(Integer orderStatus);
+
+    /**
+     * 查询已完成订单
+     * @return
+     */
+    List<OrderDetailsPOJO> findFinishOrder(Integer page, Integer pageSize);
+
+    /**
+     * 查询已完成订单数量
+     * @return
+     */
+    Integer findFinishOrderCount();
     /**
      * 发货
      * @param order

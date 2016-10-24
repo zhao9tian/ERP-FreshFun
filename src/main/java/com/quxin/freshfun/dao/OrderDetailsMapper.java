@@ -36,6 +36,18 @@ public interface OrderDetailsMapper {
     Integer selectOrderByOrderStatusCount(Integer orderStatus);
 
     /**
+     * 查询已完成订单
+     * @return
+     */
+    List<OrderDetailsPOJO> selectFinishOrder(@Param("currentPage") Integer page,@Param("pageSize") Integer pageSize);
+
+    /**
+     * 查询已完成订单数量
+     * @return
+     */
+    Integer selectFinishOrderCount();
+
+    /**
      * 发货
      * @param map
      * @return

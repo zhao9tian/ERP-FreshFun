@@ -31,8 +31,17 @@ public class OrderImpl implements OrderService {
      * @return
      */
     @Override
-    public List<OrderDetailsPOJO> selectBackstageOrders(@Param("currentPage") int currentPage, @Param("pageSize") int pageSize) {
+    public List<OrderDetailsPOJO> selectBackstageOrders(int currentPage,int pageSize) {
         List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectBackstageOrders(currentPage, pageSize);
+        orderDetails = getOrderDetails(orderDetails);
+        return orderDetails;
+    }
+
+    /**
+     * 获取用户信息
+     * @return
+     */
+    private List<OrderDetailsPOJO> getOrderDetails(List<OrderDetailsPOJO> orderDetails) {
         for (OrderDetailsPOJO order : orderDetails) {
             UserInfoOutParam userInfo = userBaseMapper.selectUserInfoByUserId(order.getUserId());
             if(userInfo != null) {
@@ -61,7 +70,7 @@ public class OrderImpl implements OrderService {
      * @return
      */
     @Override
-    public List<OrderDetailsPOJO> selectOrderByOrderStatus(@Param("orderStatus") Integer orderStatus, @Param("currentPage") int currentPage, @Param("pageSize") int pageSize) {
+    public List<OrderDetailsPOJO> selectOrderByOrderStatus(Integer orderStatus,int currentPage,int pageSize) {
         List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectOrderByOrderStatus(orderStatus, currentPage, pageSize);
         for (OrderDetailsPOJO order: orderDetails) {
             UserInfoOutParam userInfo = userBaseMapper.selectUserInfoByUserId(order.getUserId());
@@ -81,6 +90,26 @@ public class OrderImpl implements OrderService {
     @Override
     public Integer selectOrderByOrderStatusCount(Integer orderStatus) {
         return orderDetailsMapper.selectOrderByOrderStatusCount(orderStatus);
+    }
+
+    /**
+     * 已完成订单
+     * @return
+     */
+    @Override
+    public List<OrderDetailsPOJO> findFinishOrder(Integer page, Integer pageSize) {
+        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectFinishOrder(page,pageSize);
+        orderDetails = getOrderDetails(orderDetails);
+        return orderDetails;
+    }
+
+    /**
+     * 已完成订单数量
+     * @return
+     */
+    @Override
+    public Integer findFinishOrderCount() {
+        return orderDetailsMapper.selectFinishOrderCount();
     }
 
     @Override

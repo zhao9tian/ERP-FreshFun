@@ -93,6 +93,44 @@ public class OrderController {
     }
 
     /**
+     * 查询已完成订单
+     * @return
+     */
+    @RequestMapping("/findFinishOrder")
+    @ResponseBody
+    public Map<String, Object> findFinishOrder(Integer page, Integer pageSize){
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        Map<String,Object> resultData = new HashMap<>();
+        if(page == null || page == 0 || pageSize == null || pageSize <= 0){
+            map.put("code",1004);
+            map.put("msg","传入当前页码不正确");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        int currentPage = (page - 1) * pageSize;
+        List<OrderDetailsPOJO> finishOrderList = orderService.findFinishOrder(currentPage, pageSize);
+        Integer finishOrderCount = orderService.findFinishOrderCount();
+        finishOrderList = setBackstageMoney(finishOrderList);
+        int size = 1;
+        if(finishOrderCount % pageSize == 0){
+            size = finishOrderCount / pageSize;
+        }else{
+            size = finishOrderCount / pageSize + 1;
+        }
+        map.put("code",1001);
+        map.put("msg","请求成功");
+        resultData.put("totalPage",size);
+        resultData.put("total",finishOrderCount);
+        resultData.put("page",page);
+        resultData.put("pageSize",pageSize);
+        resultData.put("list",finishOrderList);
+        resultMap.put("status",map);
+        resultMap.put("data",resultData);
+        return resultMap;
+    }
+
+    /**
      * 发货
      * @param order 物流信息
      * @return 请求是否成功
@@ -164,6 +202,14 @@ public class OrderController {
      */
     private List<OrderDetailsPOJO> setBackstageMoney(List<OrderDetailsPOJO> order){
         for (OrderDetailsPOJO o: order) {
+            if(o.getGoodsCost() != null && o.getGoodsCost() != 0){
+                o.setCostMoney(MoneyFormatUtils.getMoneyFromInteger(o.getGoodsCost()));
+                o.setGoodsCost(null);
+            }
+            if(o.getPayPrice() != null && o.getPayPrice() != 0) {
+                o.setPayMoney(MoneyFormatUtils.getMoneyFromInteger(o.getPayPrice()));
+                o.setPayPrice(null);
+            }
             GoodsOrderOut goods = o.getGoods();
             if(goods.getGoodsShopPrice() != null) {
                 goods.setMarketMoney(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsShopPrice()));
