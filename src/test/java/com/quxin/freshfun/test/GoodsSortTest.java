@@ -30,7 +30,7 @@ public class GoodsSortTest extends TestBase{
 
     @Test
     public void querySortGoodsById() {
-        System.out.println(goodsSortService.querySortGoodsById(58));
+        System.out.println(goodsSortService.querySortGoodsById(58L));
     }
 
     @Test

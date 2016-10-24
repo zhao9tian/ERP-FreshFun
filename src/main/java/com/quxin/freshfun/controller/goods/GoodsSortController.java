@@ -45,7 +45,7 @@ public class GoodsSortController {
         if (goodsSorts != null && goodsSorts.size() > 0) {
             for (GoodsPOJO goods : goodsSorts) {
                 GoodsSortOut goodsSort = new GoodsSortOut();
-                goodsSort.setGoodsId(goods.getId());
+                goodsSort.setGoodsId(goods.getGoodsId());
                 goodsSort.setGoodsName(goods.getGoodsName());
                 goodsSort.setGoodsImg(goods.getGoodsImg());
                 goodsSort.setGoodsPrice(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsShopPrice()));
@@ -69,7 +69,7 @@ public class GoodsSortController {
      */
     @RequestMapping(value = "/queryGoodsById", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> queryGoodsById(Integer goodsId) {
+    public Map<String, Object> queryGoodsById(Long goodsId) {
         Map<String, Object> result;
         if (goodsId == null) {
             result = ResultUtil.fail(1004, "商品Id不能为空");

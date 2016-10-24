@@ -1,18 +1,15 @@
 package com.quxin.freshfun.model.goods;
 
 /**
+ * 商品规格
  * Created by qingtian on 2016/10/18.
  */
-public class GoodsStandard {
+public class GoodsStandardPOJO {
     private Integer id;
     /**
      * 商品编号
      */
     private Integer goodsId;
-    /**
-     * 品名
-     */
-    private String name;
     /**
      * 品牌
      */
@@ -24,7 +21,7 @@ public class GoodsStandard {
     /**
      * 规格
      */
-    private String standard;
+    private String goodsStandard;
     /**
      * 净含量
      */
@@ -44,19 +41,19 @@ public class GoodsStandard {
     /**
      * 是否含糖  0:未填  1: 是 2:否
      */
-    private Integer sugary;
+    private Integer isSugary;
     /**
      * 是否有机：0:未填  1: 是 2:否
      */
-    private Integer organic;
+    private Integer isOrganic;
     /**
      * 是否进口：0:未填  1: 是 2:否
      */
-    private Integer isImport;
+    private Integer isImported;
     /**
      * 是否盒装：0:未填  1: 是 2:否
      */
-    private  Integer boxPacked;
+    private  Integer isBoxPacked;
     /**
      * 套餐分量
      */
@@ -68,7 +65,7 @@ public class GoodsStandard {
     /**
      * 功能
      */
-    private String functional;
+    private String facility;
     /**
      * 不适宜人群
      */
@@ -100,15 +97,15 @@ public class GoodsStandard {
     /**
      * 产品标准号
      */
-    private String productStandardNumber;
+    private String productStandardNum;
     /**
      * 生鲜储存温度
      */
-    private Double freshStorageTemperature;
+    private String freshStoreTemp;
     /**
      * 酒精度数
      */
-    private Double proof;
+    private String proof;
     /**
      * 适应场景
      */
@@ -154,6 +151,11 @@ public class GoodsStandard {
      */
     private String size;
 
+    /**
+     * 特产品种
+     */
+    private String specialty;
+
     public Integer getId() {
         return id;
     }
@@ -168,14 +170,6 @@ public class GoodsStandard {
 
     public void setGoodsId(Integer goodsId) {
         this.goodsId = goodsId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getBrand() {
@@ -194,12 +188,12 @@ public class GoodsStandard {
         this.productPlace = productPlace;
     }
 
-    public String getStandard() {
-        return standard;
+    public String getGoodsStandard() {
+        return goodsStandard;
     }
 
-    public void setStandard(String standard) {
-        this.standard = standard;
+    public void setGoodsStandard(String goodsStandard) {
+        this.goodsStandard = goodsStandard;
     }
 
     public String getNetContents() {
@@ -234,36 +228,36 @@ public class GoodsStandard {
         this.ingredientList = ingredientList;
     }
 
-    public Integer getSugary() {
-        return sugary;
+    public Integer getIsSugary() {
+        return isSugary;
     }
 
-    public void setSugary(Integer sugary) {
-        this.sugary = sugary;
+    public void setIsSugary(Integer isSugary) {
+        this.isSugary = isSugary;
     }
 
-    public Integer getOrganic() {
-        return organic;
+    public Integer getIsOrganic() {
+        return isOrganic;
     }
 
-    public void setOrganic(Integer organic) {
-        this.organic = organic;
+    public void setIsOrganic(Integer isOrganic) {
+        this.isOrganic = isOrganic;
     }
 
-    public Integer getIsImport() {
-        return isImport;
+    public Integer getIsImported() {
+        return isImported;
     }
 
-    public void setIsImport(Integer isImport) {
-        this.isImport = isImport;
+    public void setIsImported(Integer isImported) {
+        this.isImported = isImported;
     }
 
-    public Integer getBoxPacked() {
-        return boxPacked;
+    public Integer getIsBoxPacked() {
+        return isBoxPacked;
     }
 
-    public void setBoxPacked(Integer boxPacked) {
-        this.boxPacked = boxPacked;
+    public void setIsBoxPacked(Integer isBoxPacked) {
+        this.isBoxPacked = isBoxPacked;
     }
 
     public String getPackageComponent() {
@@ -282,12 +276,12 @@ public class GoodsStandard {
         this.taste = taste;
     }
 
-    public String getFunctional() {
-        return functional;
+    public String getFacility() {
+        return facility;
     }
 
-    public void setFunctional(String functional) {
-        this.functional = functional;
+    public void setFacility(String facility) {
+        this.facility = facility;
     }
 
     public String getUnsuitable() {
@@ -346,27 +340,27 @@ public class GoodsStandard {
         this.factorySite = factorySite;
     }
 
-    public String getProductStandardNumber() {
-        return productStandardNumber;
+    public String getProductStandardNum() {
+        return productStandardNum;
     }
 
-    public void setProductStandardNumber(String productStandardNumber) {
-        this.productStandardNumber = productStandardNumber;
+    public void setProductStandardNum(String productStandardNum) {
+        this.productStandardNum = productStandardNum;
     }
 
-    public Double getFreshStorageTemperature() {
-        return freshStorageTemperature;
+    public String getFreshStoreTemp() {
+        return freshStoreTemp;
     }
 
-    public void setFreshStorageTemperature(Double freshStorageTemperature) {
-        this.freshStorageTemperature = freshStorageTemperature;
+    public void setFreshStoreTemp(String freshStoreTemp) {
+        this.freshStoreTemp = freshStoreTemp;
     }
 
-    public Double getProof() {
+    public String getProof() {
         return proof;
     }
 
-    public void setProof(Double proof) {
+    public void setProof(String proof) {
         this.proof = proof;
     }
 
@@ -456,5 +450,57 @@ public class GoodsStandard {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
+    @Override
+    public String toString() {
+        return "GoodsStandardPOJO{" +
+                "id=" + id +
+                ", goodsId=" + goodsId +
+                ", brand='" + brand + '\'' +
+                ", productPlace='" + productPlace + '\'' +
+                ", goodsStandard='" + goodsStandard + '\'' +
+                ", netContents='" + netContents + '\'' +
+                ", shelfLife='" + shelfLife + '\'' +
+                ", storageMethod='" + storageMethod + '\'' +
+                ", ingredientList='" + ingredientList + '\'' +
+                ", isSugary=" + isSugary +
+                ", isOrganic=" + isOrganic +
+                ", isImported=" + isImported +
+                ", isBoxPacked=" + isBoxPacked +
+                ", packageComponent='" + packageComponent + '\'' +
+                ", taste='" + taste + '\'' +
+                ", facility='" + facility + '\'' +
+                ", unsuitable='" + unsuitable + '\'' +
+                ", suitable='" + suitable + '\'' +
+                ", productForm='" + productForm + '\'' +
+                ", foodAdditives='" + foodAdditives + '\'' +
+                ", setCycle='" + setCycle + '\'' +
+                ", factoryName='" + factoryName + '\'' +
+                ", factorySite='" + factorySite + '\'' +
+                ", productStandardNum='" + productStandardNum + '\'' +
+                ", freshStoreTemp=" + freshStoreTemp +
+                ", proof=" + proof +
+                ", adaptiveScene='" + adaptiveScene + '\'' +
+                ", packingMethod='" + packingMethod + '\'' +
+                ", packingType='" + packingType + '\'' +
+                ", wineStyle='" + wineStyle + '\'' +
+                ", suitSpecification='" + suitSpecification + '\'' +
+                ", decanteDuration='" + decanteDuration + '\'' +
+                ", particularYear='" + particularYear + '\'' +
+                ", smell='" + smell + '\'' +
+                ", colourSort='" + colourSort + '\'' +
+                ", styleType='" + styleType + '\'' +
+                ", size='" + size + '\'' +
+                ", specialty='" + specialty + '\'' +
+                '}';
     }
 }

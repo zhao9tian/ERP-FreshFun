@@ -1,4 +1,4 @@
-package com.quxin.freshfun.service.goods.goodsimpl;
+package com.quxin.freshfun.service.goods.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -6,6 +6,7 @@ import com.quxin.freshfun.constant.GoodsConstant;
 import com.quxin.freshfun.dao.GoodsSortMapper;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.goods.GoodsSortPOJO;
+import com.quxin.freshfun.service.goods.GoodsService;
 import com.quxin.freshfun.service.goods.GoodsSortService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,9 @@ public class GoodsSortServiceImpl implements GoodsSortService {
     @Autowired
     private GoodsSortMapper goodsSortMapper;
 
+    @Autowired
+    private GoodsService goodsService;
+
     @Override
     public List<GoodsPOJO> querySortGoods() {
         String sortValue = goodsSortMapper.selectPictureWall(GoodsConstant.PICTURE_WALL);
@@ -37,7 +41,9 @@ public class GoodsSortServiceImpl implements GoodsSortService {
         List<GoodsPOJO> sortList = new ArrayList<>();
         if (sortArr != null && sortArr.size() > 0) {
             for (Object goodsId : sortArr) {
-                GoodsPOJO goods = goodsSortMapper.selectGoodsPOJOById((Integer) goodsId);
+                Integer goodsIdint = (Integer) goodsId;
+                Long goodsLong = (long)goodsIdint;
+                GoodsPOJO goods = goodsService.queryGoodsByGoodsId(goodsLong);
                 if(goods == null){
                     logger.error("商品Id为:"+goodsId+"的商品不存在或者已经下架");
                 }else{
@@ -51,12 +57,12 @@ public class GoodsSortServiceImpl implements GoodsSortService {
     }
 
     @Override
-    public GoodsPOJO querySortGoodsById(Integer goodId) {
+    public GoodsPOJO querySortGoodsById(Long goodId) {
         if (goodId == null) {
             logger.error("goodsId不能为空");
             return null;
         }
-        return goodsSortMapper.selectGoodsPOJOById(goodId);
+        return goodsService.queryGoodsByGoodsId(goodId);
     }
 
     @Override

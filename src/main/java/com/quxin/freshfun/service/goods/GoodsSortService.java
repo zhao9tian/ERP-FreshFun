@@ -21,7 +21,7 @@ public interface GoodsSortService {
      * @param goodsId 商品ID
      * @return 返回商品基本信息
      */
-    GoodsPOJO querySortGoodsById(Integer goodsId);
+    GoodsPOJO querySortGoodsById(Long goodsId);
 
     /**
      * 保存页面所有排序

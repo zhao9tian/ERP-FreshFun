@@ -1,6 +1,7 @@
 package com.quxin.freshfun.test;
 
 import com.quxin.freshfun.controller.goods.GoodsController;
+import com.quxin.freshfun.service.goods.GoodsService;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
@@ -16,10 +17,12 @@ public class GoodsTest extends TestBase {
 
 
     private GoodsController goodsController;
+    private GoodsService goodsService;
 
     @Before
     public void setUp() throws Exception {
         goodsController = getContext().getBean("goodsController", GoodsController.class);
+        goodsService = getContext().getBean("goodsService", GoodsService.class);
     }
 
 
@@ -30,8 +33,7 @@ public class GoodsTest extends TestBase {
 
     @org.junit.Test
     public void TestGoods(){
-        logger.error("打印在控制台的");
-        logger.info("设置info才能在文件里面");
+        logger.info(""+goodsService.queryGoodsByGoodsId(1L));
 //        System.out.println(goodsController.getCategoryList());
     }
 
