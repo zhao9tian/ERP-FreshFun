@@ -87,4 +87,9 @@
     update order_details set remark = #{remark} where id = #{orderId}
   </update>
 
+  <!--删除订单-->
+  <update id="orderDel" parameterType="java.lang.Long">
+    update order_details set is_deleted = 1 where id = #{orderId}
+  </update>
+
 </mapper>

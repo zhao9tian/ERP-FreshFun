@@ -138,4 +138,9 @@ public class OrderImpl implements OrderService {
         map.put("remark",remark);
         return orderDetailsMapper.orderRemark(map);
     }
+
+    @Override
+    public Integer orderDel(Long orderId) {
+        return orderDetailsMapper.orderDel(orderId);
+    }
 }

@@ -59,4 +59,11 @@ public interface OrderDetailsMapper {
      * @return
      */
     Integer orderRemark(Map<String,Object> map);
+
+    /**
+     * 删除订单
+     * @param orderId
+     * @return
+     */
+    Integer orderDel(Long orderId);
 }

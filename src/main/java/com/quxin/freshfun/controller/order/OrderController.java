@@ -162,6 +162,36 @@ public class OrderController {
     }
 
     /**
+     * 订单删除
+     * @return
+     */
+    @RequestMapping("orderDel")
+    @ResponseBody
+    public Map<String,Object> orderDel(Long orderId){
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        if(null == orderId || 0 == orderId){
+            map.put("code",1004);
+            map.put("msg","参数传递错误");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        Integer delStatus = orderService.orderDel(orderId);
+        if(delStatus <= 0){
+            map.put("code",1004);
+            map.put("msg","订单删除失败");
+            resultMap.put("status",map);
+            return resultMap;
+        }else{
+            map.put("code",1001);
+            map.put("msg","请求成功");
+            resultMap.put("status",map);
+            resultMap.put("data",delStatus);
+            return resultMap;
+        }
+    }
+
+    /**
      * 订单备注
      * @param orderId 订单Id
      * @param remark 备注内容
@@ -202,11 +232,11 @@ public class OrderController {
      */
     private List<OrderDetailsPOJO> setBackstageMoney(List<OrderDetailsPOJO> order){
         for (OrderDetailsPOJO o: order) {
-            if(o.getGoodsCost() != null && o.getGoodsCost() != 0){
+            if(o.getGoodsCost() != null){
                 o.setCostMoney(MoneyFormatUtils.getMoneyFromInteger(o.getGoodsCost()));
                 o.setGoodsCost(null);
             }
-            if(o.getPayPrice() != null && o.getPayPrice() != 0) {
+            if(o.getPayPrice() != null) {
                 o.setPayMoney(MoneyFormatUtils.getMoneyFromInteger(o.getPayPrice()));
                 o.setPayPrice(null);
             }
@@ -218,4 +248,5 @@ public class OrderController {
         }
         return order;
     }
+
 }

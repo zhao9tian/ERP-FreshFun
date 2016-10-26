@@ -57,4 +57,11 @@ public interface OrderService {
      * @return
      */
     Integer orderRemark(String orderId,String remark);
+
+    /**
+     * 删除订单
+     * @param orderId
+     * @return
+     */
+    Integer orderDel(Long orderId);
 }
