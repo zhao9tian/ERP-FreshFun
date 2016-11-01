@@ -1,11 +1,5 @@
 package com.quxin.freshfun.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -17,45 +11,15 @@ import java.util.*;
  * 图片上传类
  * @author qucheng
  */
-@Controller
-@RequestMapping("/")
 public class UploadUtils {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 上传图片
-     * @param request 页面请求
-     * @return 返回请求结果
-     */
-    @RequestMapping(value = "/uploadPic", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> uploadPic(HttpServletRequest request) {
-        String imgPath;
-        Map<String, Object> result;
-        try {
-            imgPath = upload(request);
-            if (imgPath == null) {
-                result = ResultUtil.fail(1004, "图片格式不对");
-                logger.error("图片格式不对");
-            } else {
-                result = ResultUtil.success(imgPath);
-            }
-        } catch (IOException e) {
-            logger.error("获取图片InputStream异常", e);
-            return ResultUtil.fail(1004, "获取图片InputStream异常");
-        }
-        return result;
-    }
-
-
-    /**
-     * 上传图片实现
      * @param request 请求
-     * @return 返回地址
-     * @throws IOException IO异常
+     * @return 返回上传路径
+     * @throws IOException 获取图片InputStream异常
      */
-    private String upload(HttpServletRequest request) throws IOException {
+    public static String uploadPic(HttpServletRequest request) throws IOException {
         String imgPath = "";
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         Iterator<String> iter = multiRequest.getFileNames();
@@ -94,18 +58,19 @@ public class UploadUtils {
      * @return 是否是图片格式
      */
     private static Boolean filterFileType(String originalFilename) {
-        String contentType ;
+        Boolean bool = false;
         if (originalFilename != null && !"".equals(originalFilename)) {
             if(originalFilename.lastIndexOf(".") != -1){
-                contentType = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String contentType = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
                 List<String> fileTypes = new ArrayList<>();
                 fileTypes.add("jpg");
                 fileTypes.add("jpeg");
                 fileTypes.add("png");
                 fileTypes.add("gif");
-                return fileTypes.contains(contentType);
+                bool = fileTypes.contains(contentType);
             }
         }
-        return false;
+        return bool;
     }
+
 }
