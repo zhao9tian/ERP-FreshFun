@@ -6,17 +6,17 @@ public class GoodsPOJO {
      */
     private Long goodsId;
     /**
-     * 商品名称--也叫商品标题
-     */
-    private String goodsName;
-    /**
-     * 商品副标题
+     * 商品标题
      */
     private String title;
     /**
+     * 商品副标题
+     */
+    private String subtitle;
+    /**
      * 悦选小编说
      */
-    private String ffunsaid;
+    private String goodsDes;
     /**
      * 商品首页图片 index_img
      */
@@ -24,7 +24,7 @@ public class GoodsPOJO {
     /**
      * 商品单价
      */
-    private Integer goodsShopPrice;
+    private Integer shopPrice;
     /**
      * 原价
      */
@@ -36,7 +36,7 @@ public class GoodsPOJO {
     /**
      * 轮播图片
      */
-    private String carouseImg;
+    private String carouselImg;
     /**
      * 详情图片
      */
@@ -56,48 +56,26 @@ public class GoodsPOJO {
     /**
      * 一级类目 食品
      */
-    private Integer catalog1;
+    private Integer catagory1;
     /**
      * 二级类目
      */
-    private Integer catalog2;
+    private Integer catagory2;
     /**
      * 三级类目
      */
-    private Integer catalog3;
+    private Integer catagory3;
     /**
      * 四级类目
      */
-    private Integer catalog4;
+    private Integer catagory4;
 
-    /**
-     * 是否在B端销售
-     */
-    private Integer isBSale;
-    /**
-     * 是否被代理
-     */
-    private Integer isAgent;
     /**
      * 商户Id
      */
-    private Long storeId;
-    /**
-     * 代理Id
-     */
-    private Long agentId;
-    /**
-     * 代理费用
-     */
-    private Integer agentMoney;
-    /**
-     * 产品优势
-     */
-    private String goodsStrength;
-    /**
-     * 代理优势
-     */
-    private String agentStrength;
+    private Long shopId;
+
+    private Long appId;
     /**
      * 创建时间
      */
@@ -109,21 +87,12 @@ public class GoodsPOJO {
 
     private GoodsStandardPOJO goodsStandardPOJO;
 
-
     public Long getGoodsId() {
         return goodsId;
     }
 
     public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
-    }
-
-    public String getGoodsName() {
-        return goodsName;
-    }
-
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName;
     }
 
     public String getTitle() {
@@ -134,12 +103,20 @@ public class GoodsPOJO {
         this.title = title;
     }
 
-    public String getFfunsaid() {
-        return ffunsaid;
+    public String getSubtitle() {
+        return subtitle;
     }
 
-    public void setFfunsaid(String ffunsaid) {
-        this.ffunsaid = ffunsaid;
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public String getGoodsDes() {
+        return goodsDes;
+    }
+
+    public void setGoodsDes(String goodsDes) {
+        this.goodsDes = goodsDes;
     }
 
     public String getGoodsImg() {
@@ -150,12 +127,12 @@ public class GoodsPOJO {
         this.goodsImg = goodsImg;
     }
 
-    public Integer getGoodsShopPrice() {
-        return goodsShopPrice;
+    public Integer getShopPrice() {
+        return shopPrice;
     }
 
-    public void setGoodsShopPrice(Integer goodsShopPrice) {
-        this.goodsShopPrice = goodsShopPrice;
+    public void setShopPrice(Integer shopPrice) {
+        this.shopPrice = shopPrice;
     }
 
     public Integer getOriginPrice() {
@@ -174,12 +151,12 @@ public class GoodsPOJO {
         this.goodsCost = goodsCost;
     }
 
-    public String getCarouseImg() {
-        return carouseImg;
+    public String getCarouselImg() {
+        return carouselImg;
     }
 
-    public void setCarouseImg(String carouseImg) {
-        this.carouseImg = carouseImg;
+    public void setCarouselImg(String carouselImg) {
+        this.carouselImg = carouselImg;
     }
 
     public String getDetailImg() {
@@ -214,92 +191,52 @@ public class GoodsPOJO {
         this.isOnSale = isOnSale;
     }
 
-    public Integer getCatalog1() {
-        return catalog1;
+    public Integer getCatagory1() {
+        return catagory1;
     }
 
-    public void setCatalog1(Integer catalog1) {
-        this.catalog1 = catalog1;
+    public void setCatagory1(Integer catagory1) {
+        this.catagory1 = catagory1;
     }
 
-    public Integer getCatalog2() {
-        return catalog2;
+    public Integer getCatagory2() {
+        return catagory2;
     }
 
-    public void setCatalog2(Integer catalog2) {
-        this.catalog2 = catalog2;
+    public void setCatagory2(Integer catagory2) {
+        this.catagory2 = catagory2;
     }
 
-    public Integer getCatalog3() {
-        return catalog3;
+    public Integer getCatagory3() {
+        return catagory3;
     }
 
-    public void setCatalog3(Integer catalog3) {
-        this.catalog3 = catalog3;
+    public void setCatagory3(Integer catagory3) {
+        this.catagory3 = catagory3;
     }
 
-    public Integer getCatalog4() {
-        return catalog4;
+    public Integer getCatagory4() {
+        return catagory4;
     }
 
-    public void setCatalog4(Integer catalog4) {
-        this.catalog4 = catalog4;
+    public void setCatagory4(Integer catagory4) {
+        this.catagory4 = catagory4;
     }
 
-    public Integer getIsBSale() {
-        return isBSale;
+    public Long getShopId() {
+        return shopId;
     }
 
-    public void setIsBSale(Integer isBSale) {
-        this.isBSale = isBSale;
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
     }
 
-    public Integer getIsAgent() {
-        return isAgent;
+    public Long getAppId() {
+        return appId;
     }
 
-    public void setIsAgent(Integer isAgent) {
-        this.isAgent = isAgent;
-    }
-
-    public Long getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
-
-    public Long getAgentId() {
-        return agentId;
-    }
-
-    public void setAgentId(Long agentId) {
-        this.agentId = agentId;
-    }
-
-    public Integer getAgentMoney() {
-        return agentMoney;
-    }
-
-    public void setAgentMoney(Integer agentMoney) {
-        this.agentMoney = agentMoney;
-    }
-
-    public String getGoodsStrength() {
-        return goodsStrength;
-    }
-
-    public void setGoodsStrength(String goodsStrength) {
-        this.goodsStrength = goodsStrength;
-    }
-
-    public String getAgentStrength() {
-        return agentStrength;
-    }
-
-    public void setAgentStrength(String agentStrength) {
-        this.agentStrength = agentStrength;
+    public void setAppId(Long appId) {
+        this.appId = appId;
     }
 
     public Long getCreated() {
@@ -330,29 +267,24 @@ public class GoodsPOJO {
     public String toString() {
         return "GoodsPOJO{" +
                 "goodsId=" + goodsId +
-                ", goodsName='" + goodsName + '\'' +
                 ", title='" + title + '\'' +
-                ", ffunsaid='" + ffunsaid + '\'' +
+                ", subtitle='" + subtitle + '\'' +
+                ", goodsDes='" + goodsDes + '\'' +
                 ", goodsImg='" + goodsImg + '\'' +
-                ", goodsShopPrice=" + goodsShopPrice +
+                ", shopPrice=" + shopPrice +
                 ", originPrice=" + originPrice +
                 ", goodsCost=" + goodsCost +
-                ", carouseImg='" + carouseImg + '\'' +
+                ", carouselImg='" + carouselImg + '\'' +
                 ", detailImg='" + detailImg + '\'' +
                 ", saleNum=" + saleNum +
                 ", stockNum=" + stockNum +
                 ", isOnSale=" + isOnSale +
-                ", catalog1=" + catalog1 +
-                ", catalog2=" + catalog2 +
-                ", catalog3=" + catalog3 +
-                ", catalog4=" + catalog4 +
-                ", isBSale=" + isBSale +
-                ", isAgent=" + isAgent +
-                ", storeId=" + storeId +
-                ", agentId=" + agentId +
-                ", agentMoney=" + agentMoney +
-                ", goodsStrength='" + goodsStrength + '\'' +
-                ", agentStrength='" + agentStrength + '\'' +
+                ", catagory1=" + catagory1 +
+                ", catagory2=" + catagory2 +
+                ", catagory3=" + catagory3 +
+                ", catagory4=" + catagory4 +
+                ", shopId=" + shopId +
+                ", appId=" + appId +
                 ", created=" + created +
                 ", updated=" + updated +
                 ", goodsStandardPOJO=" + goodsStandardPOJO +

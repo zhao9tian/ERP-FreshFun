@@ -6,7 +6,7 @@ import java.util.List;
  * 专题对象,用于专题详情
  * Created by qucheng on 2016/10/29.
  */
-public class ThemeParamOut {
+public class ThemeOut {
     /**专题Id*/
     private Long themeId ;
     /**专题名称*/

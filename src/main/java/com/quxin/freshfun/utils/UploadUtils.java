@@ -28,7 +28,7 @@ public class UploadUtils {
             if (!"".equals(file.getOriginalFilename())) {
                 if (filterFileType(file.getOriginalFilename())) {
                     String picName = file.getOriginalFilename();
-                    String editFileName = UUID.randomUUID() + picName.substring(picName.lastIndexOf("."));
+                    String editFileName = System.currentTimeMillis() + picName.substring(picName.lastIndexOf("."));
                     String path = createDirs() + "/" + editFileName;
                     imgPath = OSSUtils.uploadPic(file.getInputStream(), path);
                     break;

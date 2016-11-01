@@ -1,26 +1,38 @@
 package com.quxin.freshfun.model.goods;
 
 /**
- * 精选
+ * 精选出参
  * Created by qucheng on 2016/10/28.
  */
-public class GoodsSelectionPOJO {
+public class GoodsSelectionOut {
     /**
-     * 商品基本信息
+     * 商品Id
      */
-    private GoodsPOJO goodsPOJO;
+    private Long goodsId;
 
+    /**
+     * 商品主题
+     */
+    private String goodsTitle ;
     /**
      * 精选图片地址
      */
     private String selectionImg;
 
-    public GoodsPOJO getGoodsPOJO() {
-        return goodsPOJO;
+    public Long getGoodsId() {
+        return goodsId;
     }
 
-    public void setGoodsPOJO(GoodsPOJO goodsPOJO) {
-        this.goodsPOJO = goodsPOJO;
+    public void setGoodsId(Long goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public String getGoodsTitle() {
+        return goodsTitle;
+    }
+
+    public void setGoodsTitle(String goodsTitle) {
+        this.goodsTitle = goodsTitle;
     }
 
     public String getSelectionImg() {
@@ -33,8 +45,9 @@ public class GoodsSelectionPOJO {
 
     @Override
     public String toString() {
-        return "GoodsSelectionPOJO{" +
-                "goodsPOJO=" + goodsPOJO +
+        return "GoodsSelectionOut{" +
+                "goodsId=" + goodsId +
+                ", goodsTitle='" + goodsTitle + '\'' +
                 ", selectionImg='" + selectionImg + '\'' +
                 '}';
     }

@@ -1,9 +1,9 @@
 package com.quxin.freshfun.controller.goods;
 
 import com.quxin.freshfun.model.goods.GoodsPOJO;
+import com.quxin.freshfun.model.goods.GoodsSelectionPOJO;
 import com.quxin.freshfun.service.goods.GoodsService;
-import com.quxin.freshfun.utils.ResultUtil;
-import com.quxin.freshfun.utils.UploadUtils;
+import com.quxin.freshfun.service.goods.GoodsSortService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -30,18 +28,22 @@ public class GoodsController {
     @Autowired
     private GoodsService goodsService;
 
+    @Autowired
+    private GoodsSortService goodsSortService;
+
     /**
      * 添加商品信息
+     *
      * @param goodsInfo 商品信息
      * @return 返回请求结果
      */
     @RequestMapping(value = "/addGoods", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> addGoods(@RequestBody Map<String , Object> goodsInfo) {
+    public Map<String, Object> addGoods(@RequestBody Map<String, Object> goodsInfo) {
         //TODO 检验入参
 
         //保存商品信息
-        Map<String , Object> map = (Map<String, Object>) goodsInfo.get("CategoryInfo");
+        Map<String, Object> map = (Map<String, Object>) goodsInfo.get("CategoryInfo");
         System.out.println(map.get("first"));
         GoodsPOJO goodsPOJO = new GoodsPOJO();
         Boolean isGoodsSuc = goodsService.addGoods(goodsPOJO);
@@ -49,18 +51,18 @@ public class GoodsController {
     }
 
     //TODO 商品列表分页  搜索
-    @RequestMapping(value="/queryGoodsList" , method = RequestMethod.POST)
+    @RequestMapping(value = "/queryGoodsList", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String , Object> queryGoodsList(){
+    public Map<String, Object> queryGoodsList() {
 
 
         return null;
     }
 
     //TODO 商品编辑
-    @RequestMapping(value="/queryGoodsList" , method = RequestMethod.POST)
+    @RequestMapping(value = "/queryGoodsList", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String , Object> editGoodsList(){
+    public Map<String, Object> editGoodsList() {
 
 
         return null;

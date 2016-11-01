@@ -33,6 +33,13 @@ public interface GoodsService {
     List<GoodsPOJO> queryAllGoods(Map<String , Object> queryCondition);
 
     /**
+     * 根据查询条件查询满足条件的总记录数
+     * @param queryCondition 查询条件
+     * @return 记录数
+     */
+    Map<String , Integer> queryPagingInfo(Map<String , Object> queryCondition);
+
+    /**
      * 修改商品信息
      * @param goodsPOJO 商品信息
      * @return 修改是否成功
@@ -49,8 +56,17 @@ public interface GoodsService {
     /**
      * BC端商品上下架
      * @param goodsId 商品Id
-     * @param goodsSource 商品来自B还是C
+     * @param goodsSource 商品来自B还是C 10:C  20 :B
+     * @param  status 上下架 1:上 2:下
      * @return 上下架是否成功
      */
-    Boolean goodsOnOrOff(Long goodsId , Integer goodsSource);
+    Boolean changeStatus(Long goodsId , Integer goodsSource , Integer status);
+
+    /**
+     * 新增商品到专题
+     * @param goodsId 商品Id
+     * @param themeId 专题Id
+     * @return 是否成功
+     */
+    Boolean goodsToTheme(Long goodsId , Long themeId );
 }

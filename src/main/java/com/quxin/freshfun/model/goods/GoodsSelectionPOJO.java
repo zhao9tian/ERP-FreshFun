@@ -4,7 +4,7 @@ package com.quxin.freshfun.model.goods;
  * 精选
  * Created by qucheng on 2016/10/28.
  */
-public class BannerOut {
+public class GoodsSelectionPOJO {
     /**
      * 商品基本信息
      */

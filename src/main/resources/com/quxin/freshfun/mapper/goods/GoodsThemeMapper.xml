@@ -1,13 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.quxin.freshfun.dao.GoodsTypeMapper">
-	<!--查询所有分类信息-->
-	<!--<select id="selectCategoryList" resultType="com.quxin.freshfun.model.goods.GoodsCategoryOut">
-		select id as categoryKey, goods_type as categoryName
-		from goods_type where is_deleted = 0
-	</select>-->
+<mapper namespace="com.quxin.freshfun.dao.GoodsThemeMapper">
 
-	<insert id="insertTest">
-		insert into user_login(user_name , `password`) values("test" , LAST_INSERT_ID()+1)
+	<!--根据专题Id查询专题实体-->
+	<select id="selectThemeByThemeId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.ThemePOJO">
+		select id as themeId , theme_name as themeName , theme_des as themeDes , img as themeImg , is_forbidden as isForbidden ,
+		goods_id_list as goodsIdList , created , updated
+		from goods_theme where id = #{themeId} and is_deleted = 0
+	</select>
+	<!--查询专题列表信息-->
+	<select id="selectThemeList" resultType="com.quxin.freshfun.model.goods.ThemePOJO">
+		select id as themeId , theme_name as themeName , theme_des as themeDes , img as themeImg , is_forbidden as isForbidden ,
+		goods_id_list as goodsIdList , created , updated
+		from goods_theme where is_deleted = 0
+	</select>
+	<!--根据专题名称查询专题数量 -->
+	<select id="selectCountByThemeName" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select count(id) from goods_theme where theme_name = #{themeName}
+	</select>
+
+	<!--新增专题信息-->
+	<insert id="insertTheme" parameterType="com.quxin.freshfun.model.goods.ThemePOJO" useGeneratedKeys="true" keyProperty="themeId">
+		insert into goods_theme(theme_name , theme_des , img , is_forbidden , goods_id_list , created , updated)
+		values(#{themeName},#{themeDes},#{themeImg},#{isForbidden},#{goodsIdList},#{created},#{updated})
 	</insert>
+	<!-- 编辑专题信息 OR 启用禁用-->
+	<update id="updateTheme" parameterType="com.quxin.freshfun.model.goods.ThemePOJO">
+		update goods_theme
+		<set>
+			id = #{themeId},
+			<if test="themeName != null">theme_name = #{themeName}, </if>
+			<if test="themeDes != null">theme_des = #{themeDes}, </if>
+			<if test="themeImg != null">img = #{themeImg},</if>
+			<if test="isForbidden != null">is_forbidden = #{isForbidden}, </if>
+			<if test="goodsIdList != null">goods_id_list = #{goodsIdList},</if>
+			<if test="updated != null">updated = #{updated},</if>
+		</set>
+		where id = #{themeId}
+	</update>
+	<!--删除专题-->
+	<update id="deleteThemeByThemeId" parameterType="java.lang.Long" >
+		update goods_theme set is_deleted = 1 where id = #{themeId}
+	</update>
 </mapper>

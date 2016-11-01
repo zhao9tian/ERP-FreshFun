@@ -2,6 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quxin.freshfun.dao.GoodsSortMapper">
 
+
+	<!--查询属性 K-V -->
+	<select id="selectGoodsPropertyValue" parameterType="java.lang.String" resultType="java.lang.String">
+		select `value` from goods_property where `key` = #{key}
+	</select>
+	<!--插入属性 K-V -->
+	<insert id="insertGoodsPropertyValue">
+		insert into goods_property(`key`,`value`) values(#{propertyKey},#{propertyValue})
+	</insert>
+	<!--编辑属性 K-V -->
+	<update id="updateGoodsPropertyValue">
+		update goods_property set `value` = #{propertyValue} where `key` = #{propertyKey}
+	</update>
+
+
+
+
+
+
+
+
+
+
+
+
 	<!--根据商品Id查询商品信息-->
 	<select id="selectGoodsPOJOById" parameterType="java.lang.Integer" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
 		select id , goods_name as goodsName , goods_img as goodsImg , shop_price as goodsShopPrice , goods_cost as goodsCost

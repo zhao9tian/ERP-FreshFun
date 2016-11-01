@@ -10,7 +10,7 @@ public class BannerOut {
 
     private String themeName;
 
-    private String bannerImg;
+    private String img;
 
     private String url;
 
@@ -30,12 +30,12 @@ public class BannerOut {
         this.themeName = themeName;
     }
 
-    public String getBannerImg() {
-        return bannerImg;
+    public String getImg() {
+        return img;
     }
 
-    public void setBannerImg(String bannerImg) {
-        this.bannerImg = bannerImg;
+    public void setImg(String img) {
+        this.img = img;
     }
 
     public String getUrl() {
@@ -51,7 +51,7 @@ public class BannerOut {
         return "BannerOut{" +
                 "themeId='" + themeId + '\'' +
                 ", themeName='" + themeName + '\'' +
-                ", bannerImg='" + bannerImg + '\'' +
+                ", img='" + img + '\'' +
                 ", url='" + url + '\'' +
                 '}';
     }
