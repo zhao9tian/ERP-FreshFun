@@ -39,6 +39,8 @@ public class GoodsController {
     @Autowired
     private GoodsSortService goodsSortService;
 
+    private static DecimalFormat df = new DecimalFormat("0.00");
+
     /**
      * 保存商品信息 -- 编辑
      *
@@ -79,9 +81,9 @@ public class GoodsController {
      * @param queryCondition 查询条件
      * @return 返回查询结果
      */
-    @RequestMapping(value = "/queryGoodsList", method = RequestMethod.GET)
+    @RequestMapping(value = "/goodsList", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> queryGoodsList(@RequestBody Map<String, Object> queryCondition) {
+    public Map<String, Object> queryGoodsList(Map<String, Object> queryCondition) {
         Map<String, Object> result;
         List<GoodsPOJO> goods = goodsService.queryAllGoods(queryCondition);
         List<GoodsBaseOut> goodsBases = new ArrayList<>();
@@ -91,8 +93,8 @@ public class GoodsController {
                 GoodsBaseOut goodsBase = new GoodsBaseOut();
                 goodsBase.setGoodsId(goodsPOJO.getGoodsId());
                 goodsBase.setImg(goodsPOJO.getGoodsImg());
-                goodsBase.setShopPrice(goodsPOJO.getShopPrice());
-                goodsBase.setOriginPrice(goodsPOJO.getOriginPrice());
+                goodsBase.setShopPrice(df.format(((double)goodsPOJO.getShopPrice())/100));
+                goodsBase.setOriginPrice(df.format(((double)goodsPOJO.getOriginPrice())/100));
                 goodsBase.setTitle(goodsPOJO.getTitle());
                 goodsBase.setCreateTime(goodsPOJO.getCreated());
                 goodsBase.setIsOnSale(goodsPOJO.getIsOnSale());
@@ -338,7 +340,6 @@ public class GoodsController {
         basicInfo.put("title", goods.getTitle());
         basicInfo.put("subTitle", goods.getSubtitle());
         basicInfo.put("authorString", goods.getGoodsDes());
-        DecimalFormat df = new DecimalFormat("0.00");
         basicInfo.put("sellPrice", df.format(((double)goods.getShopPrice())/100));//价格要除以100
         basicInfo.put("originalPrice", df.format(((double)goods.getOriginPrice())/100));//价格要除以100
         basicInfo.put("costPrice", df.format(((double)goods.getGoodsCost())/100));//价格要除以100

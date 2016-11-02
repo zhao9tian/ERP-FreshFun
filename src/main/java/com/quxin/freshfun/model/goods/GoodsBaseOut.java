@@ -16,11 +16,11 @@ public class GoodsBaseOut {
     /**
      * 商品单价
      */
-    private Integer shopPrice;
+    private String shopPrice;
     /**
      * 原价
      */
-    private Integer originPrice;
+    private String originPrice;
     /**
      * 销量
      */
@@ -62,19 +62,19 @@ public class GoodsBaseOut {
         this.img = img;
     }
 
-    public Integer getShopPrice() {
+    public String getShopPrice() {
         return shopPrice;
     }
 
-    public void setShopPrice(Integer shopPrice) {
+    public void setShopPrice(String shopPrice) {
         this.shopPrice = shopPrice;
     }
 
-    public Integer getOriginPrice() {
+    public String getOriginPrice() {
         return originPrice;
     }
 
-    public void setOriginPrice(Integer originPrice) {
+    public void setOriginPrice(String originPrice) {
         this.originPrice = originPrice;
     }
 
