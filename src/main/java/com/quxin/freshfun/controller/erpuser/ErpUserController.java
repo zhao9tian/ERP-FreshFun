@@ -91,6 +91,12 @@ public class ErpUserController {
         }
     }
 
+    /**
+     * 用户授权
+     * @param userId 用户id
+     * @param roles 角色id，多个逗号隔开
+     * @return 结果
+     */
     @RequestMapping("/authority")
     @ResponseBody
     public Map<String,Object> authority(String userId,String roles){
@@ -111,7 +117,7 @@ public class ErpUserController {
             erpUserJuris.setRoleId(Long.parseLong(role));
             erpUserJurisdictionService.addErpUserJuris(erpUserJuris);
         }
-        return null;
+        return ResultUtil.success("授权成功");
     }
 
 }
