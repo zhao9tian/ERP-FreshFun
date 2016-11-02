@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quxin.freshfun.dao.ErpMenuMapper" >
+    <insert id="insertErpMenu" parameterType="com.quxin.freshfun.model.erpuser.ErpMenuPOJO">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into erp_menu (menu_id,menu_name,menu_url,menu_des,is_usable,created,updated,is_deleted)
+        values(0,#{menuName},#{menuUrl},#{menuDes},0,#{created},#{updated},0)
+    </insert>
+
+    <update id="updateErpMenuIdById" parameterType="java.lang.Long">
+        update erp_menu set menu_id=#{id} where id=#{id}
+    </update>
+
+    <select id="selectErpMenu" resultType="com.quxin.freshfun.model.erpuser.ErpMenuPOJO">
+        select menu_id as menuId,menu_name as menuName,menu_url as menuUrl,menu_des as menuDes,is_usable as isUsable,created,updated from erp_menu where is_deleted =0
+    </select>
+
+    <update id="updateErpMenuByMenuId" parameterType="java.util.Map">
+        update erp_menu
+        <set>
+            <if test="menuName!=null">
+                menu_name = #{menuName},
+            </if>
+            <if test="menuUrl!=null">
+                menu_url = #{menuUrl},
+            </if>
+            <if test="menuDes!=null">
+                menu_des = #{menuDes},
+            </if>
+        </set>
+        updated=#{updated} where menu_id=#{menuId}
+    </update>
+</mapper>

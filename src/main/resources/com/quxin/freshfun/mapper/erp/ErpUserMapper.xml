@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quxin.freshfun.dao.ErpUserMapper" >
+
+    <!--根据userId查询用户信息-->
+    <select id="selectErpUserByUserId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.erpuser.ErpUserPOJO">
+        select user_id as userId,user_account as userAccount,user_name as userName,user_head_img as userHeadImg,
+        user_email as userEmail,user_app_id as userAppId,user_phone_number as userPhoneNumber,
+        created,updated from erp_user where
+        user_id = #{userId} and is_deleted=0
+    </select>
+
+    <!--根据帐号查询用户信息-->
+    <select id="selectErpUserByAccount" parameterType="java.lang.String" resultType="com.quxin.freshfun.model.erpuser.ErpUserPOJO">
+        select user_id as userId,user_account as userAccount,user_password as userPassword,user_name as userName,user_head_img as userHeadImg,
+        user_email as userEmail,user_app_id as userAppId,user_phone_number as userPhoneNumber,
+        created,updated from erp_user where
+        user_account = #{userAccount} and is_deleted=0
+    </select>
+
+    <!--根据appid查询用户信息-->
+    <select id="selectErpUserByAppId" parameterType="java.lang.String" resultType="com.quxin.freshfun.model.erpuser.ErpUserPOJO">
+        select user_id as userId,user_account as userAccount,user_password as userPassword,user_name as userName,user_head_img as userHeadImg,
+        user_email as userEmail,user_app_id as userAppId,user_phone_number as userPhoneNumber,
+        created,updated from erp_user where
+        user_app_id = #{userAppId} and is_deleted=0
+    </select>
+
+    <update id="updateErpUserByUserId" parameterType="java.util.Map">
+        update erp_user
+        <set>
+            <if test="userPassword!=null">
+                user_password = #{userPassword},
+            </if>
+            <if test="userName!=null">
+                user_name = #{userName},
+            </if>
+            <if test="userHeadImg!=null">
+                user_head_img = #{userHeadImg},
+            </if>
+            <if test="userEmail!=null">
+                user_email = #{userEmail},
+            </if>
+            <if test="userPhoneNumber!=null">
+                user_phone_number = #{userPhoneNumber},
+            </if>
+        </set>
+        updated=#{updated} where user_id=#{userId}
+    </update>
+
+    <update id="updateErpUserIdById" parameterType="java.lang.Long">
+        update erp_user set user_id=#{id} where id=#{id}
+    </update>
+
+    <insert id="insertErpUser" parameterType="com.quxin.freshfun.model.erpuser.ErpUserPOJO">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into erp_user (user_id,user_account,user_password,user_name,user_head_img,user_app_id,user_phone_number,user_email,created,updated,is_deleted)
+        values(0,#{userAccount},#{userPassword},#{userName},#{userHeadImg},#{userAppId},#{userPhoneNumber},#{userEmail},#{created},#{updated},0)
+    </insert>
+
+</mapper>

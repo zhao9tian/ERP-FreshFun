@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quxin.freshfun.dao.ErpRoleMapper" >
+    <insert id="insertErpRole" parameterType="com.quxin.freshfun.model.erpuser.ErpRolePOJO">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into erp_role (role_id,role_name,role_des,is_usable,created,updated,is_deleted)
+        values(0,#{roleName},#{roleDes},0,#{created},#{updated},0)
+    </insert>
+
+    <update id="updateErpRoleIdById" parameterType="java.lang.Long">
+        update erp_role set role_id=#{id} where id=#{id}
+    </update>
+
+    <select id="selectErpRole" resultType="com.quxin.freshfun.model.erpuser.ErpRolePOJO">
+        select role_id as roleId,role_name as roleName,role_des as roleDes,is_usable as isUsable,created,updated from erp_role where is_deleted =0
+    </select>
+</mapper>
