@@ -44,6 +44,10 @@
     <select id="selectGoodsImgByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
         select  detail_img as detailImg, carousel_img as carouselImg from goods_img where goods_id = #{goodsId}
     </select>
+    <!--查询商品所有的图片信息-->
+    <select id="selectGoodsImgs" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
+        select goods_id as goodsId , detail_img as detailImg, carousel_img as carouselImg from goods_img
+    </select>
 	<!--根据商品Id查询商品规格-->
 	<select id="selectGoodsStandardByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsStandardPOJO">
 		select id , goods_id as goodsId ,`name` as `name` ,brand as brand ,product_place as productPlace, goods_standard as goodsStandard, net_contents as netContents,

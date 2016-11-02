@@ -5,8 +5,7 @@ import com.quxin.freshfun.controller.goods.GoodsController;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
 import com.quxin.freshfun.service.goods.GoodsService;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,6 +85,10 @@ public class GoodsTest extends TestBase {
     }
 
 
+    @org.junit.Test
+    public void changePic(){
+        System.out.println(goodsService.changeGoodsImgs());
+    }
 
 
 
@@ -105,8 +108,8 @@ public class GoodsTest extends TestBase {
 
         private GoodsPOJO createGoods(){
         GoodsPOJO goodsPOJO = new GoodsPOJO();
-        goodsPOJO.setGoodsId(28L);
-        goodsPOJO.setTitle("阿玛尼111");
+        goodsPOJO.setGoodsId(2071281L);
+        goodsPOJO.setTitle("阿玛尼11a11");
         goodsPOJO.setSubtitle("淘宝上的阿玛尼1");
         goodsPOJO.setOriginPrice(30000001);
         goodsPOJO.setShopPrice(3000001);
@@ -150,6 +153,7 @@ public class GoodsTest extends TestBase {
                 "11","12","13","14","15","116","17","18");
         return goodsStandardPOJO;
     }
+
 
 
 }

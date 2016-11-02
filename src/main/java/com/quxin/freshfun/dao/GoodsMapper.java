@@ -103,4 +103,9 @@ public interface GoodsMapper {
      */
     List<GoodsPOJO> selectGoodsList(Map<String, Object> queryCondition);
 
+    /**
+     * 查询图片信息
+     * @return
+     */
+    List<GoodsPOJO> selectGoodsImgs();
 }

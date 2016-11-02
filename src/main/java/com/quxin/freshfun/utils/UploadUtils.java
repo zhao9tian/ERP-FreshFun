@@ -25,17 +25,21 @@ public class UploadUtils {
         Iterator<String> iter = multiRequest.getFileNames();
         while (iter.hasNext()) {
             MultipartFile file = multiRequest.getFile(iter.next());
-            if (!"".equals(file.getOriginalFilename())) {
-                if (filterFileType(file.getOriginalFilename())) {
-                    String picName = file.getOriginalFilename();
-                    String editFileName = System.currentTimeMillis() + picName.substring(picName.lastIndexOf("."));
-                    String path = createDirs() + "/" + editFileName;
-                    imgPath = OSSUtils.uploadPic(file.getInputStream(), path);
-                    break;
-                } else {
-                    return null;
+            System.out.println(file.getSize());
+            if(file.getSize() < 307200){
+                if (!"".equals(file.getOriginalFilename())) {
+                    if (filterFileType(file.getOriginalFilename())) {
+                        String picName = file.getOriginalFilename();
+                        String editFileName = System.currentTimeMillis() + picName.substring(picName.lastIndexOf("."));
+                        String path = createDirs() + "/" + editFileName;
+                        imgPath ="http://pic1.freshfun365.com/"+OSSUtils.uploadPic(file.getInputStream(), path);
+                        break;
+                    } else {
+                        return null;
+                    }
                 }
-            }
+            }else
+                return null;
         }
         return imgPath;
     }

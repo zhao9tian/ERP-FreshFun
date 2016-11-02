@@ -78,13 +78,31 @@ public class GoodsController {
     /**
      * 返回列表信息
      *
-     * @param queryCondition 查询条件
      * @return 返回查询结果
      */
     @RequestMapping(value = "/goodsList", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> queryGoodsList(Map<String, Object> queryCondition) {
+    public Map<String, Object> queryGoodsList(String subTitle , Integer catagory2 ,Integer isOnSale , Integer currentPage ,Integer pageSize ,Integer orderByCreate) {
         Map<String, Object> result;
+        Map<String, Object> queryCondition = new HashMap<>();
+        if(subTitle != null){
+            queryCondition.put("subTitle" ,subTitle);
+        }
+        if(catagory2 != null){
+            queryCondition.put("catagory2" ,catagory2);
+        }
+        if(isOnSale != null){
+            queryCondition.put("isOnSale" ,isOnSale);
+        }
+        if(currentPage != null){
+            queryCondition.put("currentPage" ,currentPage);
+        }
+        if(pageSize != null){
+            queryCondition.put("pageSize" ,pageSize);
+        }
+        if(orderByCreate != null){
+            queryCondition.put("orderByCreate" ,orderByCreate);
+        }
         List<GoodsPOJO> goods = goodsService.queryAllGoods(queryCondition);
         List<GoodsBaseOut> goodsBases = new ArrayList<>();
         if (goods != null) {
@@ -228,11 +246,13 @@ public class GoodsController {
     public Map<String, Object> queryGoodsStandard() {
         Map<String, Object> result;
         List<GoodsStandardKV> data = goodsSortService.queryStandardKeyValue();
+        Map<String , Object> goodsStandardMap = new HashMap<>();
+        goodsStandardMap.put("goodsStandard" , data);
         if (data == null || data.size() == 0) {
             logger.warn("没有规格属性");
             return ResultUtil.fail(1004, "没有规格属性");
         }
-        result = ResultUtil.success(data);
+        result = ResultUtil.success(goodsStandardMap);
         return result;
     }
 

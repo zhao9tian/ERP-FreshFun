@@ -152,7 +152,7 @@ public class GoodsServiceImpl implements GoodsService {
                 if (num == 1) {
                     return true;
                 } else {
-                    logger.error("C端上下架失败");
+                    logger.error("商品不存在，C端上下架失败");
                 }
             }
         } else {
@@ -203,6 +203,31 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public Boolean changeGoodsImgs() {
+        List<GoodsPOJO> goodsImgs = goodsMapper.selectGoodsImgs();
+        String prefix = "http://pic1.freshfun365.com";
+        for(GoodsPOJO goods : goodsImgs){
+            List<String> details = new ArrayList<>();
+            List<String> carousels = new ArrayList<>();
+            String[] detailArr = goods.getDetailImg().split(",");
+            String[] carouselArr = goods.getCarouselImg().split(",");
+            GoodsPOJO goodsImg = new GoodsPOJO();
+            for(String detail : detailArr){
+                details.add(prefix+detail);
+            }
+            for(String carousel : carouselArr){
+                carousels.add(prefix + carousel);
+            }
+            goodsImg.setGoodsId(goods.getGoodsId());
+            goodsImg.setDetailImg(JSON.toJSONString(details));
+            goodsImg.setCarouselImg(JSON.toJSONString(carousels));
+            goodsMapper.updateGoodsImg(goodsImg);
+        }
+        return false;
+    }
+
+
+    @Override
     public List<GoodsPOJO> queryAllGoods(Map<String, Object> queryCondition) {
         Map<String , Integer> pagingInfo = queryPagingInfo(queryCondition);
         if(pagingInfo == null){
@@ -235,7 +260,7 @@ public class GoodsServiceImpl implements GoodsService {
             try {
                 String subtitle = (String) queryCondition.get("subTitle");
                 Integer catagory2 = (Integer) queryCondition.get("catagory2");
-                Integer isOnSale = (Integer) queryCondition.get("isOnSale");
+                Integer isOnSale = (Integer) queryCondition.get("isOnSale");// 0:所有 1:上架 2:下架
                 currentPage = (Integer) queryCondition.get("currentPage");
                 pageSize = (Integer) queryCondition.get("pageSize");
                 if (subtitle != null && !"".equals(subtitle.trim())) {
@@ -244,8 +269,13 @@ public class GoodsServiceImpl implements GoodsService {
                 if (catagory2 != null) {
                     countQC.put("catagory2", catagory2);
                 }
-                if (isOnSale != null) {
-                    countQC.put("isOnSale", isOnSale);
+                if (isOnSale != null && isOnSale > 0) {
+                    if(isOnSale == 1){
+                        countQC.put("isOnSale", 1);
+                    }
+                    if(isOnSale == 2){
+                        countQC.put("isOnSale", 0);
+                    }
                 }
             }catch (ClassCastException e){
                 logger.error("查询条件输入有误");
@@ -268,6 +298,7 @@ public class GoodsServiceImpl implements GoodsService {
         pagingInfo.put("currentPage" , currentPage);
         return pagingInfo;
     }
+
 
 
     /**

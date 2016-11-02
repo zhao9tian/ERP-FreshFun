@@ -1,6 +1,7 @@
 package com.quxin.freshfun.service.goods;
 
 import com.quxin.freshfun.model.goods.GoodsPOJO;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.List;
 import java.util.Map;
@@ -76,4 +77,11 @@ public interface GoodsService {
      * @return 商品名称是否存在
      */
     Boolean isExistTitle(String title);
+
+    /**
+     * 查询多图片信息用于迁数据
+     * @return 图片信息
+     */
+    Boolean changeGoodsImgs();
+
 }
