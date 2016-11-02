@@ -69,4 +69,11 @@ public interface GoodsService {
      * @return 是否成功
      */
     Boolean goodsToTheme(Long goodsId , Long themeId );
+
+    /**
+     * 商品标题是否重复
+     * @param title 商品标题
+     * @return 商品名称是否存在
+     */
+    Boolean isExistTitle(String title);
 }

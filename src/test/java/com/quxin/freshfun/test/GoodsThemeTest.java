@@ -103,7 +103,7 @@ public class GoodsThemeTest extends TestBase{
         themeIds.add(1L);
         themeIds.add(2L);
         param.put("themeSort" , themeIds);
-        System.out.println(goodsThemeController.saveThemeSort(param));
+//        System.out.println(goodsThemeController.saveThemeSort(param));
     }
 
     @Test

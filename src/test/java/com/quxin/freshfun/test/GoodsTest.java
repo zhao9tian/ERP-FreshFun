@@ -1,11 +1,16 @@
 package com.quxin.freshfun.test;
 
+import com.alibaba.fastjson.JSON;
+import com.quxin.freshfun.controller.goods.GoodsController;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
 import com.quxin.freshfun.service.goods.GoodsService;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,12 +20,12 @@ import java.util.Map;
 public class GoodsTest extends TestBase {
 
 
-//    private GoodsController goodsController;
+    private GoodsController goodsController;
     private GoodsService goodsService;
 
     @Before
     public void setUp() throws Exception {
-//        goodsController = getContext().getBean("goodsController", GoodsController.class);
+        goodsController = getContext().getBean("goodsController", GoodsController.class);
         goodsService = getContext().getBean("goodsService", GoodsService.class);
     }
 
@@ -53,7 +58,7 @@ public class GoodsTest extends TestBase {
         qc.put("subTitle","阿");
         qc.put("isOnSale" , 0);
         qc.put("orderByCreate",1);
-        System.out.println(goodsService.queryAllGoods(qc));
+        System.out.println(goodsService.queryAllGoods(null).size());
 
     }
 
@@ -74,10 +79,34 @@ public class GoodsTest extends TestBase {
         System.out.println(goodsService.queryGoodsByGoodsId(26L));
     }
 
-    private GoodsPOJO createGoods(){
+
+    @org.junit.Test
+    public void queryGoodsStandard(){
+        System.out.println(goodsController.queryGoodsStandard());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private GoodsPOJO createGoods(){
         GoodsPOJO goodsPOJO = new GoodsPOJO();
-        goodsPOJO.setGoodsId(9L);
-        goodsPOJO.setTitle("阿玛尼1");
+        goodsPOJO.setGoodsId(28L);
+        goodsPOJO.setTitle("阿玛尼111");
         goodsPOJO.setSubtitle("淘宝上的阿玛尼1");
         goodsPOJO.setOriginPrice(30000001);
         goodsPOJO.setShopPrice(3000001);
@@ -95,19 +124,18 @@ public class GoodsTest extends TestBase {
         goodsPOJO.setIsOnSale(1);
         goodsPOJO.setCreated(System.currentTimeMillis()/1000);
         goodsPOJO.setUpdated(System.currentTimeMillis()/1000);
-//        goodsPOJO.setDetailImg("1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/2d5b7b10-a74a-45ca-8759-5dfb953d22ed.png," +
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/540eb9df-32b0-440e-8837-7aa00a991a86.png," +
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/8c89631c-66e1-4737-8e6d-de7cdf6f44ea.png," +
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/f19101e1-2231-4bc8-b1f6-2d9a7c743f88.jpg," +
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/fbf882ee-7ec5-400b-9f1a-08e665696d63.jpg," +
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/b0dd710b-6baa-4f3c-bd65-7fd6bd8e1790.jpg"
-//        );
-//        goodsPOJO.setCarouselImg("1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/21927c1d-ba3d-44a8-bad3-9e56c75d65d7.jpg," +
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/5b8aeaa7-8ca9-4f17-963b-026a09d38513.jpg,"+
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/8c89631c-66e1-4737-8e6d-de7cdf6f44ea.png," +
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/f19101e1-2231-4bc8-b1f6-2d9a7c743f88.jpg," +
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/fbf882ee-7ec5-400b-9f1a-08e665696d63.jpg," +
-//                "1http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/b0dd710b-6baa-4f3c-bd65-7fd6bd8e1790.jpg");
+        List<String> detail = new ArrayList<>();
+        String a1 = "http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/f19101e1-2231-4bc8-b1f6-2d9a7c743f88.jpg";
+        String a2 = "http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/fbf882ee-7ec5-400b-9f1a-08e665696d63.jpg";
+        detail.add(a1);
+        detail.add(a2);
+        goodsPOJO.setDetailImg(JSON.toJSONString(detail));
+        List<String> carousel = new ArrayList<>();
+        String b1 ="http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/21927c1d-ba3d-44a8-bad3-9e56c75d65d7.jpg";
+        String b2 ="http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/5b8aeaa7-8ca9-4f17-963b-026a09d38513.jpg";
+        carousel.add(b1);
+        carousel.add(b2);
+        goodsPOJO.setCarouselImg(JSON.toJSONString(carousel));
         GoodsStandardPOJO goodsStandardPOJO = createGoodsStandard();
         goodsStandardPOJO.setGoodsId(goodsPOJO.getGoodsId());
         goodsPOJO.setGoodsStandardPOJO(goodsStandardPOJO);
@@ -117,7 +145,7 @@ public class GoodsTest extends TestBase {
     private GoodsStandardPOJO createGoodsStandard(){
         GoodsStandardPOJO goodsStandardPOJO = new GoodsStandardPOJO(
                 "爱马仕1","12","13","14","15","16","17","18","19","110",
-                "11","12","13","114","115","16","17","18","19","110",
+                "11","12","13","114","1","115","16","17","18","19","110",
                 "11","11","11","11","111","111","11","11","19","110",
                 "11","12","13","14","15","116","17","18");
         return goodsStandardPOJO;

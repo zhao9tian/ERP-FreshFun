@@ -96,14 +96,19 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Boolean modifyGoods(GoodsPOJO goodsPOJO) {
         if (goodsPOJO.getGoodsId() != null && goodsPOJO.getGoodsId() != 0) {
-            goodsPOJO.setUpdated(System.currentTimeMillis()/1000);
-            Integer baseRecord = goodsMapper.updateGoods(goodsPOJO);
-            Integer imgRecord = goodsMapper.updateGoodsImg(goodsPOJO);
-            Integer standardRecord = goodsMapper.updateGoodsStandard(goodsPOJO.getGoodsStandardPOJO());
-            if (baseRecord == 1 && imgRecord == 1 && standardRecord == 1) {
-                return true;
-            } else {
-                logger.error("修改商品信息失败");
+            if(validateParam(goodsPOJO)){
+                goodsPOJO.setUpdated(System.currentTimeMillis()/1000);
+                Integer baseRecord = goodsMapper.updateGoods(goodsPOJO);
+                Integer imgRecord = goodsMapper.updateGoodsImg(goodsPOJO);
+                Integer standardRecord = goodsMapper.updateGoodsStandard(goodsPOJO.getGoodsStandardPOJO());
+                if (baseRecord == 1 && imgRecord == 1 && standardRecord == 1) {
+                    return true;
+                } else {
+                    logger.error("修改商品信息失败");
+                }
+
+            }else{
+                logger.error("商品参数校验不通过");
             }
         } else {
             logger.error("商品Id不能为空");
@@ -192,8 +197,17 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public Boolean isExistTitle(String title) {
+        Integer record = goodsMapper.selectCountByGoodsName(title);
+        return record > 0;
+    }
+
+    @Override
     public List<GoodsPOJO> queryAllGoods(Map<String, Object> queryCondition) {
         Map<String , Integer> pagingInfo = queryPagingInfo(queryCondition);
+        if(pagingInfo == null){
+            return null;
+        }
         Integer start = pagingInfo.get("start");
         Integer pageSize = pagingInfo.get("pageSize");
         if(queryCondition == null ){
@@ -218,19 +232,24 @@ public class GoodsServiceImpl implements GoodsService {
         Integer currentPage = null;
         Integer pageSize = null;
         if(queryCondition != null){
-            String subtitle = (String) queryCondition.get("subTitle");
-            Integer catagory2 = (Integer) queryCondition.get("catagory2");
-            Integer isOnSale = (Integer) queryCondition.get("isOnSale");
-            currentPage = (Integer) queryCondition.get("currentPage");
-            pageSize = (Integer) queryCondition.get("pageSize");
-            if(subtitle != null && !"".equals(subtitle.trim())){
-                countQC.put("subTitle",subtitle);
-            }
-            if(catagory2 != null){
-                countQC.put("catagory2",catagory2);
-            }
-            if(isOnSale != null){
-                countQC.put("isOnSale" , isOnSale);
+            try {
+                String subtitle = (String) queryCondition.get("subTitle");
+                Integer catagory2 = (Integer) queryCondition.get("catagory2");
+                Integer isOnSale = (Integer) queryCondition.get("isOnSale");
+                currentPage = (Integer) queryCondition.get("currentPage");
+                pageSize = (Integer) queryCondition.get("pageSize");
+                if (subtitle != null && !"".equals(subtitle.trim())) {
+                    countQC.put("subTitle", subtitle);
+                }
+                if (catagory2 != null) {
+                    countQC.put("catagory2", catagory2);
+                }
+                if (isOnSale != null) {
+                    countQC.put("isOnSale", isOnSale);
+                }
+            }catch (ClassCastException e){
+                logger.error("查询条件输入有误");
+                return null;
             }
         }
         Integer recordCount = goodsMapper.selectCountByQC(countQC);
@@ -289,6 +308,13 @@ public class GoodsServiceImpl implements GoodsService {
             if(goodsPOJO.getTitle() == null || "".equals(goodsPOJO.getTitle().trim())){
                 logger.warn("标题为空");
                 return false ;
+            }else{
+                if(goodsPOJO.getGoodsId() == null){
+                    if(isExistTitle(goodsPOJO.getTitle())){
+                        logger.warn("标题已存在");
+                        return false ;
+                    }
+                }
             }
             if(goodsPOJO.getSubtitle() == null || "".equals(goodsPOJO.getSubtitle().trim())){
                 logger.warn("副标题为空");
@@ -299,11 +325,11 @@ public class GoodsServiceImpl implements GoodsService {
                 return false ;
             }
             if(goodsPOJO.getCarouselImg() == null || "".equals(goodsPOJO.getCarouselImg().trim())){
-                logger.warn("轮播图为空");
+                logger.warn("商品轮播图为空");
                 return false ;
             }
             if(goodsPOJO.getDetailImg() == null || "".equals(goodsPOJO.getDetailImg().trim())){
-                logger.warn("详情图为空");
+                logger.warn("商品详情图为空");
                 return false ;
             }
             if(goodsPOJO.getGoodsCost() == null || goodsPOJO.getGoodsCost()==0){
@@ -332,5 +358,6 @@ public class GoodsServiceImpl implements GoodsService {
         }
         return true;
     }
+
 
 }

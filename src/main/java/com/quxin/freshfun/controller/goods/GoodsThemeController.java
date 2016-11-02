@@ -246,22 +246,33 @@ public class GoodsThemeController {
      * @return 请求结果
      */
     @RequestMapping(value = "addThemeSort", method = RequestMethod.POST)
-    public Map<String, Object> saveThemeSort(@RequestBody Map<String, List<Long>> themeSort) {
+    @ResponseBody
+    public Map<String, Object> saveThemeSort(@RequestBody Map<String, List<Integer>> themeSort) {
         Map<String, Object> result = new HashMap<>();
         if (themeSort != null && themeSort.size() != 0) {
-            List<Long> themeSortList = themeSort.get("themeSort");
-            if (themeSortList != null && themeSortList.size() > 0) {
-                if (goodsSortService.addThemeSort(themeSortList)) {
-                    Map<String, Object> status = new HashMap<>();
-                    status.put("code", 1001);
-                    status.put("msg", "请求成功");
-                    result.put("status", status);
-                } else {
-                    result = ResultUtil.fail(1004, "排序对象保存失败");
+            try{
+                List<Integer> themeSortParam = themeSort.get("themeSort");
+                List<Long> themeSortList = new ArrayList<>();
+                for(Integer themeId : themeSortParam){
+                    Long themeIdLong = Long.valueOf(themeId);
+                    themeSortList.add(themeIdLong);
                 }
-            } else {
-                logger.error("排序对象为空");
-                result = ResultUtil.fail(1004, "排序对象为空");
+                if (themeSortList.size() > 0) {
+                    if (goodsSortService.addThemeSort(themeSortList)) {
+                        Map<String, Object> status = new HashMap<>();
+                        status.put("code", 1001);
+                        status.put("msg", "请求成功");
+                        result.put("status", status);
+                    } else {
+                        result = ResultUtil.fail(1004, "排序对象保存失败");
+                    }
+                } else {
+                    logger.error("排序对象为空");
+                    result = ResultUtil.fail(1004, "排序对象为空");
+                }
+            }catch (ClassCastException e){
+                logger.error("专题Id格式有误" , e);
+                return ResultUtil.fail(1004 , "专题Id格式有误");
             }
         } else {
             logger.error("排序参数为空");

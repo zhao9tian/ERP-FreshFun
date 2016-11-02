@@ -112,6 +112,10 @@ public class GoodsStandardPOJO {
      */
     private String proof;
     /**
+     * 度数
+     */
+    private String degree;
+    /**
      * 适应场景
      */
     private String adaptiveScene;
@@ -484,6 +488,14 @@ public class GoodsStandardPOJO {
         this.other = other;
     }
 
+    public String getDegree() {
+        return degree;
+    }
+
+    public void setDegree(String degree) {
+        this.degree = degree;
+    }
+
     @Override
     public String toString() {
         return "GoodsStandardPOJO{" +
@@ -497,10 +509,10 @@ public class GoodsStandardPOJO {
                 ", shelfLife='" + shelfLife + '\'' +
                 ", storageMethod='" + storageMethod + '\'' +
                 ", ingredientList='" + ingredientList + '\'' +
-                ", isSugary=" + isSugary +
-                ", isOrganic=" + isOrganic +
-                ", isImported=" + isImported +
-                ", isBoxPacked=" + isBoxPacked +
+                ", isSugary='" + isSugary + '\'' +
+                ", isOrganic='" + isOrganic + '\'' +
+                ", isImported='" + isImported + '\'' +
+                ", isBoxPacked='" + isBoxPacked + '\'' +
                 ", packageComponent='" + packageComponent + '\'' +
                 ", taste='" + taste + '\'' +
                 ", facility='" + facility + '\'' +
@@ -514,6 +526,7 @@ public class GoodsStandardPOJO {
                 ", productStandardNum='" + productStandardNum + '\'' +
                 ", freshStoreTemp='" + freshStoreTemp + '\'' +
                 ", proof='" + proof + '\'' +
+                ", degree='" + degree + '\'' +
                 ", adaptiveScene='" + adaptiveScene + '\'' +
                 ", packingMethod='" + packingMethod + '\'' +
                 ", packingType='" + packingType + '\'' +
@@ -530,7 +543,7 @@ public class GoodsStandardPOJO {
                 '}';
     }
 
-    public GoodsStandardPOJO(String name, String brand, String productPlace, String goodsStandard, String netContents, String shelfLife, String storageMethod, String ingredientList, String isSugary, String isOrganic, String isImported, String isBoxPacked, String packageComponent, String taste, String facility, String unsuitable, String suitable, String productForm, String foodAdditives, String setCycle, String factoryName, String factorySite, String productStandardNum, String freshStoreTemp, String proof, String adaptiveScene, String packingMethod, String packingType, String wineStyle, String suitSpecification, String decanteDuration, String particularYear, String smell, String colourSort, String styleType, String size, String specialty, String other) {
+    public GoodsStandardPOJO(String name, String brand, String productPlace, String goodsStandard, String netContents, String shelfLife, String storageMethod, String ingredientList, String isSugary, String isOrganic, String isImported, String isBoxPacked, String packageComponent, String taste, String facility, String unsuitable, String suitable, String productForm, String foodAdditives, String setCycle, String factoryName, String factorySite, String productStandardNum, String freshStoreTemp, String proof, String degree, String adaptiveScene, String packingMethod, String packingType, String wineStyle, String suitSpecification, String decanteDuration, String particularYear, String smell, String colourSort, String styleType, String size, String specialty, String other) {
         this.name = name;
         this.brand = brand;
         this.productPlace = productPlace;
@@ -556,6 +569,7 @@ public class GoodsStandardPOJO {
         this.productStandardNum = productStandardNum;
         this.freshStoreTemp = freshStoreTemp;
         this.proof = proof;
+        this.degree = degree;
         this.adaptiveScene = adaptiveScene;
         this.packingMethod = packingMethod;
         this.packingType = packingType;
@@ -571,6 +585,5 @@ public class GoodsStandardPOJO {
         this.other = other;
     }
 
-    public GoodsStandardPOJO() {
-    }
+    public GoodsStandardPOJO(){}
 }

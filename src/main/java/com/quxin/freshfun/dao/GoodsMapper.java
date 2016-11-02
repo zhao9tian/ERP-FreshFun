@@ -40,6 +40,14 @@ public interface GoodsMapper {
     GoodsStandardPOJO selectGoodsStandardByGoodsId(Long goodsId);
 
     /**
+     * 校验商品名称重复
+     * @param title 商品名称
+     * @return 数量
+     */
+    Integer selectCountByGoodsName(String title);
+
+
+    /**
      * 插入商品基本信息
      * @param goodsPOJO 商品所有信息 ,只保存基本信息
      * @return 返回插入记录数

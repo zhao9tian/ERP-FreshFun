@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.quxin.freshfun.constant.GoodsConstant;
 import com.quxin.freshfun.dao.GoodsSortMapper;
-import com.quxin.freshfun.model.goods.BannerPOJO;
-import com.quxin.freshfun.model.goods.GoodsPOJO;
-import com.quxin.freshfun.model.goods.GoodsSelectionPOJO;
-import com.quxin.freshfun.model.goods.ThemePOJO;
+import com.quxin.freshfun.model.goods.*;
 import com.quxin.freshfun.service.goods.GoodsService;
 import com.quxin.freshfun.service.goods.GoodsSortService;
 import com.quxin.freshfun.service.goods.GoodsThemeService;
@@ -38,7 +35,6 @@ public class GoodsSortServiceImpl implements GoodsSortService {
 
     @Override
     public List<GoodsPOJO> querySortGoods() {
-//        String sortValue = goodsSortMapper.selectPictureWall(GoodsConstant.PICTURE_WALL);
         String sortValue = goodsSortMapper.selectGoodsPropertyValue(GoodsConstant.GOODS_SORT_KEY);
         if (sortValue == null || "".equals(sortValue)) {
             return null;
@@ -167,7 +163,6 @@ public class GoodsSortServiceImpl implements GoodsSortService {
                 return false;
             }
             for (Map<String, Object> selection : selectionSort) {
-                //TODO 需要在controller层把所有的Id转为Long
                 try {
                     Long goodsId = (Long) selection.get(GoodsConstant.SELECTION_GOODSID_KEY);
                     GoodsPOJO goods = goodsService.queryGoodsByGoodsId(goodsId);
@@ -221,17 +216,18 @@ public class GoodsSortServiceImpl implements GoodsSortService {
     public Boolean addBannerSort(List<Map<String, Object>> bannerSort) {
         //校验入参 null 去重 是否存在
         if (bannerSort != null && bannerSort.size() > 0) {
-            Set<Map<String, Object>> set = new HashSet<>(bannerSort);
-            if (set.size() != bannerSort.size()) {
-                logger.error("banner入参重复");
-                return false;
-            }
+            List<Long> themeIds = new ArrayList<>();
             for (Map<String, Object> banner : bannerSort) {
                 Long themeId = (Long) banner.get(GoodsConstant.BANNER_THEMEID_KEY);
                 ThemePOJO theme = goodsThemeService.queryThemeByThemeId(themeId);
-                if (theme == null) {
+                if (theme == null)
                     return false;
-                }
+                themeIds.add(themeId);
+            }
+            Set<Long> set = new HashSet<>(themeIds);
+            if (set.size() != bannerSort.size()) {
+                logger.error("banner入参themeId重复");
+                return false;
             }
             String bannerSortValue = JSON.toJSONString(bannerSort);
             String bannerSortFromDB = goodsSortMapper.selectGoodsPropertyValue(GoodsConstant.BANNER_SORT_KEY);
@@ -268,6 +264,29 @@ public class GoodsSortServiceImpl implements GoodsSortService {
             logger.error("数据库没有banner排序的数据");
         }
         return bannerSort;
+    }
+
+    @Override
+    public List<GoodsStandardKV> queryStandardKeyValue() {
+        String standardFromDB = goodsSortMapper.selectGoodsPropertyValue(GoodsConstant.GOODS_STANDARD_KEY);
+        List<GoodsStandardKV> standards = new ArrayList<>();
+        if(standardFromDB!= null && !"".equals(standardFromDB)){
+            try{
+                List<Map> standardJSON = JSON.parseArray(standardFromDB , Map.class);
+                for(Map map : standardJSON){
+                    GoodsStandardKV goodsStandardKV = new GoodsStandardKV();
+                    goodsStandardKV.setKey((String) map.get("key"));
+                    goodsStandardKV.setName((String) map.get("name"));
+                    standards.add(goodsStandardKV);
+                }
+            }catch (Exception e){
+                logger.error("规格属性数据格式有误" , e);
+                return standards;
+            }
+        }else{
+            logger.warn("数据库没有规格属性数据");
+        }
+        return standards;
     }
 
 }

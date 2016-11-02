@@ -27,6 +27,11 @@
             limit #{start} , #{pageSize}
         </if>
     </select>
+    <!--商品重名校验-->
+    <select id="selectCountByGoodsName" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(id) from goods_base where title = #{title}
+    </select>
+
     <!-- 根据商品编号查询商品基本信息 -->
     <select id="selectGoodsByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
 		select id as goodsId ,title as title , sub_title as subtitle , des as goodsDes , shop_price as shopPrice ,
@@ -141,6 +146,9 @@
             </if>
             <if test="proof != null">
                 proof,
+            </if>
+            <if test="degree != null">
+                degree ,
             </if>
             <if test="adaptiveScene != null">
                 adaptive_scene,
@@ -258,6 +266,9 @@
             </if>
             <if test="proof != null">
                 #{proof},
+            </if>
+            <if test="degree != null">
+                #{degree},
             </if>
             <if test="adaptiveScene != null">
                 #{adaptiveScene},
@@ -414,6 +425,9 @@
             </if>
             <if test="proof != null">
                 proof = #{proof},
+            </if>
+            <if test="degree != null">
+                degree = #{degree},
             </if>
             <if test="adaptiveScene != null">
                 adaptive_scene = #{adaptiveScene},

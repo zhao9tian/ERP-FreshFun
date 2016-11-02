@@ -1,9 +1,6 @@
 package com.quxin.freshfun.service.goods;
 
-import com.quxin.freshfun.model.goods.BannerPOJO;
-import com.quxin.freshfun.model.goods.GoodsPOJO;
-import com.quxin.freshfun.model.goods.GoodsSelectionPOJO;
-import com.quxin.freshfun.model.goods.ThemePOJO;
+import com.quxin.freshfun.model.goods.*;
 
 import java.util.List;
 import java.util.Map;
@@ -73,5 +70,9 @@ public interface GoodsSortService {
      */
     List<BannerPOJO> queryBannerSort();
 
-
+    /**
+     * 查询商品规格属性键值对
+     * @return 商品规格属性
+     */
+    List<GoodsStandardKV> queryStandardKeyValue();
 }

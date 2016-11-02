@@ -28,6 +28,6 @@ public class GoodsConstant {
     //保存分类页图片
     public static final String TYPE_KEY = "typeImg";
     //查询规格key--value
-    public static final String GOODS_STANDARD_KEY = "goods_standard";
+    public static final String GOODS_STANDARD_KEY = "goodsStandard";
 
 }
