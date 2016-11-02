@@ -21,6 +21,11 @@ public class ErpUserServiceImpl implements ErpUserService{
     @Autowired
     private ErpUserMapper erpUserMapper;
 
+    /**
+     * 新增用户
+     * @param erpUser 用户对象
+     * @return 受影响行数
+     */
     @Override
     public Integer addErpUser(ErpUserPOJO erpUser) {
         Integer result = erpUserMapper.insertErpUser(erpUser);
@@ -30,6 +35,11 @@ public class ErpUserServiceImpl implements ErpUserService{
         return result;
     }
 
+    /**
+     * 修改用户信息
+     * @param erpUser 用户对象
+     * @return 受影响行数
+     */
     @Override
     public Integer modifyErpUser(ErpUserPOJO erpUser) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -59,6 +69,11 @@ public class ErpUserServiceImpl implements ErpUserService{
         return result;
     }
 
+    /**
+     * 根据appId查询后台用户
+     * @param appId 平台appId
+     * @return 用户列表
+     */
     @Override
     public List<ErpUserPOJO> queryErpUserByAppId(String appId) {
         if (appId == null || "".equals(appId)) {
@@ -68,6 +83,11 @@ public class ErpUserServiceImpl implements ErpUserService{
         return erpUserMapper.selectErpUserByAppId(appId);
     }
 
+    /**
+     * 用户登录查询
+     * @param account 帐号
+     * @return 用户信息
+     */
     @Override
     public ErpUserPOJO erpUserLogin(String account) {
         if(account==null||"".equals(account)){

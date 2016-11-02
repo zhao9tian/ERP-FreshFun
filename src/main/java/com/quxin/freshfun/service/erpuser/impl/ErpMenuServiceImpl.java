@@ -19,6 +19,12 @@ public class ErpMenuServiceImpl implements ErpMenuService{
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private ErpMenuMapper erpMenuMapper;
+
+    /**
+     * 新增菜单信息
+     * @param erpMenu 菜单信息
+     * @return 受影响行数
+     */
     @Override
     public Integer addErpMenu(ErpMenuPOJO erpMenu) {
         Integer result = erpMenuMapper.insertErpMenu(erpMenu);
@@ -28,6 +34,10 @@ public class ErpMenuServiceImpl implements ErpMenuService{
         return result;
     }
 
+    /**
+     * 查询菜单列表
+     * @return 菜单列表
+     */
     @Override
     public List<ErpMenuPOJO> queryErpMenu() {
         return erpMenuMapper.selectErpMenu();

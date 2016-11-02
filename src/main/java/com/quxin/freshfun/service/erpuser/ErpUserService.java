@@ -9,8 +9,18 @@ import java.util.List;
  */
 public interface ErpUserService {
 
+    /**
+     * 新增用户
+     * @param erpUser 用户对象
+     * @return 受影响行数
+     */
     Integer addErpUser(ErpUserPOJO erpUser);
 
+    /**
+     * 修改用户信息
+     * @param erpUser 用户对象
+     * @return 受影响行数
+     */
     Integer modifyErpUser(ErpUserPOJO erpUser);
 
     /**
@@ -20,5 +30,10 @@ public interface ErpUserService {
      */
     List<ErpUserPOJO> queryErpUserByAppId(String appId);
 
+    /**
+     * 用户登录查询
+     * @param account 帐号
+     * @return 用户信息
+     */
     ErpUserPOJO erpUserLogin(String account);
 }
