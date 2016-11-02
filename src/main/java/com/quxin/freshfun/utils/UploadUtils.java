@@ -9,12 +9,14 @@ import java.util.*;
 
 /**
  * 图片上传类
+ *
  * @author qucheng
  */
 public class UploadUtils {
 
     /**
      * 上传图片
+     *
      * @param request 请求
      * @return 返回上传路径
      * @throws IOException 获取图片InputStream异常
@@ -25,27 +27,28 @@ public class UploadUtils {
         Iterator<String> iter = multiRequest.getFileNames();
         while (iter.hasNext()) {
             MultipartFile file = multiRequest.getFile(iter.next());
-            System.out.println(file.getSize());
-            if(file.getSize() < 307200){
+            if (file.getSize() < 307200) {
                 if (!"".equals(file.getOriginalFilename())) {
                     if (filterFileType(file.getOriginalFilename())) {
                         String picName = file.getOriginalFilename();
                         String editFileName = System.currentTimeMillis() + picName.substring(picName.lastIndexOf("."));
                         String path = createDirs() + "/" + editFileName;
-                        imgPath ="http://pic1.freshfun365.com/"+OSSUtils.uploadPic(file.getInputStream(), path);
+                        imgPath = "http://pic1.freshfun365.com/" + OSSUtils.uploadPic(file.getInputStream(), path);
                         break;
                     } else {
                         return null;
                     }
                 }
-            }else
+            } else {
                 return null;
+            }
         }
         return imgPath;
     }
 
     /**
      * 生成文件保存目录
+     *
      * @return 图片相对项目的路径
      */
     private static String createDirs() {
@@ -58,13 +61,14 @@ public class UploadUtils {
 
     /**
      * 过滤上传的文件的类型
+     *
      * @param originalFilename 带后缀的文件名
      * @return 是否是图片格式
      */
     private static Boolean filterFileType(String originalFilename) {
         Boolean bool = false;
         if (originalFilename != null && !"".equals(originalFilename)) {
-            if(originalFilename.lastIndexOf(".") != -1){
+            if (originalFilename.lastIndexOf(".") != -1) {
                 String contentType = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
                 List<String> fileTypes = new ArrayList<>();
                 fileTypes.add("jpg");
