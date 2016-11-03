@@ -1,18 +1,20 @@
 package com.quxin.freshfun.model.goods;
 
 /**
+ * 商品规格
  * Created by qingtian on 2016/10/18.
  */
-public class GoodsStandard {
+public class GoodsStandardPOJO {
     private Integer id;
     /**
      * 商品编号
      */
-    private Integer goodsId;
+    private Long goodsId;
+
     /**
      * 品名
      */
-    private String name;
+    private String name ;
     /**
      * 品牌
      */
@@ -24,7 +26,7 @@ public class GoodsStandard {
     /**
      * 规格
      */
-    private String standard;
+    private String goodsStandard;
     /**
      * 净含量
      */
@@ -44,19 +46,19 @@ public class GoodsStandard {
     /**
      * 是否含糖  0:未填  1: 是 2:否
      */
-    private Integer sugary;
+    private String isSugary;
     /**
      * 是否有机：0:未填  1: 是 2:否
      */
-    private Integer organic;
+    private String isOrganic;
     /**
      * 是否进口：0:未填  1: 是 2:否
      */
-    private Integer isImport;
+    private String isImported;
     /**
      * 是否盒装：0:未填  1: 是 2:否
      */
-    private  Integer boxPacked;
+    private String isBoxPacked;
     /**
      * 套餐分量
      */
@@ -68,7 +70,7 @@ public class GoodsStandard {
     /**
      * 功能
      */
-    private String functional;
+    private String facility;
     /**
      * 不适宜人群
      */
@@ -100,15 +102,19 @@ public class GoodsStandard {
     /**
      * 产品标准号
      */
-    private String productStandardNumber;
+    private String productStandardNum;
     /**
      * 生鲜储存温度
      */
-    private Double freshStorageTemperature;
+    private String freshStoreTemp;
     /**
      * 酒精度数
      */
-    private Double proof;
+    private String proof;
+    /**
+     * 度数
+     */
+    private String degree;
     /**
      * 适应场景
      */
@@ -153,6 +159,14 @@ public class GoodsStandard {
      * 尺寸
      */
     private String size;
+    /**
+     * 特产品种
+     */
+    private String specialty;
+    /**
+     * 其他
+     */
+    private String other;
 
     public Integer getId() {
         return id;
@@ -162,11 +176,11 @@ public class GoodsStandard {
         this.id = id;
     }
 
-    public Integer getGoodsId() {
+    public Long getGoodsId() {
         return goodsId;
     }
 
-    public void setGoodsId(Integer goodsId) {
+    public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
     }
 
@@ -194,12 +208,12 @@ public class GoodsStandard {
         this.productPlace = productPlace;
     }
 
-    public String getStandard() {
-        return standard;
+    public String getGoodsStandard() {
+        return goodsStandard;
     }
 
-    public void setStandard(String standard) {
-        this.standard = standard;
+    public void setGoodsStandard(String goodsStandard) {
+        this.goodsStandard = goodsStandard;
     }
 
     public String getNetContents() {
@@ -234,36 +248,36 @@ public class GoodsStandard {
         this.ingredientList = ingredientList;
     }
 
-    public Integer getSugary() {
-        return sugary;
+    public String getIsSugary() {
+        return isSugary;
     }
 
-    public void setSugary(Integer sugary) {
-        this.sugary = sugary;
+    public void setIsSugary(String isSugary) {
+        this.isSugary = isSugary;
     }
 
-    public Integer getOrganic() {
-        return organic;
+    public String getIsOrganic() {
+        return isOrganic;
     }
 
-    public void setOrganic(Integer organic) {
-        this.organic = organic;
+    public void setIsOrganic(String isOrganic) {
+        this.isOrganic = isOrganic;
     }
 
-    public Integer getIsImport() {
-        return isImport;
+    public String getIsImported() {
+        return isImported;
     }
 
-    public void setIsImport(Integer isImport) {
-        this.isImport = isImport;
+    public void setIsImported(String isImported) {
+        this.isImported = isImported;
     }
 
-    public Integer getBoxPacked() {
-        return boxPacked;
+    public String getIsBoxPacked() {
+        return isBoxPacked;
     }
 
-    public void setBoxPacked(Integer boxPacked) {
-        this.boxPacked = boxPacked;
+    public void setIsBoxPacked(String isBoxPacked) {
+        this.isBoxPacked = isBoxPacked;
     }
 
     public String getPackageComponent() {
@@ -282,12 +296,12 @@ public class GoodsStandard {
         this.taste = taste;
     }
 
-    public String getFunctional() {
-        return functional;
+    public String getFacility() {
+        return facility;
     }
 
-    public void setFunctional(String functional) {
-        this.functional = functional;
+    public void setFacility(String facility) {
+        this.facility = facility;
     }
 
     public String getUnsuitable() {
@@ -346,27 +360,27 @@ public class GoodsStandard {
         this.factorySite = factorySite;
     }
 
-    public String getProductStandardNumber() {
-        return productStandardNumber;
+    public String getProductStandardNum() {
+        return productStandardNum;
     }
 
-    public void setProductStandardNumber(String productStandardNumber) {
-        this.productStandardNumber = productStandardNumber;
+    public void setProductStandardNum(String productStandardNum) {
+        this.productStandardNum = productStandardNum;
     }
 
-    public Double getFreshStorageTemperature() {
-        return freshStorageTemperature;
+    public String getFreshStoreTemp() {
+        return freshStoreTemp;
     }
 
-    public void setFreshStorageTemperature(Double freshStorageTemperature) {
-        this.freshStorageTemperature = freshStorageTemperature;
+    public void setFreshStoreTemp(String freshStoreTemp) {
+        this.freshStoreTemp = freshStoreTemp;
     }
 
-    public Double getProof() {
+    public String getProof() {
         return proof;
     }
 
-    public void setProof(Double proof) {
+    public void setProof(String proof) {
         this.proof = proof;
     }
 
@@ -457,4 +471,119 @@ public class GoodsStandard {
     public void setSize(String size) {
         this.size = size;
     }
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
+    public String getOther() {
+        return other;
+    }
+
+    public void setOther(String other) {
+        this.other = other;
+    }
+
+    public String getDegree() {
+        return degree;
+    }
+
+    public void setDegree(String degree) {
+        this.degree = degree;
+    }
+
+    @Override
+    public String toString() {
+        return "GoodsStandardPOJO{" +
+                "id=" + id +
+                ", goodsId=" + goodsId +
+                ", name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", productPlace='" + productPlace + '\'' +
+                ", goodsStandard='" + goodsStandard + '\'' +
+                ", netContents='" + netContents + '\'' +
+                ", shelfLife='" + shelfLife + '\'' +
+                ", storageMethod='" + storageMethod + '\'' +
+                ", ingredientList='" + ingredientList + '\'' +
+                ", isSugary='" + isSugary + '\'' +
+                ", isOrganic='" + isOrganic + '\'' +
+                ", isImported='" + isImported + '\'' +
+                ", isBoxPacked='" + isBoxPacked + '\'' +
+                ", packageComponent='" + packageComponent + '\'' +
+                ", taste='" + taste + '\'' +
+                ", facility='" + facility + '\'' +
+                ", unsuitable='" + unsuitable + '\'' +
+                ", suitable='" + suitable + '\'' +
+                ", productForm='" + productForm + '\'' +
+                ", foodAdditives='" + foodAdditives + '\'' +
+                ", setCycle='" + setCycle + '\'' +
+                ", factoryName='" + factoryName + '\'' +
+                ", factorySite='" + factorySite + '\'' +
+                ", productStandardNum='" + productStandardNum + '\'' +
+                ", freshStoreTemp='" + freshStoreTemp + '\'' +
+                ", proof='" + proof + '\'' +
+                ", degree='" + degree + '\'' +
+                ", adaptiveScene='" + adaptiveScene + '\'' +
+                ", packingMethod='" + packingMethod + '\'' +
+                ", packingType='" + packingType + '\'' +
+                ", wineStyle='" + wineStyle + '\'' +
+                ", suitSpecification='" + suitSpecification + '\'' +
+                ", decanteDuration='" + decanteDuration + '\'' +
+                ", particularYear='" + particularYear + '\'' +
+                ", smell='" + smell + '\'' +
+                ", colourSort='" + colourSort + '\'' +
+                ", styleType='" + styleType + '\'' +
+                ", size='" + size + '\'' +
+                ", specialty='" + specialty + '\'' +
+                ", other='" + other + '\'' +
+                '}';
+    }
+
+    public GoodsStandardPOJO(String name, String brand, String productPlace, String goodsStandard, String netContents, String shelfLife, String storageMethod, String ingredientList, String isSugary, String isOrganic, String isImported, String isBoxPacked, String packageComponent, String taste, String facility, String unsuitable, String suitable, String productForm, String foodAdditives, String setCycle, String factoryName, String factorySite, String productStandardNum, String freshStoreTemp, String proof, String degree, String adaptiveScene, String packingMethod, String packingType, String wineStyle, String suitSpecification, String decanteDuration, String particularYear, String smell, String colourSort, String styleType, String size, String specialty, String other) {
+        this.name = name;
+        this.brand = brand;
+        this.productPlace = productPlace;
+        this.goodsStandard = goodsStandard;
+        this.netContents = netContents;
+        this.shelfLife = shelfLife;
+        this.storageMethod = storageMethod;
+        this.ingredientList = ingredientList;
+        this.isSugary = isSugary;
+        this.isOrganic = isOrganic;
+        this.isImported = isImported;
+        this.isBoxPacked = isBoxPacked;
+        this.packageComponent = packageComponent;
+        this.taste = taste;
+        this.facility = facility;
+        this.unsuitable = unsuitable;
+        this.suitable = suitable;
+        this.productForm = productForm;
+        this.foodAdditives = foodAdditives;
+        this.setCycle = setCycle;
+        this.factoryName = factoryName;
+        this.factorySite = factorySite;
+        this.productStandardNum = productStandardNum;
+        this.freshStoreTemp = freshStoreTemp;
+        this.proof = proof;
+        this.degree = degree;
+        this.adaptiveScene = adaptiveScene;
+        this.packingMethod = packingMethod;
+        this.packingType = packingType;
+        this.wineStyle = wineStyle;
+        this.suitSpecification = suitSpecification;
+        this.decanteDuration = decanteDuration;
+        this.particularYear = particularYear;
+        this.smell = smell;
+        this.colourSort = colourSort;
+        this.styleType = styleType;
+        this.size = size;
+        this.specialty = specialty;
+        this.other = other;
+    }
+
+    public GoodsStandardPOJO(){}
 }

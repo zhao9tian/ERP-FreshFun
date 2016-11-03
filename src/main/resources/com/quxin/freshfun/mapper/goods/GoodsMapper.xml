@@ -2,233 +2,404 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quxin.freshfun.dao.GoodsMapper">
 
-	<!-- 根据商品编号查询商品信息 -->
-	<select id="selectGoodsById" parameterType="java.lang.Integer" resultType="com.quxin.freshfun.model.goods.GoodsOrderOut">
-		select id,goods_name as goodsName,goods_des as goodsDes,goods_img as goodsImg,shop_price as goodsShopPrice from goods where id = #{goodsId}
+    <!-- 查询所有的符合条件的记录总数-->
+    <select id="selectCountByQC" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(id) from goods_base
+        where is_deleted = 0
+        <if test="subTitle != null"> and sub_title like '%${subTitle}%'</if>
+        <if test="catagory2 != null"> and catagory2 = #{catagory2}</if>
+        <if test="isOnSale != null"> and is_on_sale = #{isOnSale}</if>
+    </select>
+    <!--查询商品基本信息列表 -->
+    <select id="selectGoodsList" parameterType="java.util.Map" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
+        select id as goodsId ,title as title , sub_title as subtitle , des as goodsDes , shop_price as shopPrice ,
+		origin_price as originPrice , cost as goodsCost , img as goodsImg ,	sale_num as saleNum , stock_num as stockNum ,
+		is_on_sale as isOnSale , catagory1 as catagory1 , catagory2 as catagory2  , catagory3 as catagory3 ,catagory4 as catagory4 ,
+		app_id as appId , shop_id as shopId , created as created , updated as updated
+		from goods_base where is_deleted = 0
+        <if test="subTitle != null"> and sub_title like '%${subTitle}%'</if>
+        <if test="catagory2 != null"> and catagory2 = #{catagory2}</if>
+        <if test="isOnSale != null"> and is_on_sale = #{isOnSale}</if>
+        <if test="order != null">
+            order by created ${order}
+        </if>
+        <if test="start != null and pageSize != null">
+            limit #{start} , #{pageSize}
+        </if>
+    </select>
+    <!--商品重名校验-->
+    <select id="selectCountByGoodsName" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(id) from goods_base where title = #{title}
+    </select>
+
+    <!-- 根据商品编号查询商品基本信息 -->
+    <select id="selectGoodsByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
+		select id as goodsId ,title as title , sub_title as subtitle , des as goodsDes , shop_price as shopPrice ,
+		origin_price as originPrice , cost as goodsCost , img as goodsImg ,	sale_num as saleNum , stock_num as stockNum ,
+		is_on_sale as isOnSale , catagory1 as catagory1 , catagory2 as catagory2  , catagory3 as catagory3 ,catagory4 as catagory4 ,
+		app_id as appId , shop_id as shopId , created as created , updated as updated
+		from goods_base where id = #{goodsId} and is_deleted = 0
 	</select>
-	<!--添加商品规格-->
-	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.quxin.freshfun.model.goods.GoodsStandard">
-		INSERT INTO goods_standard
-		(goods_id,
-		 <if test="name != null">
-			name,
-		 </if>
-		 <if test="brand != null">
-		 	brand,
-		 </if>
-		 <if test="productPlace != null">
-		 	product_place,
-		 </if>
-		 <if test="standard != null">
-		 	standard,
-		 </if>
-		 <if test="netContents != null">
-		 	net_contents,
-		 </if>
-		 <if test="shelfLife != null">
-		 	shelf_life,
-		 </if>
-		 <if test="storageMethod != null">
-		 	storage_method,
-		 </if>
-		 <if test="ingredientList != null">
-		 	ingredient_list,
-		 </if>
-		 <if test="sugary != null">
-		 	sugary,
-		 </if>
-		 <if test="organic != null">
-		 	organic,
-		 </if>
-		 <if test="isImport != null">
-		 	is_import,
-		 </if>
-		 <if test="boxPacked != null">
-		 	box_packed,
-		 </if>
-		 <if test="packageComponent != null">
-		 	package_component,
-		 </if>
-		 <if test="taste != null">
-		 	taste,
-		 </if>
-		 <if test="functional != null">
-		 	functional,
-		 </if>
-		 <if test="unsuitable != null">
-		 	unsuitable,
-		 </if>
-		 <if test="suitable != null">
-		 	suitable,
-		 </if>
-		 <if test="productForm != null">
-		 	product_form,
-		 </if>
-		 <if test="foodAdditives != null">
-		 	food_additives,
-		 </if>
-		 <if test="setCycle != null">
-		 	set_cycle,
-		 </if>
-		 <if test="factoryName != null">
-		 	factory_name,
-		 </if>
-		 <if test="factorySite != null">
-		 	factory_site,
-		 </if>
-		 <if test="productStandardNumber != null">
-		 	product_standard_number,
-		 </if>
-		 <if test="freshStorageTemperature != null">
-		 	fresh_storage_temperature,
-		 </if>
-		 <if test="proof != null">
-		 	proof,
-		 </if>
-		 <if test="adaptiveScene != null">
-		 	adaptive_scene,
-		 </if>
-		 <if test="packingMethod != null">
-		 	packing_method,
-		 </if>
-		 <if test="packingType != null">
-		 	packing_type,
-		 </if>
-		 <if test="wineStyle != null">
-		 	wine_style,
-		 </if>
-		 <if test="suitSpecification != null">
-		 	suit_specification,
-		 </if>
-		 <if test="decanteDuration != null">
-		 	decante_duration,
-		 </if>
-		 <if test="particularYear != null">
-		 	particular_year,
-		 </if>
-		 <if test="smell != null">
-		 	smell,
-		 </if>
-		 <if test="colourSort != null">
-		 	colour_sort,
-		 </if>
-		 <if test="styleType != null">
-		 	style_type,
-		 </if>
-		 <if test="size != null">
-			size
-		 </if>
-		 )
-		<trim prefix="values (" suffix=")" suffixOverrides=",">
-		  #{goodsId},
-		 <if test="name != null">
-		  #{name},
-		 </if>
-		 <if test="brand != null">
-		  #{brand},
-		 </if>
-		 <if test="productPlace != null">
-		  #{productPlace},
-		 </if>
-		 <if test="standard != null">
-		  #{standard},
-		 </if>
-		 <if test="netContents != null">
-		  #{netContents},
-		 </if>
-		 <if test="shelfLife != null">
-		  #{shelfLife},
-		 </if>
-		 <if test="storageMethod != null">
-		  #{storageMethod},
-		 </if>
-		 <if test="ingredientList != null">
-		  #{ingredientList},
-		 </if>
-		 <if test="sugary != null">
-		  #{sugary},
-		 </if>
-		 <if test="organic != null">
-		  #{organic},
-		 </if>
-		 <if test="isImport != null">
-		  #{isImport},
-		 </if>
-		 <if test="boxPacked != null">
-		  #{boxPacked},
-		 </if>
-		 <if test="packageComponent != null">
-		  #{packageComponent},
-		 </if>
-		 <if test="taste != null">
-		  #{taste},
-		 </if>
-		 <if test="functional != null">
-		  #{functional},
-		 </if>
-		 <if test="unsuitable != null">
-		  #{unsuitable},
-		 </if>
-		 <if test="suitable != null">
-		  #{suitable},
-		 </if>
-		 <if test="productForm != null">
-		  #{productForm},
-		 </if>
-		 <if test="foodAdditives != null">
-		  #{foodAdditives},
-		 </if>
-		 <if test="setCycle != null">
-		  #{setCycle},
-		 </if>
-		 <if test="factoryName != null">
-		  #{factoryName},
-		 </if>
-		 <if test="factorySite != null">
-		  #{factorySite},
-		 </if>
-		 <if test="productStandardNumber != null">
-		  #{productStandardNumber},
-		 </if>
-		 <if test="freshStorageTemperature != null">
-		  #{freshStorageTemperature},
-		 </if>
-		 <if test="proof != null">
-		  #{proof},
-		 </if>
-		 <if test="adaptiveScene != null">
-		  #{adaptiveScene},
-		 </if>
-		 <if test="packingMethod != null">
-		  #{packingMethod},
-		 </if>
-		 <if test="packingType != null">
-		  #{packingType},
-		 </if>
-		 <if test="wineStyle != null">
-		  #{wineStyle},
-		 </if>
-		 <if test="suitSpecification != null">
-		  #{suitSpecification},
-		 </if>
-		 <if test="decanteDuration != null">
-		  #{decanteDuration},
-		 </if>
-		 <if test="particularYear != null">
-		  #{particularYear},
-		 </if>
-		 <if test="smell != null">
-		  #{smell},
-		 </if>
-		 <if test="colourSort != null">
-		  #{colourSort},
-		 </if>
-		 <if test="styleType != null">
-		  #{styleType},
-		 </if>
-		 <if test="size != null">
-		  #{size},
-		 </if>
-		</trim>
-	</insert>
+    <!--查询商品列表信息-->
+    <select id="selectGoodsImgByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
+        select  detail_img as detailImg, carousel_img as carouselImg from goods_img where goods_id = #{goodsId}
+    </select>
+    <!--查询商品所有的图片信息-->
+    <select id="selectGoodsImgs" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
+        select goods_id as goodsId , detail_img as detailImg, carousel_img as carouselImg from goods_img
+    </select>
+	<!--根据商品Id查询商品规格-->
+	<select id="selectGoodsStandardByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsStandardPOJO">
+		select id , goods_id as goodsId ,`name` as `name` ,brand as brand ,product_place as productPlace, goods_standard as goodsStandard, net_contents as netContents,
+		shelf_life as shelfLife ,storage_method as storageMethod ,ingredient_list as ingredientList ,is_sugary as isSugary ,is_organic as isOrganic ,
+		is_imported as isImported ,is_box_packed as isBoxPacked , package_component as packageComponent ,taste as taste ,facility ,unsuitable ,suitable ,
+		product_form as productForm ,food_additives as foodAdditives ,set_cycle as setCycle ,factory_name as factoryName ,factory_site as factorySite ,
+		product_standard_num as productStandardNum ,fresh_store_temp as freshStoreTemp , proof , degree , adaptive_scene as adaptiveScene ,
+		packing_method as packingMethod ,packing_type as packingType , wine_style as wineStyle , suit_specification as suitSpecification ,
+		decante_duration as decanteDuration , particular_year as particularYear , smell ,colour_sort as colourSort , style_type as styleType,`size`,
+		specialty ,other from goods_standard where goods_id = #{goodsId}
+	</select>
+
+    <!--添加商品基本信息 -->
+    <insert id = "insertGoodsBase" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO" useGeneratedKeys="true" keyProperty="goodsId">
+        insert into goods_base(title , sub_title , des , shop_price , origin_price , cost , img , sale_num , stock_num , is_on_sale , catagory1 , catagory2 ,
+        catagory3 , catagory4 , shop_id , app_id ,created , updated )
+        values(#{title},#{subtitle},#{goodsDes},#{shopPrice},#{originPrice},#{goodsCost},#{goodsImg},#{saleNum},#{stockNum},#{isOnSale},
+        #{catagory1},#{catagory2},#{catagory3},#{catagory4},#{shopId},#{appId},#{created},#{updated})
+    </insert>
+    <!--添加商品图片信息-->
+    <insert id = "insertGoodsImg" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO">
+        insert into goods_img(goods_id , detail_img , carousel_img) values(#{goodsId} , #{detailImg} , #{carouselImg})
+    </insert>
+    <!--添加商品规格-->
+    <insert id="insertGoodsStandard" parameterType="com.quxin.freshfun.model.goods.GoodsStandardPOJO">
+        INSERT INTO goods_standard
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                  goods_id,
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="brand != null">
+                brand,
+            </if>
+            <if test="productPlace != null">
+                product_place,
+            </if>
+            <if test="goodsStandard != null">
+                goods_standard,
+            </if>
+            <if test="netContents != null">
+                net_contents,
+            </if>
+            <if test="shelfLife != null">
+                shelf_life,
+            </if>
+            <if test="storageMethod != null">
+                storage_method,
+            </if>
+            <if test="ingredientList != null">
+                ingredient_list,
+            </if>
+            <if test="isSugary != null">
+                is_sugary,
+            </if>
+            <if test="isOrganic != null">
+                is_organic,
+            </if>
+            <if test="isImported != null">
+                is_imported,
+            </if>
+            <if test="isBoxPacked != null">
+                is_box_packed,
+            </if>
+            <if test="packageComponent != null">
+                package_component,
+            </if>
+            <if test="taste != null">
+                taste,
+            </if>
+            <if test="facility != null">
+                facility,
+            </if>
+            <if test="unsuitable != null">
+                unsuitable,
+            </if>
+            <if test="suitable != null">
+                suitable,
+            </if>
+            <if test="productForm != null">
+                product_form,
+            </if>
+            <if test="foodAdditives != null">
+                food_additives,
+            </if>
+            <if test="setCycle != null">
+                set_cycle,
+            </if>
+            <if test="factoryName != null">
+                factory_name,
+            </if>
+            <if test="factorySite != null">
+                factory_site,
+            </if>
+            <if test="productStandardNum != null">
+                product_standard_num,
+            </if>
+            <if test="freshStoreTemp != null">
+                fresh_store_temp,
+            </if>
+            <if test="proof != null">
+                proof,
+            </if>
+            <if test="degree != null">
+                degree ,
+            </if>
+            <if test="adaptiveScene != null">
+                adaptive_scene,
+            </if>
+            <if test="packingMethod != null">
+                packing_method,
+            </if>
+            <if test="packingType != null">
+                packing_type,
+            </if>
+            <if test="wineStyle != null">
+                wine_style,
+            </if>
+            <if test="suitSpecification != null">
+                suit_specification,
+            </if>
+            <if test="decanteDuration != null">
+                decante_duration,
+            </if>
+            <if test="particularYear != null">
+                particular_year,
+            </if>
+            <if test="smell != null">
+                smell,
+            </if>
+            <if test="colourSort != null">
+                colour_sort,
+            </if>
+            <if test="styleType != null">
+                style_type,
+            </if>
+            <if test="size != null">
+                `size`,
+            </if>
+            <if test="specialty != null">
+                specialty,
+            </if>
+            <if test="other != null">
+                other,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+             #{goodsId},
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="brand != null">
+                #{brand},
+            </if>
+            <if test="productPlace != null">
+                #{productPlace},
+            </if>
+            <if test="goodsStandard != null">
+                #{goodsStandard},
+            </if>
+            <if test="netContents != null">
+                #{netContents},
+            </if>
+            <if test="shelfLife != null">
+                #{shelfLife},
+            </if>
+            <if test="storageMethod != null">
+                #{storageMethod},
+            </if>
+            <if test="ingredientList != null">
+                #{ingredientList},
+            </if>
+            <if test="isSugary != null">
+                #{isSugary},
+            </if>
+            <if test="isOrganic != null">
+                #{isOrganic},
+            </if>
+            <if test="isImported != null">
+                #{isImported},
+            </if>
+            <if test="isBoxPacked != null">
+                #{isBoxPacked},
+            </if>
+            <if test="packageComponent != null">
+                #{packageComponent},
+            </if>
+            <if test="taste != null">
+                #{taste},
+            </if>
+            <if test="facility != null">
+                #{facility},
+            </if>
+            <if test="unsuitable != null">
+                #{unsuitable},
+            </if>
+            <if test="suitable != null">
+                #{suitable},
+            </if>
+            <if test="productForm != null">
+                #{productForm},
+            </if>
+            <if test="foodAdditives != null">
+                #{foodAdditives},
+            </if>
+            <if test="setCycle != null">
+                #{setCycle},
+            </if>
+            <if test="factoryName != null">
+                #{factoryName},
+            </if>
+            <if test="factorySite != null">
+                #{factorySite},
+            </if>
+            <if test="productStandardNum != null">
+                #{productStandardNum},
+            </if>
+            <if test="freshStoreTemp != null">
+                #{freshStoreTemp},
+            </if>
+            <if test="proof != null">
+                #{proof},
+            </if>
+            <if test="degree != null">
+                #{degree},
+            </if>
+            <if test="adaptiveScene != null">
+                #{adaptiveScene},
+            </if>
+            <if test="packingMethod != null">
+                #{packingMethod},
+            </if>
+            <if test="packingType != null">
+                #{packingType},
+            </if>
+            <if test="wineStyle != null">
+                #{wineStyle},
+            </if>
+            <if test="suitSpecification != null">
+                #{suitSpecification},
+            </if>
+            <if test="decanteDuration != null">
+                #{decanteDuration},
+            </if>
+            <if test="particularYear != null">
+                #{particularYear},
+            </if>
+            <if test="smell != null">
+                #{smell},
+            </if>
+            <if test="colourSort != null">
+                #{colourSort},
+            </if>
+            <if test="styleType != null">
+                #{styleType},
+            </if>
+            <if test="size != null">
+                #{size},
+            </if>
+            <if test="specialty != null">
+                #{specialty},
+            </if>
+            <if test="other != null">
+                #{other}
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 修改商品基本信息-->
+	<update id="updateGoods" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO">
+		  update goods_base
+		  <set>
+              id = #{goodsId},
+              <if test="title != null">title = #{title} , </if>
+              <if test="subtitle != null">sub_title = #{subtitle}, </if>
+              <if test="goodsDes != null">des = #{goodsDes}, </if>
+              <if test="shopPrice != null">shop_price = #{shopPrice},</if>
+              <if test="originPrice != null">origin_price = #{originPrice},</if>
+              <if test="goodsCost != null">cost = #{goodsCost},</if>
+              <if test="goodsImg != null">img = #{goodsImg},</if>
+              <if test="saleNum != null">sale_num = #{saleNum},</if>
+              <if test="stockNum != null">stock_num = #{stockNum},</if>
+              <if test="isOnSale != null">is_on_sale = #{isOnSale},</if>
+              <if test="catagory1 != null">catagory1 = #{catagory1},</if>
+              <if test="catagory2 != null">catagory2 = #{catagory2},</if>
+              <if test="catagory3 != null">catagory3 = #{catagory3},</if>
+              <if test="catagory4 != null">catagory4 = #{catagory4},</if>
+              <if test="shopId != null">shop_id = #{shopId},</if>
+              <if test="updated != null">updated = #{updated},</if>
+          </set>
+		  where id = #{goodsId}
+	</update>
+    <!-- 修改商品基本信息-->
+    <update id="updateGoodsImg" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO">
+        update goods_img
+        <set>
+            goods_id = #{goodsId},
+            <if test="detailImg != null">detail_img = #{detailImg},</if>
+            <if test="carouselImg != null">carousel_img = #{carouselImg}</if>
+        </set>
+        where goods_id = #{goodsId}
+    </update>
+
+    <update id="updateGoodsStandard" parameterType="com.quxin.freshfun.model.goods.GoodsStandardPOJO">
+        update goods_standard set
+            goods_id = #{goodsId},
+            `name` = #{name},
+            brand = #{brand},
+            product_place = #{productPlace},
+            goods_standard = #{goodsStandard},
+            net_contents = #{netContents},
+            shelf_life = #{shelfLife},
+            storage_method = #{storageMethod},
+            ingredient_list = #{ingredientList},
+            is_sugary = #{isSugary},
+            is_organic = #{isOrganic},
+            is_imported = #{isImported},
+            is_box_packed = #{isBoxPacked},
+            package_component = #{packageComponent},
+            taste = #{taste},
+            facility = #{facility},
+            unsuitable = #{unsuitable},
+            suitable = #{suitable},
+            product_form = #{productForm},
+            food_additives = #{foodAdditives},
+            set_cycle = #{setCycle},
+            factory_name = #{factoryName},
+            factory_site = #{factorySite},
+            product_standard_num = #{productStandardNum},
+            fresh_store_temp = #{freshStoreTemp},
+            proof = #{proof},
+            degree = #{degree},
+            adaptive_scene = #{adaptiveScene},
+            packing_method = #{packingMethod},
+            packing_type = #{packingType},
+            wine_style = #{wineStyle},
+            suit_specification = #{suitSpecification},
+            decante_duration = #{decanteDuration},
+            particular_year = #{particularYear},
+            smell = #{smell},
+            colour_sort = #{colourSort},
+            style_type = #{styleType},
+            `size` = #{size},
+            specialty = #{specialty},
+            other = #{other}
+        where goods_id = #{goodsId}
+    </update>
+
+    <!-- 删除商品 -->
+    <update id="deleteGoodsByGoodsId" parameterType="java.lang.Long">
+        update goods_base set is_deleted = 1 where id = #{goodsId}
+    </update>
+
+
 </mapper>
