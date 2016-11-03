@@ -94,7 +94,6 @@ public class GoodsSortController {
         return result;
     }
 
-
     /**
      * 接收排序参数 泛型为Integer
      *
@@ -122,7 +121,6 @@ public class GoodsSortController {
                         return ResultUtil.fail(1004, "传入的Id类型不正确");
                     }
                 }
-
                 if (goodsSortService.addAllGoodsSort(goodsSort)) {
                     result = ResultUtil.success("success");
                 } else {

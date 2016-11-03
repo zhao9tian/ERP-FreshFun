@@ -108,7 +108,7 @@ public class GoodsTest extends TestBase {
 
         private GoodsPOJO createGoods(){
         GoodsPOJO goodsPOJO = new GoodsPOJO();
-        goodsPOJO.setGoodsId(2071281L);
+        goodsPOJO.setGoodsId(2071284L);
         goodsPOJO.setTitle("阿玛尼11a11");
         goodsPOJO.setSubtitle("淘宝上的阿玛尼1");
         goodsPOJO.setOriginPrice(30000001);
@@ -147,7 +147,7 @@ public class GoodsTest extends TestBase {
 
     private GoodsStandardPOJO createGoodsStandard(){
         GoodsStandardPOJO goodsStandardPOJO = new GoodsStandardPOJO(
-                "爱马仕1","12","13","14","15","16","17","18","19","110",
+                "爱马仕1",null,"13","14","15","16","17","18","19","110",
                 "11","12","13","114","1","115","16","17","18","19","110",
                 "11","11","11","11","111","111","11","11","19","110",
                 "11","12","13","14","15","116","17","18");

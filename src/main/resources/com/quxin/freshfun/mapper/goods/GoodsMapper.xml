@@ -352,127 +352,47 @@
     </update>
 
     <update id="updateGoodsStandard" parameterType="com.quxin.freshfun.model.goods.GoodsStandardPOJO">
-        update goods_standard
-        <set>
+        update goods_standard set
             goods_id = #{goodsId},
-            <if test="name != null">
-                `name` = #{name},
-            </if>
-            <if test="brand != null">
-                brand = #{brand},
-            </if>
-            <if test="productPlace != null">
-                product_place = #{productPlace},
-            </if>
-            <if test="goodsStandard != null">
-                goods_standard = #{goodsStandard},
-            </if>
-            <if test="netContents != null">
-                net_contents = #{netContents},
-            </if>
-            <if test="shelfLife != null">
-                shelf_life = #{shelfLife},
-            </if>
-            <if test="storageMethod != null">
-                storage_method = #{storageMethod},
-            </if>
-            <if test="ingredientList != null">
-                ingredient_list = #{ingredientList},
-            </if>
-            <if test="isSugary != null">
-                is_sugary = #{isSugary},
-            </if>
-            <if test="isOrganic != null">
-                is_organic = #{isOrganic},
-            </if>
-            <if test="isImported != null">
-                is_imported = #{isImported},
-            </if>
-            <if test="isBoxPacked != null">
-                is_box_packed = #{isBoxPacked},
-            </if>
-            <if test="packageComponent != null">
-                package_component = #{packageComponent},
-            </if>
-            <if test="taste != null">
-                taste = #{taste},
-            </if>
-            <if test="facility != null">
-                facility = #{facility},
-            </if>
-            <if test="unsuitable != null">
-                unsuitable = #{unsuitable},
-            </if>
-            <if test="suitable != null">
-                suitable = #{suitable},
-            </if>
-            <if test="productForm != null">
-                product_form = #{productForm},
-            </if>
-            <if test="foodAdditives != null">
-                food_additives = #{foodAdditives},
-            </if>
-            <if test="setCycle != null">
-                set_cycle = #{setCycle},
-            </if>
-            <if test="factoryName != null">
-                factory_name = #{factoryName},
-            </if>
-            <if test="factorySite != null">
-                factory_site = #{factorySite},
-            </if>
-            <if test="productStandardNum != null">
-                product_standard_num = #{productStandardNum},
-            </if>
-            <if test="freshStoreTemp != null">
-                fresh_store_temp = #{freshStoreTemp},
-            </if>
-            <if test="proof != null">
-                proof = #{proof},
-            </if>
-            <if test="degree != null">
-                degree = #{degree},
-            </if>
-            <if test="adaptiveScene != null">
-                adaptive_scene = #{adaptiveScene},
-            </if>
-            <if test="packingMethod != null">
-                packing_method = #{packingMethod},
-            </if>
-            <if test="packingType != null">
-                packing_type = #{packingType},
-            </if>
-            <if test="wineStyle != null">
-                wine_style = #{wineStyle},
-            </if>
-            <if test="suitSpecification != null">
-                suit_specification = #{suitSpecification},
-            </if>
-            <if test="decanteDuration != null">
-                decante_duration = #{decanteDuration},
-            </if>
-            <if test="particularYear != null">
-                particular_year = #{particularYear},
-            </if>
-            <if test="smell != null">
-                smell = #{smell},
-            </if>
-            <if test="colourSort != null">
-                colour_sort = #{colourSort},
-            </if>
-            <if test="styleType != null">
-                style_type = #{styleType},
-            </if>
-            <if test="size != null">
-                `size` = #{size},
-            </if>
-            <if test="specialty != null">
-                specialty = #{specialty},
-            </if>
-            <if test="other != null">
-                other = #{other}
-            </if>
-        </set>
+            `name` = #{name},
+            brand = #{brand},
+            product_place = #{productPlace},
+            goods_standard = #{goodsStandard},
+            net_contents = #{netContents},
+            shelf_life = #{shelfLife},
+            storage_method = #{storageMethod},
+            ingredient_list = #{ingredientList},
+            is_sugary = #{isSugary},
+            is_organic = #{isOrganic},
+            is_imported = #{isImported},
+            is_box_packed = #{isBoxPacked},
+            package_component = #{packageComponent},
+            taste = #{taste},
+            facility = #{facility},
+            unsuitable = #{unsuitable},
+            suitable = #{suitable},
+            product_form = #{productForm},
+            food_additives = #{foodAdditives},
+            set_cycle = #{setCycle},
+            factory_name = #{factoryName},
+            factory_site = #{factorySite},
+            product_standard_num = #{productStandardNum},
+            fresh_store_temp = #{freshStoreTemp},
+            proof = #{proof},
+            degree = #{degree},
+            adaptive_scene = #{adaptiveScene},
+            packing_method = #{packingMethod},
+            packing_type = #{packingType},
+            wine_style = #{wineStyle},
+            suit_specification = #{suitSpecification},
+            decante_duration = #{decanteDuration},
+            particular_year = #{particularYear},
+            smell = #{smell},
+            colour_sort = #{colourSort},
+            style_type = #{styleType},
+            `size` = #{size},
+            specialty = #{specialty},
+            other = #{other}
         where goods_id = #{goodsId}
     </update>
 

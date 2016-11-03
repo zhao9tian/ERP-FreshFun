@@ -38,6 +38,7 @@ public class GoodsServiceImpl implements GoodsService {
         //0.检验参数
         if(validateParam(goodsPOJO)){
             //1.新增商品基本信息
+            goodsPOJO.setSaleNum(0);//销量默认为0
             goodsPOJO.setCreated(System.currentTimeMillis()/1000);
             goodsPOJO.setUpdated(System.currentTimeMillis()/1000);
             Integer baseRecord = goodsMapper.insertGoodsBase(goodsPOJO);
@@ -240,9 +241,9 @@ public class GoodsServiceImpl implements GoodsService {
         }else{
            Integer order = (Integer) queryCondition.get("orderByCreate");
             if(order == null || order == 0){
-                queryCondition.put("order" ,"asc");
-            }else if(order == 1){
                 queryCondition.put("order" ,"desc");
+            }else if(order == 1){
+                queryCondition.put("order" ,"asc");
             }
         }
         queryCondition.put("start",start);
@@ -269,13 +270,8 @@ public class GoodsServiceImpl implements GoodsService {
                 if (catagory2 != null) {
                     countQC.put("catagory2", catagory2);
                 }
-                if (isOnSale != null && isOnSale > 0) {
-                    if(isOnSale == 1){
-                        countQC.put("isOnSale", 1);
-                    }
-                    if(isOnSale == 2){
-                        countQC.put("isOnSale", 0);
-                    }
+                if (isOnSale != null) {
+                    countQC.put("isOnSale", isOnSale);
                 }
             }catch (ClassCastException e){
                 logger.error("查询条件输入有误");
@@ -289,7 +285,7 @@ public class GoodsServiceImpl implements GoodsService {
         if(pageSize == null || pageSize == 0){
             pageSize = 10;
         }
-        Integer totalPage = recordCount%pageSize == 0 ?  recordCount%pageSize : recordCount%pageSize + 1 ;
+        Integer totalPage = recordCount%pageSize == 0 ?  recordCount/pageSize : recordCount/pageSize + 1 ;
         Integer start = (currentPage - 1) * pageSize ;
         pagingInfo.put("start" , start);
         pagingInfo.put("pageSize" , pageSize);
@@ -328,24 +324,17 @@ public class GoodsServiceImpl implements GoodsService {
                 logger.warn("上下架状态为空");
                 return false ;
             }
-            if(goodsPOJO.getShopPrice() == null || goodsPOJO.getShopPrice() == 0){
+            if(goodsPOJO.getShopPrice() == null){
                 logger.warn("售价为空");
                 return false ;
             }
-            if(goodsPOJO.getOriginPrice() == null || goodsPOJO.getOriginPrice() == 0){
+            if(goodsPOJO.getOriginPrice() == null){
                 logger.warn("原价为空");
                 return false ;
             }
             if(goodsPOJO.getTitle() == null || "".equals(goodsPOJO.getTitle().trim())){
                 logger.warn("标题为空");
                 return false ;
-            }else{
-                if(goodsPOJO.getGoodsId() == null){
-                    if(isExistTitle(goodsPOJO.getTitle())){
-                        logger.warn("标题已存在");
-                        return false ;
-                    }
-                }
             }
             if(goodsPOJO.getSubtitle() == null || "".equals(goodsPOJO.getSubtitle().trim())){
                 logger.warn("副标题为空");
@@ -363,7 +352,7 @@ public class GoodsServiceImpl implements GoodsService {
                 logger.warn("商品详情图为空");
                 return false ;
             }
-            if(goodsPOJO.getGoodsCost() == null || goodsPOJO.getGoodsCost()==0){
+            if(goodsPOJO.getGoodsCost() == null){
                 logger.warn("商品成本价为空");
                 return false ;
             }
@@ -371,11 +360,11 @@ public class GoodsServiceImpl implements GoodsService {
                 logger.warn("库存为空");
                 return false ;
             }
-            if(goodsPOJO.getShopId() == null || goodsPOJO.getShopId() == 0){
+            if(goodsPOJO.getShopId() == null){
                 logger.warn("商户Id为空");
                 return false ;
             }
-            if(goodsPOJO.getAppId() == null || goodsPOJO.getAppId() == 0){
+            if(goodsPOJO.getAppId() == null){
                 logger.warn("appId为空");
                 return false ;
             }
