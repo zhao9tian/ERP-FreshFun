@@ -31,6 +31,11 @@
     <select id="selectCountByGoodsName" parameterType="java.lang.String" resultType="java.lang.Integer">
         select count(id) from goods_base where title = #{title}
     </select>
+    <!--为订单专门做的应急的接口-->
+    <select id="selectGoodsById" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsOrderOut">
+        select id ,title as goodsName , shop_price as goodsShopPrice ,img as goodsImg , des as goodsDes
+        from goods_base where id = #{goodsId} and is_deleted = 0
+    </select>
 
     <!-- 根据商品编号查询商品基本信息 -->
     <select id="selectGoodsByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
