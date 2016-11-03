@@ -473,7 +473,7 @@ public class GoodsController {
         picInfo.put("carouselPics", JSON.parseArray(goods.getCarouselImg()));
         picInfo.put("detailPics", JSON.parseArray(goods.getDetailImg()));
         //上下架
-        data.put("isOnsale", goods.getIsOnSale());
+        data.put("isOnSale", goods.getIsOnSale());
         data.put("categoryInfo", categoryInfo);
         data.put("basicInfo", basicInfo);
         //规格属性信息
