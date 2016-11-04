@@ -11,6 +11,8 @@ import com.quxin.freshfun.service.erpuser.ErpUserJurisdictionService;
 import com.quxin.freshfun.service.erpuser.ErpUserService;
 import org.junit.*;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -18,6 +20,8 @@ import java.util.List;
  * Created by Ziming on 2016/11/1.
  */
 public class ErpTest extends TestBase {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private ErpUserService erpUserService;
     private ErpMenuService erpMenuService;
@@ -36,6 +40,11 @@ public class ErpTest extends TestBase {
         getContext().close();
     }
 
+    @Test
+    public void test1() {
+        logger.error("aaahhh");
+    }
+
     @org.junit.Test
     public void testRegister(){
         ErpUserPOJO user = new ErpUserPOJO();
@@ -48,6 +57,7 @@ public class ErpTest extends TestBase {
         user.setUserEmail("testEmail1@163.com");
         user.setUserPhoneNumber("15038292018");
         user.setUserHeadImg("testHeadImgUrl1");
+
         Integer result = erpUserService.addErpUser(user);
         if(result==1){
             System.out.println("注册成功！");
