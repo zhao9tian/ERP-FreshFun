@@ -33,7 +33,7 @@ public class UploadUtils {
                         String picName = file.getOriginalFilename();
                         String editFileName = System.currentTimeMillis() + picName.substring(picName.lastIndexOf("."));
                         String path = createDirs() + "/" + editFileName;
-                        imgPath = "http://pic1.freshfun365.com/" + OSSUtils.uploadPic(file.getInputStream(), path);
+                        imgPath = "http://pic1.freshfun365.com" + OSSUtils.uploadPic(file.getInputStream(), path);
                         break;
                     } else {
                         return null;
