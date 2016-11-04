@@ -114,10 +114,10 @@ public class GoodsTest extends TestBase {
         goodsPOJO.setOriginPrice(30000001);
         goodsPOJO.setShopPrice(3000001);
         goodsPOJO.setGoodsDes("谁买谁傻逼1");
-        goodsPOJO.setCatagory1(2);
-        goodsPOJO.setCatagory2(102);
-        goodsPOJO.setCatagory3(10201);
-        goodsPOJO.setCatagory4(1020101);
+        goodsPOJO.setCategory1(2);
+        goodsPOJO.setCategory2(102);
+        goodsPOJO.setCategory3(10201);
+        goodsPOJO.setCategory4(1020101);
         goodsPOJO.setGoodsCost(30001);
         goodsPOJO.setGoodsImg("http://freshfunpic.oss-cn-hangzhou.aliyuncs.com/image/20161027/035b1f65-e203-4897-b2c4-b77ac3aa82a0.jpg");
         goodsPOJO.setAppId(138383L);

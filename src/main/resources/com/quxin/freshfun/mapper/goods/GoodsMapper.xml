@@ -7,18 +7,18 @@
         select count(id) from goods_base
         where is_deleted = 0
         <if test="subTitle != null"> and sub_title like '%${subTitle}%'</if>
-        <if test="catagory2 != null"> and catagory2 = #{catagory2}</if>
+        <if test="category2 != null"> and category2 = #{category2}</if>
         <if test="isOnSale != null"> and is_on_sale = #{isOnSale}</if>
     </select>
     <!--查询商品基本信息列表 -->
     <select id="selectGoodsList" parameterType="java.util.Map" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
         select id as goodsId ,title as title , sub_title as subtitle , des as goodsDes , shop_price as shopPrice ,
 		origin_price as originPrice , cost as goodsCost , img as goodsImg ,	sale_num as saleNum , stock_num as stockNum ,
-		is_on_sale as isOnSale , catagory1 as catagory1 , catagory2 as catagory2  , catagory3 as catagory3 ,catagory4 as catagory4 ,
+		is_on_sale as isOnSale , category1 as category1 , category2 as category2  , category3 as category3 ,category4 as category4 ,
 		app_id as appId , shop_id as shopId , created as created , updated as updated
 		from goods_base where is_deleted = 0
         <if test="subTitle != null"> and sub_title like '%${subTitle}%'</if>
-        <if test="catagory2 != null"> and catagory2 = #{catagory2}</if>
+        <if test="category2 != null"> and category2 = #{category2}</if>
         <if test="isOnSale != null"> and is_on_sale = #{isOnSale}</if>
         <if test="order != null">
             order by created ${order}
@@ -41,7 +41,7 @@
     <select id="selectGoodsByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
 		select id as goodsId ,title as title , sub_title as subtitle , des as goodsDes , shop_price as shopPrice ,
 		origin_price as originPrice , cost as goodsCost , img as goodsImg ,	sale_num as saleNum , stock_num as stockNum ,
-		is_on_sale as isOnSale , catagory1 as catagory1 , catagory2 as catagory2  , catagory3 as catagory3 ,catagory4 as catagory4 ,
+		is_on_sale as isOnSale , category1 as category1 , category2 as category2  , category3 as category3 ,category4 as category4 ,
 		app_id as appId , shop_id as shopId , created as created , updated as updated
 		from goods_base where id = #{goodsId} and is_deleted = 0
 	</select>
@@ -67,10 +67,10 @@
 
     <!--添加商品基本信息 -->
     <insert id = "insertGoodsBase" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO" useGeneratedKeys="true" keyProperty="goodsId">
-        insert into goods_base(title , sub_title , des , shop_price , origin_price , cost , img , sale_num , stock_num , is_on_sale , catagory1 , catagory2 ,
-        catagory3 , catagory4 , shop_id , app_id ,created , updated )
+        insert into goods_base(title , sub_title , des , shop_price , origin_price , cost , img , sale_num , stock_num , is_on_sale , category1 , category2 ,
+        category3 , category4 , shop_id , app_id ,created , updated )
         values(#{title},#{subtitle},#{goodsDes},#{shopPrice},#{originPrice},#{goodsCost},#{goodsImg},#{saleNum},#{stockNum},#{isOnSale},
-        #{catagory1},#{catagory2},#{catagory3},#{catagory4},#{shopId},#{appId},#{created},#{updated})
+        #{category1},#{category2},#{category3},#{category4},#{shopId},#{appId},#{created},#{updated})
     </insert>
     <!--添加商品图片信息-->
     <insert id = "insertGoodsImg" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO">
@@ -336,10 +336,10 @@
               <if test="saleNum != null">sale_num = #{saleNum},</if>
               <if test="stockNum != null">stock_num = #{stockNum},</if>
               <if test="isOnSale != null">is_on_sale = #{isOnSale},</if>
-              <if test="catagory1 != null">catagory1 = #{catagory1},</if>
-              <if test="catagory2 != null">catagory2 = #{catagory2},</if>
-              <if test="catagory3 != null">catagory3 = #{catagory3},</if>
-              <if test="catagory4 != null">catagory4 = #{catagory4},</if>
+              <if test="category1 != null">category1 = #{category1},</if>
+              <if test="category2 != null">category2 = #{category2},</if>
+              <if test="category3 != null">category3 = #{category3},</if>
+              <if test="category4 != null">category4 = #{category4},</if>
               <if test="shopId != null">shop_id = #{shopId},</if>
               <if test="updated != null">updated = #{updated},</if>
           </set>

@@ -49,9 +49,7 @@ public class GoodsSortController {
                 goodsSort.setGoodsName(goods.getTitle());
                 goodsSort.setGoodsImg(goods.getGoodsImg());
                 goodsSort.setGoodsPrice(MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
-                //TODO 先写个死数据
-//                goodsSort.setGoodsCost(MoneyFormatUtils.getMoneyFromInteger(10000000));
-                goodsSort.setGoodsCost("--");
+                goodsSort.setGoodsCost(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsCost()));
                 goodsSortList.add(goodsSort);
             }
             result = ResultUtil.success(goodsSortList);
@@ -78,13 +76,12 @@ public class GoodsSortController {
             GoodsPOJO goods = goodsSortService.querySortGoodsById(goodsId);
             //对象不存在
             if (goods != null) {
-                //TODO 给出参对象赋值 成本价木有
                 GoodsSortOut goodsSortOut = new GoodsSortOut();
                 goodsSortOut.setGoodsId(goodsId);
                 goodsSortOut.setGoodsName(goods.getTitle());
                 goodsSortOut.setGoodsImg(goods.getGoodsImg());
                 goodsSortOut.setGoodsPrice(MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
-                goodsSortOut.setGoodsCost("--");
+                goodsSortOut.setGoodsCost(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsCost()));
                 result = ResultUtil.success(goodsSortOut);
             } else {
                 result = ResultUtil.fail(1004, "商品不存在或者已下架");

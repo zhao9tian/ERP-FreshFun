@@ -260,15 +260,15 @@ public class GoodsServiceImpl implements GoodsService {
         if(queryCondition != null){
             try {
                 String subtitle = (String) queryCondition.get("subTitle");
-                Integer catagory2 = (Integer) queryCondition.get("catagory2");
+                Integer category2 = (Integer) queryCondition.get("category2");
                 Integer isOnSale = (Integer) queryCondition.get("isOnSale");// 0:所有 1:上架 2:下架
                 currentPage = (Integer) queryCondition.get("currentPage");
                 pageSize = (Integer) queryCondition.get("pageSize");
                 if (subtitle != null && !"".equals(subtitle.trim())) {
                     countQC.put("subTitle", subtitle);
                 }
-                if (catagory2 != null) {
-                    countQC.put("catagory2", catagory2);
+                if (category2 != null) {
+                    countQC.put("category2", category2);
                 }
                 if (isOnSale != null) {
                     countQC.put("isOnSale", isOnSale);
@@ -304,19 +304,19 @@ public class GoodsServiceImpl implements GoodsService {
      */
     private Boolean validateParam(GoodsPOJO goodsPOJO){
         if(goodsPOJO != null){
-            if(goodsPOJO.getCatagory1() == null || goodsPOJO.getCatagory1() == 0){
+            if(goodsPOJO.getCategory1() == null || goodsPOJO.getCategory1() == 0){
                 logger.warn("一级类目为空");
                 return false ;
             }
-            if(goodsPOJO.getCatagory2() == null || goodsPOJO.getCatagory2() == 0){
+            if(goodsPOJO.getCategory2() == null || goodsPOJO.getCategory2() == 0){
                 logger.warn("二级类目为空");
                 return false ;
             }
-            if(goodsPOJO.getCatagory3() == null || goodsPOJO.getCatagory3() == 0){
+            if(goodsPOJO.getCategory3() == null || goodsPOJO.getCategory3() == 0){
                 logger.warn("三级类目为空");
                 return false ;
             }
-            if(goodsPOJO.getCatagory4() == null || goodsPOJO.getCatagory4() == 0){
+            if(goodsPOJO.getCategory4() == null || goodsPOJO.getCategory4() == 0){
                 logger.warn("四级类目为空");
                 return false ;
             }

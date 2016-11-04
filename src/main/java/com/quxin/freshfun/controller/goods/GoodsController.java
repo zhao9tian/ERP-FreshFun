@@ -96,7 +96,7 @@ public class GoodsController {
      */
     @RequestMapping(value = "/goodsList", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> queryGoodsList(String subTitle , Integer catagory2 ,Integer isOnSale , Integer currentPage ,Integer pageSize ,Integer orderByCreate) {
+    public Map<String, Object> queryGoodsList(String subTitle , Integer category2 ,Integer isOnSale , Integer currentPage ,Integer pageSize ,Integer orderByCreate) {
         Map<String, Object> result;
         Map<String, Object> queryCondition = new HashMap<>();
         if(subTitle != null && !"".equals(subTitle.trim())){
@@ -106,8 +106,8 @@ public class GoodsController {
                 logger.error("查询参数中文乱码");
             }
         }
-        if(catagory2 != null && catagory2 != 0){
-            queryCondition.put("catagory2" ,catagory2);
+        if(category2 != null && category2 != 0){
+            queryCondition.put("category2" ,category2);
         }
         if(isOnSale != null){
             if(isOnSale == 1){
@@ -291,11 +291,11 @@ public class GoodsController {
             GoodsStandardPOJO goodsStandard = new GoodsStandardPOJO();
             try {
                 //类目信息
-                Map catagoryInfo = (Map) goodsInfo.get("categoryInfo");
-                goods.setCatagory1((Integer) catagoryInfo.get("category1"));
-                goods.setCatagory2((Integer) catagoryInfo.get("category2"));
-                goods.setCatagory3((Integer) catagoryInfo.get("category3"));
-                goods.setCatagory4((Integer) catagoryInfo.get("category4"));
+                Map categoryInfo = (Map) goodsInfo.get("categoryInfo");
+                goods.setCategory1((Integer) categoryInfo.get("category1"));
+                goods.setCategory2((Integer) categoryInfo.get("category2"));
+                goods.setCategory3((Integer) categoryInfo.get("category3"));
+                goods.setCategory4((Integer) categoryInfo.get("category4"));
                 //基本属性
                 Map basicInfo = (Map) goodsInfo.get("basicInfo");
                 goods.setTitle((String) basicInfo.get("title"));
@@ -456,10 +456,10 @@ public class GoodsController {
         Map<String, Object> basicInfo = new HashMap<>();
         Map<String, Object> picInfo = new HashMap<>();
         //类目信息
-        categoryInfo.put("category1", goods.getCatagory1());
-        categoryInfo.put("category2", goods.getCatagory2());
-        categoryInfo.put("category3", goods.getCatagory3());
-        categoryInfo.put("category4", goods.getCatagory4());
+        categoryInfo.put("category1", goods.getCategory1());
+        categoryInfo.put("category2", goods.getCategory2());
+        categoryInfo.put("category3", goods.getCategory3());
+        categoryInfo.put("category4", goods.getCategory4());
         //基本信息
         basicInfo.put("title", goods.getTitle());
         basicInfo.put("subTitle", goods.getSubtitle());
