@@ -1,7 +1,6 @@
 package com.quxin.freshfun.service.goods;
 
 import com.quxin.freshfun.model.goods.GoodsPOJO;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.List;
 import java.util.Map;
