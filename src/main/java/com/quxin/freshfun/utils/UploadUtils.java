@@ -3,7 +3,9 @@ package com.quxin.freshfun.utils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 
@@ -21,7 +23,8 @@ public class UploadUtils {
      * @return 返回上传路径
      * @throws IOException 获取图片InputStream异常
      */
-    public static String uploadPic(HttpServletRequest request) throws IOException {
+    public static Map<String, Object> uploadPic(HttpServletRequest request) throws IOException {
+        Map<String ,Object> result = new HashMap<>();
         String imgPath = "";
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         Iterator<String> iter = multiRequest.getFileNames();
@@ -31,9 +34,15 @@ public class UploadUtils {
                 if (!"".equals(file.getOriginalFilename())) {
                     if (filterFileType(file.getOriginalFilename())) {
                         String picName = file.getOriginalFilename();
-                        String editFileName = System.currentTimeMillis() + picName.substring(picName.lastIndexOf("."));
+                        BufferedImage buff = ImageIO.read(file.getInputStream());
+                        Integer width = buff.getWidth();
+                        Integer height = buff.getHeight();
+                        String editFileName = System.currentTimeMillis() + "_" + width + "x" + height + picName.substring(picName.lastIndexOf("."));
                         String path = createDirs() + "/" + editFileName;
                         imgPath = "http://pic1.freshfun365.com" + OSSUtils.uploadPic(file.getInputStream(), path);
+                        result.put("imgPath", imgPath);
+                        result.put("imgWidth" , width);
+                        result.put("imgHeight" , height);
                         break;
                     } else {
                         return null;
@@ -43,7 +52,7 @@ public class UploadUtils {
                 return null;
             }
         }
-        return imgPath;
+        return result;
     }
 
     /**
