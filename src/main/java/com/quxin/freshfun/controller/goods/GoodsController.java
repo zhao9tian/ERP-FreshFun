@@ -56,7 +56,7 @@ public class GoodsController {
         if (goodsPOJO != null) {
             goodsPOJO.setAppId(0L);//默认
             goodsPOJO.setShopId(0L);//默认
-            if(goodsInfo.get("goodsId") != null && goodsInfo.get("goodsId") != 0){
+            if(goodsInfo.get("goodsId") != null){
                 goodsPOJO.setGoodsId(Long.valueOf((Integer)goodsInfo.get("goodsId")));
                 goodsPOJO.getGoodsStandardPOJO().setGoodsId(Long.valueOf((Integer)goodsInfo.get("goodsId")));
                 if (goodsService.modifyGoods(goodsPOJO)) {
