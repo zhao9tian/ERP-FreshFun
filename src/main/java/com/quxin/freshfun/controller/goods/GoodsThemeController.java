@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.quxin.freshfun.model.goods.ThemeOut;
 import com.quxin.freshfun.model.goods.ThemePOJO;
 import com.quxin.freshfun.model.goods.ThemeSortOut;
+import com.quxin.freshfun.service.goods.GoodsService;
 import com.quxin.freshfun.service.goods.GoodsSortService;
 import com.quxin.freshfun.service.goods.GoodsThemeService;
 import com.quxin.freshfun.utils.ResultUtil;
@@ -17,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * 专题controller
@@ -38,6 +37,9 @@ public class GoodsThemeController {
     @Autowired
     private GoodsSortService goodsSortService;
 
+    @Autowired
+    private GoodsService goodsService;
+
     /**
      * 保存专题
      *
@@ -54,11 +56,26 @@ public class GoodsThemeController {
             String themeName = (String) themeParam.get("themeName");
             String themeImg = (String) themeParam.get("themeImg");
             String themeDes = (String) themeParam.get("themeDes");
-            List goodsIds;
+            List<Integer> goodsIds;
             try {
-                goodsIds = (List) themeParam.get("goodsIds");//TODO
+                goodsIds = (List<Integer>) themeParam.get("goodsIds");
+                if(goodsIds != null && goodsIds.size() != 0){
+                    Integer listSize = goodsIds.size() ;
+                    Set<Integer> set = new HashSet<>(goodsIds);
+                    if(set.size() != listSize){
+                        return ResultUtil.fail(1004 , "商品Id重复");
+                    }else{
+                        for (Integer goodsId : goodsIds) {
+                            Long id = Long.valueOf(goodsId);
+                            if (goodsService.queryGoodsByGoodsId(id) == null) {
+                                return ResultUtil.fail(1004 , "Id为" + goodsId + "的商品不存在");
+                            }
+                        }
+                    }
+                }else{
+                    return ResultUtil.fail(1004 , "专题下未传入商品Id");
+                }
             }catch (ClassCastException e){
-                logger.error("商品Id传入格式有误");
                 return ResultUtil.fail(1004 , "商品Id传入格式有误");
             }
             ThemePOJO theme = new ThemePOJO();
@@ -89,7 +106,6 @@ public class GoodsThemeController {
                 }
             }
         } else {
-            logger.error("参数对象为空");
             result = ResultUtil.fail(1004, "参数对象为空");
         }
         return result;
@@ -120,7 +136,6 @@ public class GoodsThemeController {
                 result = ResultUtil.fail(1004, "themeId为:" + themeId + "的专题不存在");
             }
         } else {
-            logger.error("themeId为空");
             result = ResultUtil.fail(1004, "themeId为空");
         }
         return result;
@@ -148,7 +163,6 @@ public class GoodsThemeController {
             }
             result.put("status" , status);
         } else {
-            logger.error("themeId为空");
             result = ResultUtil.fail(1004, "themeId为空");
         }
         return result;
@@ -307,4 +321,5 @@ public class GoodsThemeController {
         }
         return result;
     }
+
 }

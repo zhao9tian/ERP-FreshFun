@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,37 +32,30 @@ public class GoodsThemeServiceImpl implements GoodsThemeService {
     @Override
     public Boolean addTheme(ThemePOJO themePOJO) {
         if (validateTheme(themePOJO)) {
-            //TODO 需要检验goodsIds , 专题同名校验
-            if (isExistThemeName(themePOJO.getThemeName())) {
-                return false;
-            }
-            if (themePOJO.getGoodsIdList() != null && !"".equals(themePOJO.getGoodsIdList())) {
-                List<Long> goodsIds = new ArrayList<>();
-                try {
-                    goodsIds = JSON.parseArray(themePOJO.getGoodsIdList(), Long.class);
-                }catch (Exception e){
-                    logger.error("传入商品Id格式有误",e);
-                }
-                Set<Long> set = new HashSet<>(goodsIds);
-                if (set.size() != goodsIds.size()) {
-                    logger.error("专题下的商品Id重复");
-                    return false;
-                } else {
-                    for (Object goodsId : goodsIds) {
-                        if (goodsService.queryGoodsByGoodsId((Long) goodsId) == null) {
-                            return false;
+            if (!isExistThemeName(themePOJO.getThemeName())) {
+                if (themePOJO.getGoodsIdList() != null && !"".equals(themePOJO.getGoodsIdList())) {
+                    try {
+                        List<Long> goodsIds = JSON.parseArray(themePOJO.getGoodsIdList(), Long.class);
+                        if (!checkGoodsIdRepeatAndExist(goodsIds)) {
+                            themePOJO.setIsForbidden(0);
+                            themePOJO.setCreated(System.currentTimeMillis() / 1000);
+                            themePOJO.setUpdated(System.currentTimeMillis() / 1000);
+                            Integer record = goodsThemeMapper.insertTheme(themePOJO);
+                            if (record != null && record == 1) {
+                                return true;
+                            } else {
+                                logger.error("新增专题失败");
+                            }
                         }
+                    } catch (Exception e) {
+                        logger.error("传入商品Id格式有误", e);
+                        return false ;
                     }
+                }else{
+                    logger.error("专题下面没有商品Id");
                 }
-            }
-            themePOJO.setIsForbidden(0);
-            themePOJO.setCreated(System.currentTimeMillis() / 1000);
-            themePOJO.setUpdated(System.currentTimeMillis() / 1000);
-            Integer record = goodsThemeMapper.insertTheme(themePOJO);
-            if (record != null && record == 1) {
-                return true;
-            } else {
-                logger.error("新增专题失败");
+            }else{
+                logger.error("专题名称重复");
             }
         } else {
             logger.error("专题参数校验出错");
@@ -90,12 +82,24 @@ public class GoodsThemeServiceImpl implements GoodsThemeService {
     public Boolean modifyTheme(ThemePOJO themePOJO) {
         if (themePOJO != null) {
             if (themePOJO.getThemeId() != null && themePOJO.getThemeId() != 0) {
-                themePOJO.setUpdated(System.currentTimeMillis() / 1000);
-                Integer record = goodsThemeMapper.updateTheme(themePOJO);
-                if (record != null && record == 1) {
-                    return true;
-                } else {
-                    logger.error("编辑专题失败");
+                if (themePOJO.getGoodsIdList() != null && !"".equals(themePOJO.getGoodsIdList())) {
+                    try {
+                        List<Long> goodsIds = JSON.parseArray(themePOJO.getGoodsIdList(), Long.class);
+                        if (!checkGoodsIdRepeatAndExist(goodsIds)) {
+                            themePOJO.setUpdated(System.currentTimeMillis() / 1000);
+                            Integer record = goodsThemeMapper.updateTheme(themePOJO);
+                            if (record != null && record == 1) {
+                                return true;
+                            } else {
+                                logger.error("编辑专题失败");
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error("传入商品Id格式有误", e);
+                        return false;
+                    }
+                }else{
+                    logger.error("专题下面没有商品Id");
                 }
             } else {
                 logger.error("专题Id为空");
@@ -193,4 +197,27 @@ public class GoodsThemeServiceImpl implements GoodsThemeService {
         }
         return true;
     }
+
+    /**
+     * 校验商品ID是否重复、存在
+     *
+     * @param goodsIds 商品Id列表
+     * @return true:商品ID重复,或者已经存在  false:没有重复的或者已经存在的商品ID
+     */
+    private Boolean checkGoodsIdRepeatAndExist(List<Long> goodsIds) {
+        Set<Long> set = new HashSet<>(goodsIds);
+        if (set.size() != goodsIds.size()) {
+            logger.error("专题下的商品Id重复");
+            return true;
+        } else {
+            for (Object goodsId : goodsIds) {
+                if (goodsService.queryGoodsByGoodsId((Long) goodsId) == null) {
+                    logger.error("Id为" + goodsId + "的商品不存在");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

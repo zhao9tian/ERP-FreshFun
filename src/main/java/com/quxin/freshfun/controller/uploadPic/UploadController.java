@@ -31,7 +31,6 @@ public class UploadController {
     @RequestMapping(value = "/uploadPic", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> uploadPic(HttpServletRequest request) {
-        String imgPath;
         Map<String, Object> result;
         try {
             Map<String , Object> imgInfo = UploadUtils.uploadPic(request);
