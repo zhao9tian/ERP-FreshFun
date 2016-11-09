@@ -64,4 +64,11 @@ public interface OrderService {
      * @return
      */
     Integer orderDel(Long orderId);
+
+    /**
+     * 订单退款
+     * @param orderId  订单编号
+     * @return
+     */
+    String orderRefunds(Long orderId,String sign);
 }

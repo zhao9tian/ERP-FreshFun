@@ -75,6 +75,10 @@ public class OrderDetailsPOJO {
      * 扩展信息
      */
     private String extra;
+    /**
+     * 微信返回的订单编号
+     */
+    private String transactionId;
 
     private GoodsOrderOut goods;
     private String deliveryName;
@@ -92,6 +96,14 @@ public class OrderDetailsPOJO {
      * 订单用户昵称
      */
     private String nickName;
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
 
     public String getCostMoney() {
         return costMoney;

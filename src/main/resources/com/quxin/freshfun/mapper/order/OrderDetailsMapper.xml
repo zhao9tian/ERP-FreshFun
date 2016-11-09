@@ -39,7 +39,12 @@
     <result column="remark" jdbcType="VARCHAR" property="remark"/>
     <result column="delivery_remark" jdbcType="VARCHAR" property="deliveryRemark"/>
     <result column="extra" jdbcType="VARCHAR" property="extra"/>
+    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId"/>
     <association property="goods" column="goods_id" select="com.quxin.freshfun.dao.GoodsMapper.selectGoodsById"></association>
+  </resultMap>
+
+  <resultMap id="UserIdResultMap" type="java.lang.Long">
+    <result column="id" jdbcType="BIGINT" property="id"/>
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -79,7 +84,7 @@
 
   <!--订单发货-->
   <update id="deliverOrder" parameterType="java.util.Map">
-    update order_details set delivery_num=#{deliveryNum},order_status = 50,delivery_name=#{deliveryName},delivery_time=#{deliveryTime},goods_cost=#{goodsCost} where id = #{orderId}
+    update order_details set delivery_num=#{deliveryNum},order_status=50,delivery_name=#{deliveryName},delivery_time=#{deliveryTime},goods_cost=#{goodsCost} where id = #{orderId}
   </update>
 
   <!--订单备注-->
@@ -92,4 +97,23 @@
     update order_details set is_deleted = 1 where id = #{orderId}
   </update>
 
+  <!--退款-->
+  <!--根据订单编号查询微信返回的订单编号-->
+  <select id="selectOrderTransactionIdInfo" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.order.OrderDetailsPOJO">
+    select `id`,`order_id` as `orderId`,`transaction_id` as `transactionId`,`actual_price` as `actualPrice` from order_details where id = #{orderId}
+  </select>
+  <!--根据父级订单编号查询订单信息-->
+  <select id="selectOrderIdByParentId" parameterType="java.lang.Long" resultMap="UserIdResultMap">
+    select `id`, from order_details where user_id = #{userId}
+  </select>
+
+  <!--查询订单支付金额-->
+  <select id="selectOrderPayPrice" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select `actual_price` as `actualPrice` from order_details where id = #{orderId}
+  </select>
+
+  <!--修改商品退款状态-->
+  <update id="updateOrderRefundStatus">
+    update order_details set order_status = 20,update_date=#{updateDate} where id = #{orderId}
+  </update>
 </mapper>

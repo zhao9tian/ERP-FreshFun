@@ -226,6 +226,37 @@ public class OrderController {
     }
 
     /**
+     * 订单退款
+     * @param orderId 订单编号
+     * @return
+     */
+    @RequestMapping("/orderRefunds")
+    @ResponseBody
+    public Map<String,Object> orderRefunds(Long orderId,String sign){
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        if(orderId == null || orderId == 0 || StringUtils.isEmpty(sign)){
+            map.put("code",1004);
+            map.put("msg","传入参数不正确");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        String refundResult = orderService.orderRefunds(orderId, sign);
+        if(refundResult == null || "FAIL".equals(refundResult)){
+            map.put("code",1004);
+            map.put("msg","退款出现异常");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        map.put("code",1001);
+        map.put("msg","请求成功");
+        resultMap.put("status",map);
+        resultMap.put("data",refundResult);
+        return resultMap;
+    }
+
+
+    /**
      * 后台设置金额格式
      * @param order 订单内容
      * @return 订单列表

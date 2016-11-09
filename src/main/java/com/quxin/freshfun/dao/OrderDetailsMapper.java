@@ -48,6 +48,35 @@ public interface OrderDetailsMapper {
     Integer selectFinishOrderCount();
 
     /**
+     * 根据订单编号查询微信返回的订单编号
+     * @param orderId
+     * @return
+     */
+    OrderDetailsPOJO selectOrderTransactionIdInfo(Long orderId);
+
+    /**
+     * 根据父级订单编号查询订单编号
+     * @param parentOrderId 父级订单编号
+     * @return
+     */
+    List<Long> selectOrderIdByParentId(Long parentOrderId);
+
+    /**
+     * 根据订单编号查询支付金额
+     * @param orderId
+     * @return
+     */
+    Integer selectOrderPayPrice(Long orderId);
+
+    /**
+     * 修改订单退款状态
+     * @param orderId
+     * @param updateDate
+     * @return
+     */
+    Integer updateOrderRefundStatus(@Param("orderId") Long orderId,@Param("updateDate") Long updateDate);
+
+    /**
      * 发货
      * @param map
      * @return
