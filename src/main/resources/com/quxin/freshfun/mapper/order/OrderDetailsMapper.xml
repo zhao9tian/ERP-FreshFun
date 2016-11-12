@@ -69,6 +69,10 @@
   <select id="selectFinishOrderCount" resultType="java.lang.Integer">
     select count(id) from order_details where order_status in (70,100) and is_deleted = 0
   </select>
+  <!--查询订单数目-->
+  <select id="selectOrderNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(*) from order_details where order_status = #{orderStatus} and is_deleted = 0
+  </select>
 
   <!--根据订单状态查询订单列表-->
   <select id="selectOrderByOrderStatus" resultMap="BaseResultMap">
@@ -100,7 +104,7 @@
   <!--退款-->
   <!--根据订单编号查询微信返回的订单编号-->
   <select id="selectOrderTransactionIdInfo" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.order.OrderDetailsPOJO">
-    select `id`,`order_id` as `orderId`,`transaction_id` as `transactionId`,`actual_price` as `actualPrice` from order_details where id = #{orderId}
+    select `id`,`order_id` as `orderId`,`payment_method` as `paymentMethod`,`transaction_id` as `transactionId`,`actual_price` as `actualPrice` from order_details where id = #{orderId}
   </select>
   <!--根据父级订单编号查询订单信息-->
   <select id="selectOrderIdByParentId" parameterType="java.lang.Long" resultMap="UserIdResultMap">

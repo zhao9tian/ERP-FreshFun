@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quxin.freshfun.dao.RefundMapper" >
+  <resultMap id="BaseResultMap" type="com.quxin.freshfun.model.order.RefundPOJO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_details_id" property="orderId" jdbcType="BIGINT" />
+    <result column="service_type" property="serviceType" jdbcType="VARCHAR" />
+    <result column="return_reason" property="returnReason" jdbcType="VARCHAR" />
+    <result column="return_money" property="returnMoney" jdbcType="INTEGER" />
+    <result column="return_des" property="returnDes" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="BIGINT" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="BIGINT" />
+  </resultMap>
+    <!--根据订单编号查询退款详情-->
+    <select id="selectRefundByOrderId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.order.RefundPOJO">
+        select  `service_type` as `serviceType`,
+                `return_reason` as `returnReason`,
+                `return_money` as `returnMoney`,
+                `return_des` as `returnDes`
+                from refund where order_details_id = #{orderId} and is_delete = 0
+    </select>
+</mapper>

@@ -2,14 +2,15 @@ package com.quxin.freshfun.service.order.impl;
 
 import com.google.common.collect.Maps;
 import com.quxin.freshfun.dao.OrderDetailsMapper;
+import com.quxin.freshfun.dao.RefundMapper;
 import com.quxin.freshfun.dao.UserBaseMapper;
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
+import com.quxin.freshfun.model.order.RefundOut;
+import com.quxin.freshfun.model.order.RefundPOJO;
 import com.quxin.freshfun.model.order.WxResult;
 import com.quxin.freshfun.model.user.UserInfoOutParam;
 import com.quxin.freshfun.service.order.OrderService;
-import com.quxin.freshfun.utils.ConstantUtil;
-import com.quxin.freshfun.utils.WxUtlis;
-import com.quxin.freshfun.utils.WzConstantUtil;
+import com.quxin.freshfun.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +32,23 @@ public class OrderImpl implements OrderService {
     private OrderDetailsMapper orderDetailsMapper;
     @Autowired
     private UserBaseMapper userBaseMapper;
+    @Autowired
+    private RefundMapper refundMapper;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+
+    //待支付
+    public final static Integer AWAIT_PAYMENT = 10;
+    //待发货
+    public final static Integer AWAIT_DELIVERY = 30;
+    //待收货
+    public final static Integer AWAIT_TAKE_GOODS = 50;
+    //退款中
+    public final static Integer REFUNDING = 40;
+    //退款完成
+    public final static Integer WAIT_DELIVERY = 20;
+    //关闭
+    public final static Integer CLOSE_ORDER = 15;
 
     /**
      * 查询所有订单信息
@@ -153,25 +170,69 @@ public class OrderImpl implements OrderService {
         return orderDetailsMapper.orderDel(orderId);
     }
 
+    @Override
+    public Map<String, Object> getOrderNum() {
+        Map<String,Object> map = new HashMap<>();
+        //等待付款
+        map.put("awaitPayment",orderDetailsMapper.selectOrderNum(AWAIT_PAYMENT));
+        //待发货
+        map.put("awaitDelivery",orderDetailsMapper.selectOrderNum(AWAIT_DELIVERY));
+        //待收货
+        map.put("takeGoods",orderDetailsMapper.selectOrderNum(AWAIT_TAKE_GOODS));
+        //退款中
+        map.put("refunding",orderDetailsMapper.selectOrderNum(REFUNDING));
+        //退款完成
+        map.put("waitDelivery",orderDetailsMapper.selectOrderNum(WAIT_DELIVERY));
+        //订单关闭
+        map.put("closeOrder",orderDetailsMapper.selectOrderNum(CLOSE_ORDER));
+        return map;
+    }
+
+    /**
+     * 根据订单编号查询退款详情
+     * @param orderId
+     * @return
+     */
+    @Override
+    public RefundOut getRefundInfo(Long orderId) throws BusinessException {
+        if(orderId == null)
+            throw new BusinessException("查询退款详情订单编号为null");
+        RefundPOJO refundPOJO = refundMapper.selectRefundByOrderId(orderId);
+        RefundOut refundOut = null;
+        if(refundPOJO != null) {
+            refundOut = new RefundOut();
+            refundOut.setResult(refundPOJO.getServiceType());
+            refundOut.setMoney(MoneyFormatUtils.getMoneyFromInteger(refundPOJO.getReturnMoney()));
+            refundOut.setReason(refundPOJO.getReturnReason());
+            refundOut.setRemark(refundPOJO.getReturnDes());
+        }
+        return refundOut;
+    }
+
     /**
      * 订单退款
      * @param orderId
      * @return
      */
     @Override
-    public String orderRefunds(Long orderId,String sign) {
-        if(orderId == null || orderId == 0 || StringUtils.isEmpty(sign))
-            return null;
+    public String orderRefunds(Long orderId) throws BusinessException {
+        if(orderId == null)
+            throw new BusinessException("退款编号不能为空");
+
         String refundResult = null;
-        KeyStore keyStore = getKeyStore(sign);
-        //发送请求
-        switch (sign){
-            case "wz":
-                refundResult = orderDisposal(orderId,keyStore,WzConstantUtil.APP_ID,WzConstantUtil.PARTNER,WzConstantUtil.PARTNER_KEY);
-                break;
-            case "app":
-                refundResult = orderDisposal(orderId,keyStore, ConstantUtil.APP_ID,ConstantUtil.PARTNER,ConstantUtil.PARTNER_KEY);
-                break;
+        //查询订单信息
+        OrderDetailsPOJO orderDetails = orderDetailsMapper.selectOrderTransactionIdInfo(orderId);
+        if(orderDetails != null) {
+            KeyStore keyStore = getKeyStore(orderDetails.getPaymentMethod());
+            //发送请求
+            switch (orderDetails.getPaymentMethod()) {
+                case 1:
+                    refundResult = orderDisposal(orderDetails, keyStore, WzConstantUtil.APP_ID, WzConstantUtil.PARTNER, WzConstantUtil.PARTNER_KEY);
+                    break;
+                case 2:
+                    refundResult = orderDisposal(orderDetails, keyStore, ConstantUtil.APP_ID, ConstantUtil.PARTNER, ConstantUtil.PARTNER_KEY);
+                    break;
+            }
         }
         return refundResult;
     }
@@ -181,17 +242,17 @@ public class OrderImpl implements OrderService {
      * @param sign
      * @return
      */
-    private KeyStore getKeyStore(String sign){
+    private KeyStore getKeyStore(Integer sign){
         InputStream instream = null;
         KeyStore keyStore = null;
         try {
             switch (sign){
-                case "wz":
+                case 1:
                     keyStore = KeyStore.getInstance("PKCS12");
                     instream = OrderImpl.class.getClassLoader().getResourceAsStream("wxconfig/apiclient_cert_wz.p12");
                     keyStore.load(instream, WzConstantUtil.PARTNER.toCharArray());
                     break;
-                case "app":
+                case 2:
                     keyStore = KeyStore.getInstance("PKCS12");
                     instream = OrderImpl.class.getClassLoader().getResourceAsStream("wxconfig/apiclient_cert_app.p12");
                     keyStore.load(instream, ConstantUtil.PARTNER.toCharArray());
@@ -217,15 +278,9 @@ public class OrderImpl implements OrderService {
 
     /**
      * 处理订单,发送请求
-     * @param orderId
+     * @param orderDetails
      */
-    private String orderDisposal(Long orderId,KeyStore keyStore,String appId,String partner,String partnerKey) {
-        OrderDetailsPOJO orderDetails = orderDetailsMapper.selectOrderTransactionIdInfo(orderId);
-        if(orderDetails == null)
-            return null;
-        if(StringUtils.isEmpty(orderDetails.getTransactionId()) || orderDetails.getActualPrice() == null)
-            return null;
-
+    private String orderDisposal(OrderDetailsPOJO orderDetails,KeyStore keyStore,String appId,String partner,String partnerKey) {
         //处理数据工具类
         RefundHandle refundHandle = new RefundHandle();
         String noncestr = WxUtlis.getNonceStr();

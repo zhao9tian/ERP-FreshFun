@@ -23,6 +23,12 @@ public interface OrderDetailsMapper {
     Integer selectBackstageOrdersCount();
 
     /**
+     * 查询订单数量
+     * @return
+     */
+    Integer selectOrderNum(Integer orderStatus);
+
+    /**
      * 根据订单状态查询订单列表
      * @return
      */

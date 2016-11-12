@@ -1,6 +1,8 @@
 package com.quxin.freshfun.service.order;
 
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
+import com.quxin.freshfun.model.order.RefundOut;
+import com.quxin.freshfun.utils.BusinessException;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -70,5 +72,17 @@ public interface OrderService {
      * @param orderId  订单编号
      * @return
      */
-    String orderRefunds(Long orderId,String sign);
+    String orderRefunds(Long orderId) throws BusinessException;
+
+    /**
+     * 后去订单数量
+     * @return
+     */
+    Map<String,Object> getOrderNum();
+
+    /**
+     * 根据订单编号查询退款详情
+     * @return
+     */
+    RefundOut getRefundInfo(Long orderId) throws BusinessException;
 }

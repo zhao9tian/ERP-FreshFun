@@ -2,7 +2,10 @@ package com.quxin.freshfun.controller.order;
 
 import com.quxin.freshfun.model.goods.GoodsOrderOut;
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
+import com.quxin.freshfun.model.order.RefundOut;
+import com.quxin.freshfun.model.order.RefundPOJO;
 import com.quxin.freshfun.service.order.OrderService;
+import com.quxin.freshfun.utils.BusinessException;
 import com.quxin.freshfun.utils.MoneyFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -89,6 +92,87 @@ public class OrderController {
         resultData.put("list",order);
         resultMap.put("status",map);
         resultMap.put("data",resultData);
+        return resultMap;
+    }
+
+    /**
+     * 获取订单数目
+     * @return
+     */
+    @RequestMapping("/getOrderNum")
+    @ResponseBody
+    public Map<String,Object> getOrderNum(){
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        Map<String, Object> orderNumList = orderService.getOrderNum();
+        map.put("code",1001);
+        map.put("msg","请求成功");
+        resultMap.put("status",map);
+        resultMap.put("data",orderNumList);
+        return resultMap;
+    }
+
+    /**
+     * 审核退款
+     * @return
+     */
+    @RequestMapping("/updateRefundInfo")
+    @ResponseBody
+    public Map<String,Object> updateRefundInfo(Long orderId,Integer action) throws BusinessException {
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        if(orderId == null || action == null){
+            map.put("code",1004);
+            map.put("msg","传入待参数不正确");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        if(action == 1){
+            String refundResult = orderService.orderRefunds(orderId);
+            if(refundResult == null || "FAIL".equals(refundResult)){
+                map.put("code",1004);
+                map.put("msg","退款订单不存在");
+                resultMap.put("status",map);
+                return resultMap;
+            }
+            map.put("code",1001);
+            map.put("msg","请求成功");
+            resultMap.put("status",map);
+            resultMap.put("data",refundResult);
+            return resultMap;
+        }
+        map.put("code",1001);
+        map.put("msg","驳回退款成功");
+        resultMap.put("status",map);
+        return resultMap;
+    }
+
+    /**
+     * 查看退款详情
+     * @return
+     */
+    @RequestMapping("/getRefundInfo")
+    @ResponseBody
+    public Map<String,Object> getRefundInfo(Long orderId) throws BusinessException {
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        if(orderId == null){
+            map.put("code",1004);
+            map.put("msg","传入待参数不正确");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        RefundOut refundInfo = orderService.getRefundInfo(orderId);
+        if(refundInfo == null){
+            map.put("code",1004);
+            map.put("msg","查询数据不存在");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        map.put("code",1001);
+        map.put("msg","请求成功");
+        resultMap.put("status",map);
+        resultMap.put("data",refundInfo);
         return resultMap;
     }
 
@@ -222,36 +306,6 @@ public class OrderController {
             resultMap.put("status",map);
             resultMap.put("data",status);
         }
-        return resultMap;
-    }
-
-    /**
-     * 订单退款
-     * @param orderId 订单编号
-     * @return
-     */
-    @RequestMapping("/orderRefunds")
-    @ResponseBody
-    public Map<String,Object> orderRefunds(Long orderId,String sign){
-        Map<String, Object>  map = new HashMap<>();
-        Map<String, Object>  resultMap = new HashMap<>();
-        if(orderId == null || orderId == 0 || StringUtils.isEmpty(sign)){
-            map.put("code",1004);
-            map.put("msg","传入参数不正确");
-            resultMap.put("status",map);
-            return resultMap;
-        }
-        String refundResult = orderService.orderRefunds(orderId, sign);
-        if(refundResult == null || "FAIL".equals(refundResult)){
-            map.put("code",1004);
-            map.put("msg","退款出现异常");
-            resultMap.put("status",map);
-            return resultMap;
-        }
-        map.put("code",1001);
-        map.put("msg","请求成功");
-        resultMap.put("status",map);
-        resultMap.put("data",refundResult);
         return resultMap;
     }
 
