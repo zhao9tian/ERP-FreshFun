@@ -281,6 +281,8 @@ public class OrderImpl implements OrderService {
      * @param orderDetails
      */
     private String orderDisposal(OrderDetailsPOJO orderDetails,KeyStore keyStore,String appId,String partner,String partnerKey) {
+        if(StringUtils.isEmpty(orderDetails.getTransactionId()))
+            return null;
         //处理数据工具类
         RefundHandle refundHandle = new RefundHandle();
         String noncestr = WxUtlis.getNonceStr();
