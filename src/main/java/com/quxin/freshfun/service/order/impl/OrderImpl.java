@@ -182,7 +182,7 @@ public class OrderImpl implements OrderService {
         //退款中
         map.put("refunding",orderDetailsMapper.selectOrderNum(REFUNDING));
         //退款完成
-        map.put("waitDelivery",orderDetailsMapper.selectOrderNum(WAIT_DELIVERY));
+        map.put("refunded",orderDetailsMapper.selectOrderNum(WAIT_DELIVERY));
         //订单关闭
         map.put("closeOrder",orderDetailsMapper.selectOrderNum(CLOSE_ORDER));
         return map;
@@ -235,6 +235,31 @@ public class OrderImpl implements OrderService {
             }
         }
         return refundResult;
+    }
+
+    /**
+     * 驳回订单状态
+     * @param orderId
+     * @return
+     */
+    @Override
+    public Integer rebutRefunds(Long orderId) throws BusinessException {
+        if (orderId == null)
+            throw new BusinessException("驳回退款订单号为null");
+        String orderState = orderDetailsMapper.selectOrderRefundState(orderId);
+        Integer state = 0;
+        if(!StringUtils.isEmpty(orderState)){
+            //修改订单状态
+            Long currentDate = System.currentTimeMillis()/1000;
+            Map<String,Object> map = new HashMap<>();
+            map.put("orderStatus",orderState);
+            map.put("updateDate",currentDate);
+            map.put("orderId",orderId);
+            state = orderDetailsMapper.updateOrderState(map);
+            if(state <= 0)
+                throw new BusinessException("驳回退款申请失败");
+        }
+        return state;
     }
 
     /**

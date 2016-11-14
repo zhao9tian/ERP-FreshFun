@@ -75,6 +75,12 @@ public interface OrderService {
     String orderRefunds(Long orderId) throws BusinessException;
 
     /**
+     * 驳回退款
+     * @return
+     */
+    Integer rebutRefunds(Long orderId) throws BusinessException;
+
+    /**
      * 后去订单数量
      * @return
      */

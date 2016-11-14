@@ -101,4 +101,17 @@ public interface OrderDetailsMapper {
      * @return
      */
     Integer orderDel(Long orderId);
+
+    /**
+     * 查询订单退款之前状态
+     * @return
+     */
+    String selectOrderRefundState(Long orderId);
+
+    /**
+     * 修改订单状体
+     * @param map 参数集合
+     * @return
+     */
+    Integer updateOrderState(Map<String,Object> map);
 }

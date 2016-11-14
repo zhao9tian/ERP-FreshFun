@@ -127,23 +127,34 @@ public class OrderController {
             resultMap.put("status",map);
             return resultMap;
         }
-        if(action == 1){
-            String refundResult = orderService.orderRefunds(orderId);
-            if(refundResult == null || "FAIL".equals(refundResult)){
-                map.put("code",1004);
-                map.put("msg","退款订单不存在");
+        switch (action){
+            case 0:
+                Integer state = orderService.rebutRefunds(orderId);
+                if(state == 0){
+                    map.put("code",1004);
+                    map.put("msg","申请退款失败");
+                    resultMap.put("status",map);
+                    return resultMap;
+                }
+                map.put("code",1001);
+                map.put("msg","请求成功");
                 resultMap.put("status",map);
-                return resultMap;
-            }
-            map.put("code",1001);
-            map.put("msg","请求成功");
-            resultMap.put("status",map);
-            resultMap.put("data",refundResult);
-            return resultMap;
+                resultMap.put("data",state);
+                break;
+            case 1:
+                String refundResult = orderService.orderRefunds(orderId);
+                if(refundResult == null || "FAIL".equals(refundResult)){
+                    map.put("code",1004);
+                    map.put("msg","退款订单不存在");
+                    resultMap.put("status",map);
+                    return resultMap;
+                }
+                map.put("code",1001);
+                map.put("msg","请求成功");
+                resultMap.put("status",map);
+                resultMap.put("data",refundResult);
+                break;
         }
-        map.put("code",1001);
-        map.put("msg","驳回退款成功");
-        resultMap.put("status",map);
         return resultMap;
     }
 

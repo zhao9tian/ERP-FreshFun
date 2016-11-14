@@ -55,7 +55,7 @@
 
   <!--查询所有订单-->
   <select id="selectBackstageOrders" resultMap="BaseResultMap">
-    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
+    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
   </select>
   <!--查询所有订单数量-->
   <select id="selectBackstageOrdersCount" resultType="java.lang.Integer" >
@@ -63,7 +63,7 @@
   </select>
   <!--查询已完成订单-->
   <select id="selectFinishOrder" resultMap="BaseResultMap">
-    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where order_status in (70,100) and is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
+    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where order_status in (70,100) and is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
   </select>
 
   <select id="selectFinishOrderCount" resultType="java.lang.Integer">
@@ -76,7 +76,7 @@
 
   <!--根据订单状态查询订单列表-->
   <select id="selectOrderByOrderStatus" resultMap="BaseResultMap">
-    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`name`,`tel`,`city`,`address`,`create_date`
+    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`name`,`tel`,`city`,`address`,`create_date`
     from order_details where is_deleted = 0 and order_status = #{orderStatus}
     order by create_date desc
     limit #{currentPage},#{pageSize}
@@ -119,5 +119,14 @@
   <!--修改商品退款状态-->
   <update id="updateOrderRefundStatus">
     update order_details set order_status = 20,update_date=#{updateDate} where id = #{orderId}
+  </update>
+
+  <!--根据订单编号查询退款之前状态-->
+  <select id="selectOrderRefundState" parameterType="java.lang.Long" resultType="java.lang.String">
+    select delivery_remarke from order_details where id = #{orderId}
+  </select>
+  
+  <update id="updateOrderState" >
+    update order_details set order_status = #{orderStatus},update_date=#{updateDate} where id = #{orderId}
   </update>
 </mapper>
