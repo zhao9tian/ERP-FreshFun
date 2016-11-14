@@ -91,4 +91,18 @@ public interface OrderService {
      * @return
      */
     RefundOut getRefundInfo(Long orderId) throws BusinessException;
+
+    /**
+     * 按时间区间查询订单
+     * @return
+     */
+    List<OrderDetailsPOJO> getIntervalOrder(Integer orderState,Long startTime,Long endTime) throws BusinessException;
+
+    /**
+     * 按时间区间查询已完成订单
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<OrderDetailsPOJO> findFinishIntervalOrder(Long startTime,Long endTime) throws BusinessException;
 }

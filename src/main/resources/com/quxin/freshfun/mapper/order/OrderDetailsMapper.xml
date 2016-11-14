@@ -129,4 +129,14 @@
   <update id="updateOrderState" >
     update order_details set order_status = #{orderStatus},update_date=#{updateDate} where id = #{orderId}
   </update>
+
+  <!--按时间区域查询订单-->
+  <select id="selectIntervalOrder" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select `id` as `order_id`,`user_id`,`actual_price`,`pay_time`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where is_deleted = 0 and order_status=#{orderStatus} and create_date between #{beginTime} and #{endTime}
+  </select>
+  
+  <!--按时间区域查询已完成订单-->
+  <select id="selectFinishIntervalOrder" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select `id` as `order_id`,`user_id`,`actual_price`,`pay_time`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where is_deleted = 0 and order_status in (70,100) and create_date between #{beginTime} and #{endTime}
+  </select>
 </mapper>

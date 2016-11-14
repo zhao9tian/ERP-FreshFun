@@ -210,6 +210,42 @@ public class OrderImpl implements OrderService {
     }
 
     /**
+     * 按时间区间查询订单集合
+     * @param orderState 订单状态
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return  订单集合
+     */
+    @Override
+    public List<OrderDetailsPOJO> getIntervalOrder(Integer orderState, Long startTime, Long endTime) throws BusinessException {
+        if(orderState == null || startTime == null || endTime == null)
+            throw new BusinessException("按时间区间查询订单时间查询条件出错");
+        Map<String,Object> map = new HashMap<>();
+        map.put("orderStatus",orderState);
+        map.put("beginTime",startTime);
+        map.put("endTime",endTime);
+
+        return orderDetailsMapper.selectIntervalOrder(map);
+    }
+
+    /**
+     * 按时间区间查询已完成订单
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     * @throws BusinessException
+     */
+    @Override
+    public List<OrderDetailsPOJO> findFinishIntervalOrder(Long startTime, Long endTime) throws BusinessException {
+        if(startTime == null || endTime == null)
+            throw new BusinessException("按时间查询订单参数不能为null");
+        Map<String,Object> map = new HashMap<>();
+        map.put("beginTime",startTime);
+        map.put("endTime",endTime);
+        return orderDetailsMapper.selectFinishIntervalOrder(map);
+    }
+
+    /**
      * 订单退款
      * @param orderId
      * @return
