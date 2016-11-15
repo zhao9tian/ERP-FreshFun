@@ -25,10 +25,12 @@ public class ErpRoleServiceImpl implements ErpRoleService{
      */
     @Override
     public Integer addErpRole(ErpRolePOJO erpRole) {
-        if(erpRole!=null){
+        if(erpRole==null){
             logger.warn("新增角色信息，入参有误");
             return 0;
         }
+        erpRole.setUpdated(System.currentTimeMillis()/1000);
+        erpRole.setCreated(System.currentTimeMillis()/1000);
         Integer result = erpRoleMapper.insertErpRole(erpRole);
         if(result==1){
             result = erpRoleMapper.updateErpRoleIdById(erpRole.getId());
@@ -44,4 +46,25 @@ public class ErpRoleServiceImpl implements ErpRoleService{
     public List<ErpRolePOJO> queryErpRole() {
         return erpRoleMapper.selectErpRole();
     }
+
+    /**
+     * 修改角色信息
+     * @param role 角色信息
+     * @return 受影响行数
+     */
+    @Override
+    public Integer modifyErpRoleByRoleId(ErpRolePOJO role) {
+        if(role==null||role.getRoleId()==null||role.getRoleId()==0){
+            logger.warn("修改角色信息时，入参有误！");
+            return 0;
+        }
+        role.setUpdated(System.currentTimeMillis()/1000);
+        Integer result = erpRoleMapper.updateErpRoleByRoleId(role);
+        if(result==0){
+            logger.warn("修改角色信息时，受影响行数为0");
+        }
+        return result;
+    }
+
+
 }

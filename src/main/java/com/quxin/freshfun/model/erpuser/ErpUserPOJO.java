@@ -6,13 +6,12 @@ package com.quxin.freshfun.model.erpuser;
 public class ErpUserPOJO {
     private Long id;                    //主键自增id
     private Long userId;                //用户唯一标识
-    private String userAccount;         //用户帐号
-    private String userPassword;        //用户密码
-    private String userName;            //用户昵称
-    private String userHeadImg;         //用户头像地址
-    private String userAppId;           //用户平台appid
-    private String userEmail;           //用户邮箱
-    private String userPhoneNumber;     //用户手机号
+    private String account;         //用户帐号
+    private String password;        //用户密码
+    private Byte isAdmin;           //是否是悦选超管用户
+    private String nickName;            //用户昵称
+    private Long appId;           //用户平台appid
+    private String phoneNumber;     //用户手机号
     private Long created;
     private Long updated;
     private Byte isDeleted;
@@ -33,60 +32,44 @@ public class ErpUserPOJO {
         this.userId = userId;
     }
 
-    public String getUserAccount() {
-        return userAccount;
+    public String getAccount() {
+        return account;
     }
 
-    public void setUserAccount(String userAccount) {
-        this.userAccount = userAccount;
+    public void setAccount(String account) {
+        this.account = account;
     }
 
-    public String getUserPassword() {
-        return userPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
-    public String getUserHeadImg() {
-        return userHeadImg;
+    public Long getAppId() {
+        return appId;
     }
 
-    public void setUserHeadImg(String userHeadImg) {
-        this.userHeadImg = userHeadImg;
+    public void setAppId(Long appId) {
+        this.appId = appId;
     }
 
-    public String getUserAppId() {
-        return userAppId;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setUserAppId(String userAppId) {
-        this.userAppId = userAppId;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserPhoneNumber() {
-        return userPhoneNumber;
-    }
-
-    public void setUserPhoneNumber(String userPhoneNumber) {
-        this.userPhoneNumber = userPhoneNumber;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Long getCreated() {
@@ -111,5 +94,13 @@ public class ErpUserPOJO {
 
     public void setIsDeleted(Byte isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public Byte getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Byte isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }

@@ -47,20 +47,15 @@ public class ErpUserServiceImpl implements ErpUserService{
         if (erpUser != null && erpUser.getUserId() != null && erpUser.getUserId() != 0) {
             map.put("userId", erpUser.getUserId());
             map.put("updated", System.currentTimeMillis() / 1000);
-            if (erpUser.getUserHeadImg() != null && !"".equals(erpUser.getUserHeadImg())) {
-                map.put("userHeadImg", erpUser.getUserHeadImg());
+
+            if (erpUser.getNickName() != null && !"".equals(erpUser.getNickName())) {
+                map.put("nickName", erpUser.getNickName());
             }
-            if (erpUser.getUserName() != null && !"".equals(erpUser.getUserName())) {
-                map.put("userName", erpUser.getUserName());
+            if (erpUser.getPassword() != null && !"".equals(erpUser.getPassword())) {
+                map.put("password", erpUser.getPassword());
             }
-            if (erpUser.getUserPassword() != null && !"".equals(erpUser.getUserPassword())) {
-                map.put("userPassword", erpUser.getUserPassword());
-            }
-            if (erpUser.getUserPhoneNumber() != null) {
-                map.put("userPhoneNumber", erpUser.getUserPhoneNumber());
-            }
-            if (erpUser.getUserEmail() != null) {
-                map.put("userEmail", erpUser.getUserEmail());
+            if (erpUser.getPhoneNumber() != null) {
+                map.put("phoneNumber", erpUser.getPhoneNumber());
             }
             result = erpUserMapper.updateErpUserByUserId(map);
         } else {

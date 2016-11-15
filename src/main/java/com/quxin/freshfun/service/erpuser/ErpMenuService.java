@@ -21,4 +21,11 @@ public interface ErpMenuService {
      * @return 菜单列表
      */
     List<ErpMenuPOJO> queryErpMenu();
+
+    /**
+     * 修改菜单信息
+     * @param menu 菜单信息
+     * @return 受影响行数
+     */
+    Integer modifyErpMenu(ErpMenuPOJO menu);
 }

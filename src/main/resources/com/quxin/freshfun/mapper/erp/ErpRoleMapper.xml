@@ -16,4 +16,17 @@
     <select id="selectErpRole" resultType="com.quxin.freshfun.model.erpuser.ErpRolePOJO">
         select role_id as roleId,role_name as roleName,role_des as roleDes,is_usable as isUsable,created,updated from erp_role where is_deleted =0
     </select>
+
+    <update id="updateErpRoleByRoleId" parameterType="com.quxin.freshfun.model.erpuser.ErpRolePOJO">
+        update erp_role
+        <set>
+            <if test="roleName!=null">
+                role_name = #{roleName},
+            </if>
+            <if test="roleDes!=null">
+                role_des = #{roleDes},
+            </if>
+        </set>
+        ,updated=#{updated} where role_id=#{roleId}
+    </update>
 </mapper>

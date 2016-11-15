@@ -20,4 +20,11 @@ public interface ErpRoleService {
      * @return 角色列表
      */
     List<ErpRolePOJO> queryErpRole();
+
+    /**
+     * 修改角色信息
+     * @param role 角色信息
+     * @return 受影响行数
+     */
+    Integer modifyErpRoleByRoleId(ErpRolePOJO role);
 }
