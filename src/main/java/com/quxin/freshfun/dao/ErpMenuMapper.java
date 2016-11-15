@@ -31,8 +31,8 @@ public interface ErpMenuMapper {
 
     /**
      * 更新菜单信息
-     * @param map map参数
+     * @param menu 菜单信息
      * @return 受影响行数
      */
-    Integer updateErpMenuByMenuId(Map<String,Object> map);
+    Integer updateErpMenuByMenuId(ErpMenuPOJO menu);
 }

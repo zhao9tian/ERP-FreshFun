@@ -24,7 +24,7 @@ import static javax.management.Query.value;
  * Created by Ziming on 2016/10/31.
  * 后台用户controller
  */
-@RequestMapping("/erpuser")
+@RequestMapping("/erpUser")
 @Controller
 public class ErpUserController {
     @Autowired
@@ -43,10 +43,23 @@ public class ErpUserController {
     public Map<String, Object> erpUserRegiste(HttpServletRequest request, @RequestBody ErpUserPOJO user) {
         if (user == null) {
             logger.warn("后台用户注册时，user对象为空");
-            return ResultUtil.fail(1024, "用户参数为空");
+            return ResultUtil.fail(1010, "用户参数为空！");
         }
-        if (user.getUserPassword() == null || "".equals(user.getUserPassword())) {
+        if (user.getAccount() == null || "".equals(user.getAccount())) {
+            logger.warn("用户参数帐号为空");
+            return ResultUtil.fail(1010, "用户帐号不能为空！");
 
+        }else if( erpUserService.erpUserLogin(user.getAccount())!=null){
+            logger.warn("该帐号已被注册！帐号："+user.getAccount());
+            return ResultUtil.fail(1005, "该帐号已被注册！");
+        }
+        if (user.getPassword() == null || "".equals(user.getPassword())) {
+            logger.warn("用户参数密码为空");
+            return ResultUtil.fail(1010, "用户密码不能为空");
+        }
+        if(user.getAppId()==null || user.getAppId()==0){
+            logger.warn("用户参数appId为空");
+            return ResultUtil.fail(1010, "本次注册入口有误");
         }
         user.setCreated(System.currentTimeMillis()/1000);
         user.setUpdated(System.currentTimeMillis()/1000);
@@ -54,7 +67,8 @@ public class ErpUserController {
         Integer result = erpUserService.addErpUser(user);
         if (result > 0) {
             Map<String, Object> resultMap = new HashMap<String, Object>();
-
+            resultMap.put("nickName",user.getNickName());
+            resultMap.put("isAdmin",0);
             return ResultUtil.success(resultMap);//根据前端需要的信息进行组装
         } else {
             return ResultUtil.fail(1024, "用户注册失败");
@@ -67,27 +81,28 @@ public class ErpUserController {
      */
     @ResponseBody
     @RequestMapping("/erpUserLogin")
-    public Map<String, Object> erpUserLogin(String userAccount, String password, String isRemember) {
+    public Map<String, Object> erpUserLogin(String userAccount, String password) {
         if (userAccount == null || "".equals(userAccount)) {
             logger.warn("后台用户登录时，帐号为空");
-            return ResultUtil.fail(1024, "登录帐号为空");
+            return ResultUtil.fail(1010, "登录帐号为空");
         } else if (password == null || "".equals(password)) {
             logger.warn("后台用户登录时，密码为空");
-            return ResultUtil.fail(1024, "登录密码为空");
+            return ResultUtil.fail(1010, "登录密码为空");
         } else {
             ErpUserPOJO erpUser = erpUserService.erpUserLogin(userAccount);
             if (erpUser == null) {
                 logger.warn("后台用户登录时，根据帐号" + userAccount + "未查询出用户信息");
-                return ResultUtil.fail(1024, "用户不存在");
+                return ResultUtil.fail(1005, "用户不存在");
             } else {
-                if (password.equals(erpUser.getUserPassword())) {
+                if (password.equals(erpUser.getPassword())) {
                     //查询权限
                     Map<String, Object> resultMap = new HashMap<String, Object>();
-
+                    resultMap.put("nickName",erpUser.getNickName());
+                    resultMap.put("isAdmin",erpUser.getIsAdmin());
                     return ResultUtil.success(resultMap);//根据前端需要的信息进行组装
                 } else {
                     logger.warn("后台用户帐号" + userAccount + "登录时，密码有误");
-                    return ResultUtil.fail(1024, "密码有误");
+                    return ResultUtil.fail(1006, "密码有误");
                 }
             }
         }
@@ -102,20 +117,20 @@ public class ErpUserController {
     @RequestMapping("/authority")
     @ResponseBody
     public Map<String,Object> authority(String userId,String roles){
-        if(userId==null||"".equals(userId)){
+        if (userId == null || "".equals(userId)) {
             logger.warn("授权参数有误,userId为空");
             return null;
         }
-        if(roles==null||"".equals(roles)){
+        if (roles == null || "".equals(roles)) {
             logger.warn("授权参数有误,roles为空");
             return null;
         }
         ErpUserJurisdictionPOJO erpUserJuris = new ErpUserJurisdictionPOJO();
         erpUserJuris.setRoleId(Long.parseLong(userId));
         String[] rolesArr = roles.split(",");
-        for(String role : rolesArr){
-            erpUserJuris.setCreated(System.currentTimeMillis()/1000);
-            erpUserJuris.setUpdated(System.currentTimeMillis()/1000);
+        for (String role : rolesArr) {
+            erpUserJuris.setCreated(System.currentTimeMillis() / 1000);
+            erpUserJuris.setUpdated(System.currentTimeMillis() / 1000);
             erpUserJuris.setRoleId(Long.parseLong(role));
             erpUserJurisdictionService.addErpUserJuris(erpUserJuris);
         }

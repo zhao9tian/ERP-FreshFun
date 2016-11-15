@@ -17,7 +17,7 @@
         select menu_id as menuId,menu_name as menuName,menu_url as menuUrl,menu_des as menuDes,is_usable as isUsable,created,updated from erp_menu where is_deleted =0
     </select>
 
-    <update id="updateErpMenuByMenuId" parameterType="java.util.Map">
+    <update id="updateErpMenuByMenuId" parameterType="com.quxin.freshfun.model.erpuser.ErpMenuPOJO">
         update erp_menu
         <set>
             <if test="menuName!=null">
@@ -30,6 +30,6 @@
                 menu_des = #{menuDes},
             </if>
         </set>
-        updated=#{updated} where menu_id=#{menuId}
+        ,updated=#{updated} where menu_id=#{menuId}
     </update>
 </mapper>
