@@ -229,6 +229,22 @@ public class OrderImpl implements OrderService {
     }
 
     /**
+     * 按时间区间查询所有订单
+     * @param startTime 开始时间
+     * @param endTime  结束时间
+     * @return
+     */
+    @Override
+    public List<OrderDetailsPOJO> findAllIntervalOrder(Long startTime, Long endTime) throws BusinessException {
+        if(startTime == null || endTime == null)
+            throw new BusinessException("按时间查询订单参数不能为null");
+        Map<String,Object> map = new HashMap<>();
+        map.put("beginTime",startTime);
+        map.put("endTime",endTime);
+        return orderDetailsMapper.selectAllIntervalOrder(map);
+    }
+
+    /**
      * 按时间区间查询已完成订单
      * @param startTime 开始时间
      * @param endTime 结束时间
