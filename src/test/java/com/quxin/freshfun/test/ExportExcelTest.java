@@ -64,31 +64,35 @@ public class ExportExcelTest extends TestBase {
         HSSFCell cell = row.createCell( 0);
         cell.setCellValue("所属类目");
         cell.setCellStyle(style);
-        cell = row.createCell( 1);
+
+        cell = row.createCell(1);
+        cell.setCellValue("商品Id");
+        cell.setCellStyle(style);
+        cell = row.createCell(2);
         cell.setCellValue("品名");
         cell.setCellStyle(style);
-        cell = row.createCell( 2);
+        cell = row.createCell(3);
         cell.setCellValue("标题");
         cell.setCellStyle(style);
-        cell = row.createCell( 3);
+        cell = row.createCell(4);
         cell.setCellValue("副标题");
         cell.setCellStyle(style);
-        cell = row.createCell( 4);
+        cell = row.createCell(5);
         cell.setCellValue("小编说");
         cell.setCellStyle(style);
-        cell = row.createCell( 5);
+        cell = row.createCell(6);
         cell.setCellValue("成本价");
         cell.setCellStyle(style);
-        cell = row.createCell( 6);
+        cell = row.createCell(7);
         cell.setCellValue("平台原价");
         cell.setCellStyle(style);
-        cell = row.createCell( 7);
+        cell = row.createCell(8);
         cell.setCellValue("平台售价");
         cell.setCellStyle(style);
-        cell = row.createCell( 8);
+        cell = row.createCell(9);
         cell.setCellValue("毛利率");
         cell.setCellStyle(style);
-        cell = row.createCell( 9);
+        cell = row.createCell(10);
         cell.setCellValue("商城链接");
         cell.setCellStyle(style);
 
@@ -99,15 +103,16 @@ public class ExportExcelTest extends TestBase {
             GoodsPOJO goods = list.get(i);
             // 第四步，创建单元格，并设置值
             row.createCell(0).setCellValue(getCatogary(goods.getCategory2()));
-            row.createCell(1).setCellValue(goods.getGoodsStandardPOJO().getName());
-            row.createCell(2).setCellValue(goods.getTitle());
-            row.createCell(3).setCellValue(goods.getSubtitle());
-            row.createCell(4).setCellValue(goods.getGoodsDes());
-            row.createCell(5).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsCost()));
-            row.createCell(6).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getOriginPrice()));
-            row.createCell(7).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
-            row.createCell(8).setCellValue(((double)(goods.getOriginPrice()-goods.getShopPrice()))/(double)goods.getOriginPrice());
-            row.createCell(9).setCellValue("https://www.freshfun365.com/api/app/FreshFunApp/goodsInfo.html?goodsId="+goods.getGoodsId());
+            row.createCell(1).setCellValue(goods.getGoodsId());
+            row.createCell(2).setCellValue(goods.getGoodsStandardPOJO().getName());
+            row.createCell(3).setCellValue(goods.getTitle());
+            row.createCell(4).setCellValue(goods.getSubtitle());
+            row.createCell(5).setCellValue(goods.getGoodsDes());
+            row.createCell(6).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsCost()));
+            row.createCell(7).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getOriginPrice()));
+            row.createCell(8).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
+            row.createCell(9).setCellValue(((double)(goods.getOriginPrice()-goods.getShopPrice()))/(double)goods.getOriginPrice());
+            row.createCell(10).setCellValue("https://www.freshfun365.com/api/app/FreshFunApp/goodsInfo.html?goodsId="+goods.getGoodsId());
         }
         // 第六步，将文件存到指定位置
         try {
