@@ -26,7 +26,7 @@ import java.util.Map;
 
 /**
  * 后台订单管理
- * Created by gsix on 2016/10/20.
+ * Created by qingtian on 2016/10/20.
  */
 @Controller
 @RequestMapping("/")
@@ -342,6 +342,9 @@ public class OrderController {
 
             List<OrderDetailsPOJO> orderList = null;
             switch (orderState){
+                case 0:
+                    orderList = orderService.findAllIntervalOrder(beginTime,endTime);
+                    break;
                 case 70:
                     orderList = orderService.findFinishIntervalOrder(beginTime,endTime);
                     break;

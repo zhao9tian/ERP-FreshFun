@@ -123,6 +123,13 @@ public interface OrderDetailsMapper {
     List<OrderDetailsPOJO> selectIntervalOrder(Map<String ,Object> map);
 
     /**
+     * 按时间区间查询所有订单
+     * @param map
+     * @return
+     */
+    List<OrderDetailsPOJO> selectAllIntervalOrder(Map<String,Object> map);
+
+    /**
      * 按时间区间查询已完成订单
      * @param map
      * @return
