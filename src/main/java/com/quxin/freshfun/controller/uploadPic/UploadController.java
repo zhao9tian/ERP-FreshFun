@@ -31,15 +31,14 @@ public class UploadController {
     @RequestMapping(value = "/uploadPic", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> uploadPic(HttpServletRequest request) {
-        String imgPath;
         Map<String, Object> result;
         try {
-            imgPath = UploadUtils.uploadPic(request);
-            if (imgPath == null) {
-                result = ResultUtil.fail(1004, "图片格式不对");
-                logger.error("图片格式不对");
+            Map<String , Object> imgInfo = UploadUtils.uploadPic(request);
+            if (imgInfo == null) {
+                result = ResultUtil.fail(1004, "上传失败,请检查上传图片大小或图片格式");
+                logger.error("图片格式，或者大小不正确");
             } else {
-                result = ResultUtil.success(imgPath);
+                result = ResultUtil.success(imgInfo);
             }
         } catch (IOException e) {
             logger.error("获取图片InputStream异常", e);

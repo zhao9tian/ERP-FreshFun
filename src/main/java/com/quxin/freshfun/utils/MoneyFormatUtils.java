@@ -15,6 +15,9 @@ public class MoneyFormatUtils {
      */
     public static String getMoneyFromInteger(Integer price){
         DecimalFormat df = new DecimalFormat("#0.00");
-        return df.format(((double) price)/100);
+        if(price != null){
+            return df.format(((double) price)/100);
+        }
+        return null;
     }
 }

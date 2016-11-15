@@ -2,8 +2,13 @@ package com.quxin.freshfun.controller.order;
 
 import com.quxin.freshfun.model.goods.GoodsOrderOut;
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
+import com.quxin.freshfun.model.order.RefundOut;
 import com.quxin.freshfun.service.order.OrderService;
+import com.quxin.freshfun.utils.BusinessException;
+import com.quxin.freshfun.utils.ExportOrderExcelUtils;
 import com.quxin.freshfun.utils.MoneyFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -12,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +34,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
     /**
      * 查询所有订单
      * @param page 当前页
@@ -89,6 +97,98 @@ public class OrderController {
         resultData.put("list",order);
         resultMap.put("status",map);
         resultMap.put("data",resultData);
+        return resultMap;
+    }
+
+    /**
+     * 获取订单数目
+     * @return
+     */
+    @RequestMapping("/getOrderNum")
+    @ResponseBody
+    public Map<String,Object> getOrderNum(){
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        Map<String, Object> orderNumList = orderService.getOrderNum();
+        map.put("code",1001);
+        map.put("msg","请求成功");
+        resultMap.put("status",map);
+        resultMap.put("data",orderNumList);
+        return resultMap;
+    }
+
+    /**
+     * 审核退款
+     * @return
+     */
+    @RequestMapping("/updateRefundInfo")
+    @ResponseBody
+    public Map<String,Object> updateRefundInfo(Long orderId,Integer action) throws BusinessException {
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        if(orderId == null || action == null){
+            map.put("code",1004);
+            map.put("msg","传入待参数不正确");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        switch (action){
+            case 0:
+                Integer state = orderService.rebutRefunds(orderId);
+                if(state == 0){
+                    map.put("code",1004);
+                    map.put("msg","申请退款失败");
+                    resultMap.put("status",map);
+                    return resultMap;
+                }
+                map.put("code",1001);
+                map.put("msg","请求成功");
+                resultMap.put("status",map);
+                resultMap.put("data",state);
+                break;
+            case 1:
+                String refundResult = orderService.orderRefunds(orderId);
+                if(refundResult == null || "FAIL".equals(refundResult)){
+                    map.put("code",1004);
+                    map.put("msg","退款订单不存在");
+                    resultMap.put("status",map);
+                    return resultMap;
+                }
+                map.put("code",1001);
+                map.put("msg","请求成功");
+                resultMap.put("status",map);
+                resultMap.put("data",refundResult);
+                break;
+        }
+        return resultMap;
+    }
+
+    /**
+     * 查看退款详情
+     * @return
+     */
+    @RequestMapping("/getRefundInfo")
+    @ResponseBody
+    public Map<String,Object> getRefundInfo(Long orderId) throws BusinessException {
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        if(orderId == null){
+            map.put("code",1004);
+            map.put("msg","传入待参数不正确");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        RefundOut refundInfo = orderService.getRefundInfo(orderId);
+        if(refundInfo == null){
+            map.put("code",1004);
+            map.put("msg","查询数据不存在");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        map.put("code",1001);
+        map.put("msg","请求成功");
+        resultMap.put("status",map);
+        resultMap.put("data",refundInfo);
         return resultMap;
     }
 
@@ -224,6 +324,42 @@ public class OrderController {
         }
         return resultMap;
     }
+
+    /**
+     * 订单导出Excel
+     * @return
+     */
+    @RequestMapping("/exportOrder")
+    public String exportOrder(HttpServletResponse response,Integer orderState,Long beginTime,Long endTime) throws BusinessException {
+        if(orderState == null || beginTime == null || endTime == null){
+            return null;
+        }
+        try {
+            String fileName=new String(("订单管理").getBytes("gb2312"), "iso8859-1")+ ".xlsx";
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+            response.setCharacterEncoding("utf-8");
+
+            List<OrderDetailsPOJO> orderList = null;
+            switch (orderState){
+                case 70:
+                    orderList = orderService.findFinishIntervalOrder(beginTime,endTime);
+                    break;
+                default:
+                    orderList = orderService.getIntervalOrder(orderState, beginTime, endTime);
+                    break;
+            }
+            if(orderList != null) {
+                String[] title = {"订单编号", "商品名", "成交价", "单价", "数量", "成本价", "成交时间", "订单来源", "收货人", "收货地址"};
+                ExportOrderExcelUtils exportOrder = new ExportOrderExcelUtils();
+                exportOrder.ExportExcel(title, orderList, response.getOutputStream(),orderState);
+            }
+        } catch (IOException e) {
+            logger.error("导出Excel订单IO异常",e);
+        }
+        return null;
+    }
+
 
     /**
      * 后台设置金额格式

@@ -7,7 +7,7 @@ package com.quxin.freshfun.model.goods;
 public class GoodsSortOut {
 
     /**商品ID*/
-    private Integer goodsId;
+    private Long goodsId;
     /**商品名称*/
     private String goodsName;
     /**商品首页图片*/
@@ -17,11 +17,11 @@ public class GoodsSortOut {
     /**商品成本价*/
     private String goodsCost;
 
-    public Integer getGoodsId() {
+    public Long getGoodsId() {
         return goodsId;
     }
 
-    public void setGoodsId(Integer goodsId) {
+    public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
     }
 

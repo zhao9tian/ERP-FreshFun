@@ -23,6 +23,12 @@ public interface OrderDetailsMapper {
     Integer selectBackstageOrdersCount();
 
     /**
+     * 查询订单数量
+     * @return
+     */
+    Integer selectOrderNum(Integer orderStatus);
+
+    /**
      * 根据订单状态查询订单列表
      * @return
      */
@@ -48,6 +54,35 @@ public interface OrderDetailsMapper {
     Integer selectFinishOrderCount();
 
     /**
+     * 根据订单编号查询微信返回的订单编号
+     * @param orderId
+     * @return
+     */
+    OrderDetailsPOJO selectOrderTransactionIdInfo(Long orderId);
+
+    /**
+     * 根据父级订单编号查询订单编号
+     * @param parentOrderId 父级订单编号
+     * @return
+     */
+    List<Long> selectOrderIdByParentId(Long parentOrderId);
+
+    /**
+     * 根据订单编号查询支付金额
+     * @param orderId
+     * @return
+     */
+    Integer selectOrderPayPrice(Long orderId);
+
+    /**
+     * 修改订单退款状态
+     * @param orderId
+     * @param updateDate
+     * @return
+     */
+    Integer updateOrderRefundStatus(@Param("orderId") Long orderId,@Param("updateDate") Long updateDate);
+
+    /**
      * 发货
      * @param map
      * @return
@@ -66,4 +101,31 @@ public interface OrderDetailsMapper {
      * @return
      */
     Integer orderDel(Long orderId);
+
+    /**
+     * 查询订单退款之前状态
+     * @return
+     */
+    String selectOrderRefundState(Long orderId);
+
+    /**
+     * 修改订单状体
+     * @param map 参数集合
+     * @return
+     */
+    Integer updateOrderState(Map<String,Object> map);
+
+    /**
+     * 按时间区间查询订单
+     * @param map 数据集合
+     * @return
+     */
+    List<OrderDetailsPOJO> selectIntervalOrder(Map<String ,Object> map);
+
+    /**
+     * 按时间区间查询已完成订单
+     * @param map
+     * @return
+     */
+    List<OrderDetailsPOJO> selectFinishIntervalOrder(Map<String,Object> map);
 }
