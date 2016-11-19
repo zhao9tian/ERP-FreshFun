@@ -40,6 +40,9 @@
     <result column="delivery_remark" jdbcType="VARCHAR" property="deliveryRemark"/>
     <result column="extra" jdbcType="VARCHAR" property="extra"/>
     <result column="transaction_id" jdbcType="VARCHAR" property="transactionId"/>
+    <result column="province_code" jdbcType="INTEGER" property="provCode"/>
+    <result column="city_code" jdbcType="INTEGER" property="cityCode"/>
+    <result column="district_code" jdbcType="INTEGER" property="distCode"/>
     <association property="goods" column="goods_id" select="com.quxin.freshfun.dao.GoodsMapper.selectGoodsById"></association>
   </resultMap>
 
@@ -55,7 +58,7 @@
 
   <!--查询所有订单-->
   <select id="selectBackstageOrders" resultMap="BaseResultMap">
-    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
+    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code` from order_details where is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
   </select>
   <!--查询所有订单数量-->
   <select id="selectBackstageOrdersCount" resultType="java.lang.Integer" >
@@ -63,9 +66,8 @@
   </select>
   <!--查询已完成订单-->
   <select id="selectFinishOrder" resultMap="BaseResultMap">
-    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where order_status in (70,100) and is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
+    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code` from order_details where order_status in (70,100) and is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
   </select>
-
   <select id="selectFinishOrderCount" resultType="java.lang.Integer">
     select count(id) from order_details where order_status in (70,100) and is_deleted = 0
   </select>
@@ -76,7 +78,7 @@
 
   <!--根据订单状态查询订单列表-->
   <select id="selectOrderByOrderStatus" resultMap="BaseResultMap">
-    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`name`,`tel`,`city`,`address`,`create_date`
+    select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`name`,`tel`,`city`,`address`,`create_date`,`province_code`,`city_code`,`district_code`
     from order_details where is_deleted = 0 and order_status = #{orderStatus}
     order by create_date desc
     limit #{currentPage},#{pageSize}
@@ -132,16 +134,16 @@
 
   <!--按时间区域查询订单-->
   <select id="selectIntervalOrder" parameterType="java.util.Map" resultMap="BaseResultMap">
-    select `id` as `order_id`,`user_id`,`actual_price`,`pay_time`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where is_deleted = 0 and order_status=#{orderStatus} and create_date between #{beginTime} and #{endTime}
+    select `id` as `order_id`,`user_id`,`actual_price`,`pay_time`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`pay_price`,`goods_cost`,`province_code`,`city_code`,`district_code` from order_details where is_deleted = 0 and order_status=#{orderStatus} and create_date between #{beginTime} and #{endTime}
   </select>
 
   <!--按时间区间查询所有订单-->
   <select id="selectAllIntervalOrder" parameterType="java.util.Map" resultMap="BaseResultMap">
-    select `id` as `order_id`,`user_id`,`actual_price`,`pay_time`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where is_deleted = 0 and create_date between #{beginTime} and #{endTime}
+    select `id` as `order_id`,`user_id`,`actual_price`,`pay_time`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`pay_price`,`goods_cost`,`province_code`,`city_code`,`district_code` from order_details where is_deleted = 0 and create_date between #{beginTime} and #{endTime}
   </select>
   
   <!--按时间区域查询已完成订单-->
   <select id="selectFinishIntervalOrder" parameterType="java.util.Map" resultMap="BaseResultMap">
-    select `id` as `order_id`,`user_id`,`actual_price`,`pay_time`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark` from order_details where is_deleted = 0 and order_status in (70,100) and create_date between #{beginTime} and #{endTime}
+    select `id` as `order_id`,`user_id`,`actual_price`,`pay_time`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`pay_price`,`goods_cost`,`province_code`,`city_code`,`district_code` from order_details where is_deleted = 0 and order_status in (70,100) and create_date between #{beginTime} and #{endTime}
   </select>
 </mapper>

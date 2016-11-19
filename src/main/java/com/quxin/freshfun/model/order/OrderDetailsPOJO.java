@@ -64,6 +64,18 @@ public class OrderDetailsPOJO {
     private String city;
     private String address;
     /**
+     * 省code
+     */
+    private Integer provCode;
+    /**
+     * 市code
+     */
+    private Integer cityCode;
+    /**
+     * 区code
+     */
+    private Integer distCode;
+    /**
      * 备注
      */
     private String remark;
@@ -96,6 +108,30 @@ public class OrderDetailsPOJO {
      * 订单用户昵称
      */
     private String nickName;
+
+    public Integer getProvCode() {
+        return provCode;
+    }
+
+    public void setProvCode(Integer provCode) {
+        this.provCode = provCode;
+    }
+
+    public Integer getCityCode() {
+        return cityCode;
+    }
+
+    public void setCityCode(Integer cityCode) {
+        this.cityCode = cityCode;
+    }
+
+    public Integer getDistCode() {
+        return distCode;
+    }
+
+    public void setDistCode(Integer distCode) {
+        this.distCode = distCode;
+    }
 
     public String getTransactionId() {
         return transactionId;

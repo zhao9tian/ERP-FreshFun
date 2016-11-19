@@ -9,6 +9,7 @@ import com.quxin.freshfun.model.order.RefundOut;
 import com.quxin.freshfun.model.order.RefundPOJO;
 import com.quxin.freshfun.model.order.WxResult;
 import com.quxin.freshfun.model.user.UserInfoOutParam;
+import com.quxin.freshfun.service.address.AddressUtilService;
 import com.quxin.freshfun.service.order.OrderService;
 import com.quxin.freshfun.utils.*;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class OrderImpl implements OrderService {
     private UserBaseMapper userBaseMapper;
     @Autowired
     private RefundMapper refundMapper;
+    @Autowired
+    private AddressUtilService addressUtilService;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -69,6 +72,8 @@ public class OrderImpl implements OrderService {
      */
     private List<OrderDetailsPOJO> getOrderDetails(List<OrderDetailsPOJO> orderDetails) {
         for (OrderDetailsPOJO order : orderDetails) {
+            //获取用户地址
+            getAddress(order);
             UserInfoOutParam userInfo = userBaseMapper.selectUserInfoByUserId(order.getUserId());
             if(userInfo != null) {
                 if(userInfo.getUserName() != null) {
@@ -81,6 +86,17 @@ public class OrderImpl implements OrderService {
             }
         }
         return orderDetails;
+    }
+
+    /**
+     * 获取用户地址
+     * @param orderDetailsPOJO 订单实体
+     */
+    private void getAddress(OrderDetailsPOJO orderDetailsPOJO) {
+        if(StringUtils.isEmpty(orderDetailsPOJO.getCity())){
+            String city = addressUtilService.queryNameByCode(orderDetailsPOJO.getProvCode(), orderDetailsPOJO.getCityCode(), orderDetailsPOJO.getDistCode());
+            orderDetailsPOJO.setCity(city);
+        }
     }
 
     @Override
@@ -99,6 +115,8 @@ public class OrderImpl implements OrderService {
     public List<OrderDetailsPOJO> selectOrderByOrderStatus(Integer orderStatus,int currentPage,int pageSize) {
         List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectOrderByOrderStatus(orderStatus, currentPage, pageSize);
         for (OrderDetailsPOJO order: orderDetails) {
+            //获取用户地址
+            getAddress(order);
             UserInfoOutParam userInfo = userBaseMapper.selectUserInfoByUserId(order.getUserId());
             if(userInfo != null){
                 if(userInfo.getUserName() != null) {
@@ -224,8 +242,21 @@ public class OrderImpl implements OrderService {
         map.put("orderStatus",orderState);
         map.put("beginTime",startTime);
         map.put("endTime",endTime);
+        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectIntervalOrder(map);
+        setAddress(orderDetails);
+        return orderDetails;
+    }
 
-        return orderDetailsMapper.selectIntervalOrder(map);
+    /**
+     * 查询订单时设置地址信息
+     * @param orderDetails 订单数据
+     */
+    private void setAddress(List<OrderDetailsPOJO> orderDetails) {
+        if(orderDetails != null){
+            for (OrderDetailsPOJO order : orderDetails) {
+                getAddress(order);
+            }
+        }
     }
 
     /**
@@ -241,7 +272,9 @@ public class OrderImpl implements OrderService {
         Map<String,Object> map = new HashMap<>();
         map.put("beginTime",startTime);
         map.put("endTime",endTime);
-        return orderDetailsMapper.selectAllIntervalOrder(map);
+        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectAllIntervalOrder(map);
+        setAddress(orderDetails);
+        return orderDetails;
     }
 
     /**
@@ -258,7 +291,9 @@ public class OrderImpl implements OrderService {
         Map<String,Object> map = new HashMap<>();
         map.put("beginTime",startTime);
         map.put("endTime",endTime);
-        return orderDetailsMapper.selectFinishIntervalOrder(map);
+        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectFinishIntervalOrder(map);
+        setAddress(orderDetails);
+        return orderDetails;
     }
 
     /**
