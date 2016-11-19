@@ -99,6 +99,14 @@ public interface OrderService {
     List<OrderDetailsPOJO> getIntervalOrder(Integer orderState,Long startTime,Long endTime) throws BusinessException;
 
     /**
+     * 按时间区间查询所有订单
+     * @param startTime 开始时间
+     * @param endTime  结束时间
+     * @return
+     */
+    List<OrderDetailsPOJO> findAllIntervalOrder(Long startTime,Long endTime) throws BusinessException;
+
+    /**
      * 按时间区间查询已完成订单
      * @param startTime
      * @param endTime

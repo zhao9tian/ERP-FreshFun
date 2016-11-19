@@ -48,50 +48,50 @@ public class ErpTest extends TestBase {
     @org.junit.Test
     public void testRegister(){
         ErpUserPOJO user = new ErpUserPOJO();
-        user.setUserAppId("testAppId4asd486");
-        user.setCreated(System.currentTimeMillis()/1000);
-        user.setUpdated(System.currentTimeMillis()/1000);
-        user.setUserPassword("testPwd4654asd645a41");
-        user.setUserName("testUserName1");
-        user.setUserAccount("testUserAccount1");
-        user.setUserEmail("testEmail1@163.com");
-        user.setUserPhoneNumber("15038292018");
-        user.setUserHeadImg("testHeadImgUrl1");
-
-        Integer result = erpUserService.addErpUser(user);
-        if(result==1){
-            System.out.println("注册成功！");
-        }else{
-            System.out.println("注册失败！");
-        }
+//        user.setUserAppId("testAppId4asd486");
+//        user.setCreated(System.currentTimeMillis()/1000);
+//        user.setUpdated(System.currentTimeMillis()/1000);
+//        user.setUserPassword("testPwd4654asd645a41");
+//        user.setUserName("testUserName1");
+//        user.setUserAccount("testUserAccount1");
+//        user.setUserEmail("testEmail1@163.com");
+//        user.setUserPhoneNumber("15038292018");
+//        user.setUserHeadImg("testHeadImgUrl1");
+//
+//        Integer result = erpUserService.addErpUser(user);
+//        if(result==1){
+//            System.out.println("注册成功！");
+//        }else{
+//            System.out.println("注册失败！");
+//        }
     }
     @Test
     public void testLogin(){
         String userAccount = "testUserAccount";
         String userPwd = "testPwd4654asd645a4";
         ErpUserPOJO user = erpUserService.erpUserLogin(userAccount);
-        if(user!=null){
-            if(user.getUserPassword()!=null&&userPwd.equals(user.getUserPassword())){
-                System.out.println("登录成功！用户昵称："+user.getUserName());
-            }else{
-                System.out.println("登录失败！密码错误");
-            }
-        }else{
-            System.out.println("登录失败！没有该用户");
-        }
+//        if(user!=null){
+//            if(user.getUserPassword()!=null&&userPwd.equals(user.getUserPassword())){
+//                System.out.println("登录成功！用户昵称："+user.getUserName());
+//            }else{
+//                System.out.println("登录失败！密码错误");
+//            }
+//        }else{
+//            System.out.println("登录失败！没有该用户");
+//        }
     }
 
     @Test
     public void testFindUsersByAppId() {
-        String appId = "testAppId4asd486";
-        List<ErpUserPOJO> userList = erpUserService.queryErpUserByAppId(appId);
-        if (userList!=null&&userList.size()>0) {
-            for(ErpUserPOJO user : userList){
-                System.out.println("用户昵称："+user.getUserName());
-            }
-        }else{
-            System.out.println("查询结果为空！");
-        }
+//        String appId = "testAppId4asd486";
+//        List<ErpUserPOJO> userList = erpUserService.queryErpUserByAppId(appId);
+//        if (userList!=null&&userList.size()>0) {
+//            for(ErpUserPOJO user : userList){
+//                System.out.println("用户昵称："+user.getUserName());
+//            }
+//        }else{
+//            System.out.println("查询结果为空！");
+//        }
     }
 
     @Test
