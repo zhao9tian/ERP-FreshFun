@@ -99,4 +99,13 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
             logger.warn("修改公司信息方法执行失败");
         return result;
     }
+
+    @Override
+    public ErpAppInfoPOJO queryAppById(Long appId) {
+        if(appId==null||appId==0){
+            logger.warn("根据appId获取商城信息方法入参有误");
+            return null;
+        }
+        return erpAppInfoMapper.selectAppById(appId);
+    }
 }

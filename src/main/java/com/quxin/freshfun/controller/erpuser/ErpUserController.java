@@ -1,9 +1,13 @@
 package com.quxin.freshfun.controller.erpuser;
 
+import com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO;
 import com.quxin.freshfun.model.erpuser.ErpUserJurisdictionPOJO;
 import com.quxin.freshfun.model.erpuser.ErpUserPOJO;
+import com.quxin.freshfun.service.erpuser.ErpAppInfoService;
 import com.quxin.freshfun.service.erpuser.ErpUserJurisdictionService;
 import com.quxin.freshfun.service.erpuser.ErpUserService;
+import com.quxin.freshfun.utils.CookieUtil;
+import com.quxin.freshfun.utils.FreshFunEncoder;
 import com.quxin.freshfun.utils.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,11 +30,13 @@ import static javax.management.Query.value;
  * Created by Ziming on 2016/10/31.
  * 后台用户controller
  */
-@RequestMapping("/erpUser")
+@RequestMapping("/crmUser")
 @Controller
 public class ErpUserController {
     @Autowired
     private ErpUserService erpUserService;
+    @Autowired
+    private ErpAppInfoService erpAppInfoService;
     @Autowired
     private ErpUserJurisdictionService erpUserJurisdictionService;
 
@@ -38,36 +46,44 @@ public class ErpUserController {
      * 后台用户注册
      * @return
      */
-    @RequestMapping(value = "/erpUserRegiste", method = RequestMethod.POST)
+    @RequestMapping(value = "/crmUserRegiste", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> erpUserRegiste(HttpServletRequest request, @RequestBody ErpUserPOJO user) {
+    public Map<String, Object> crmUserRegiste(HttpServletRequest request, @RequestBody ErpUserPOJO user) {
         if (user == null) {
             logger.warn("后台用户注册时，user对象为空");
             return ResultUtil.fail(1010, "用户参数为空！");
         }
-        if (user.getAccount() == null || "".equals(user.getAccount())) {
+        if(user.getAppIdStr()==null||"".equals(user.getAppIdStr())){
+            if(user.getAppName()==null||"".equals(user.getAppId())){
+                logger.warn("创建平台商城，名称为空！");
+                return ResultUtil.fail(1010, "创建平台商城，名称为空！");
+            }else{
+                Long appId = erpAppInfoService.addErpAppInfo(user.getAppName());
+                user.setAppId(appId);
+            }
+        }else{
+            user.setAppId(FreshFunEncoder.urlToId(user.getAppIdStr()));
+        }
+        if (user.getUserName() == null || "".equals(user.getUserName())) {
             logger.warn("用户参数帐号为空");
             return ResultUtil.fail(1010, "用户帐号不能为空！");
-
-        }else if( erpUserService.erpUserLogin(user.getAccount())!=null){
-            logger.warn("该帐号已被注册！帐号："+user.getAccount());
+        }else if( erpUserService.erpUserLogin(user.getUserName())!=null){
+            logger.warn("该帐号已被注册！帐号："+user.getUserName());
             return ResultUtil.fail(1005, "该帐号已被注册！");
         }
         if (user.getPassword() == null || "".equals(user.getPassword())) {
             logger.warn("用户参数密码为空");
             return ResultUtil.fail(1010, "用户密码不能为空");
         }
-        if(user.getAppId()==null || user.getAppId()==0){
-            logger.warn("用户参数appId为空");
-            return ResultUtil.fail(1010, "本次注册入口有误");
-        }
         user.setCreated(System.currentTimeMillis()/1000);
         user.setUpdated(System.currentTimeMillis()/1000);
 
         Integer result = erpUserService.addErpUser(user);
+        ErpAppInfoPOJO erpAppInfoPOJO = erpAppInfoService.queryAppById(user.getAppId());
         if (result > 0) {
             Map<String, Object> resultMap = new HashMap<String, Object>();
-            resultMap.put("nickName",user.getNickName());
+            resultMap.put("appName",erpAppInfoPOJO.getAppName());
+            resultMap.put("userName",user.getUserName());
             resultMap.put("isAdmin",0);
             return ResultUtil.success(resultMap);//根据前端需要的信息进行组装
         } else {
@@ -77,35 +93,54 @@ public class ErpUserController {
 
     /**
      * 后台用户登录
-     * @return
      */
     @ResponseBody
-    @RequestMapping("/erpUserLogin")
-    public Map<String, Object> erpUserLogin(String userAccount, String password) {
-        if (userAccount == null || "".equals(userAccount)) {
+    @RequestMapping("/crmUserLogin")
+    public Map<String, Object> crmUserLogin(String userName, String password) {
+        if (userName == null || "".equals(userName)) {
             logger.warn("后台用户登录时，帐号为空");
             return ResultUtil.fail(1010, "登录帐号为空");
         } else if (password == null || "".equals(password)) {
             logger.warn("后台用户登录时，密码为空");
             return ResultUtil.fail(1010, "登录密码为空");
         } else {
-            ErpUserPOJO erpUser = erpUserService.erpUserLogin(userAccount);
+            ErpUserPOJO erpUser = erpUserService.erpUserLogin(userName);
             if (erpUser == null) {
-                logger.warn("后台用户登录时，根据帐号" + userAccount + "未查询出用户信息");
+                logger.warn("后台用户登录时，根据帐号" + userName + "未查询出用户信息");
                 return ResultUtil.fail(1005, "用户不存在");
             } else {
                 if (password.equals(erpUser.getPassword())) {
                     //查询权限
+                    ErpAppInfoPOJO erpAppInfoPOJO = erpAppInfoService.queryAppById(erpUser.getAppId());
                     Map<String, Object> resultMap = new HashMap<String, Object>();
-                    resultMap.put("nickName",erpUser.getNickName());
+                    resultMap.put("appName",erpAppInfoPOJO.getAppName());
+                    resultMap.put("appId",FreshFunEncoder.idToUrl(erpUser.getAppId()));
+                    resultMap.put("userName",erpUser.getUserName());
                     resultMap.put("isAdmin",erpUser.getIsAdmin());
                     return ResultUtil.success(resultMap);//根据前端需要的信息进行组装
                 } else {
-                    logger.warn("后台用户帐号" + userAccount + "登录时，密码有误");
+                    logger.warn("后台用户帐号" + userName + "登录时，密码有误");
                     return ResultUtil.fail(1006, "密码有误");
                 }
             }
         }
+    }
+
+    /**
+     * 后台用户注销
+     */
+    @ResponseBody
+    @RequestMapping("/crmUserLogout")
+    public Map<String,Object> crmUserLogout(HttpServletRequest request,HttpServletResponse response){
+        Cookie cookie = new Cookie("userId", null);
+        cookie.setMaxAge(0);
+        cookie.setDomain(".freshfun365.com");
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("status",1001);
+        resultMap.put("msg","请求成功");
+        return resultMap;//根据前端需要的信息进行组装
     }
 
     /**
@@ -114,7 +149,7 @@ public class ErpUserController {
      * @param roles 角色id，多个逗号隔开
      * @return 结果
      */
-    @RequestMapping("/authority")
+    /*@RequestMapping("/authority")
     @ResponseBody
     public Map<String,Object> authority(String userId,String roles){
         if (userId == null || "".equals(userId)) {
@@ -135,6 +170,6 @@ public class ErpUserController {
             erpUserJurisdictionService.addErpUserJuris(erpUserJuris);
         }
         return ResultUtil.success("授权成功");
-    }
+    }*/
 
 }

@@ -6,12 +6,12 @@ package com.quxin.freshfun.model.erpuser;
 public class ErpUserPOJO {
     private Long id;                    //主键自增id
     private Long userId;                //用户唯一标识
-    private String account;         //用户帐号
+    private String userName;         //用户帐号
     private String password;        //用户密码
     private Byte isAdmin;           //是否是悦选超管用户
-    private String nickName;            //用户昵称
+    private String appName;            //用户平台名称
     private Long appId;           //用户平台appid
-    private String phoneNumber;     //用户手机号
+    private String appIdStr;           //用户平台appid字符串
     private Long created;
     private Long updated;
     private Byte isDeleted;
@@ -32,28 +32,12 @@ public class ErpUserPOJO {
         this.userId = userId;
     }
 
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
     }
 
     public Long getAppId() {
@@ -64,12 +48,28 @@ public class ErpUserPOJO {
         this.appId = appId;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getAppIdStr() {
+        return appIdStr;
+    }
+
+    public void setAppIdStr(String appIdStr) {
+        this.appIdStr = appIdStr;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public Long getCreated() {

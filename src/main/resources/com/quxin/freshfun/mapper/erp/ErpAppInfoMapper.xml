@@ -17,6 +17,10 @@
         select app_id as appId,app_name as appName,created,updated from erp_app_info where is_deleted =0
     </select>
 
+    <select id="selectAppById" resultType="com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO" parameterType="java.lang.Long">
+        select app_id as appId,app_name as appName,created,updated from erp_app_info where app_id=#{appId} is_deleted =0
+    </select>
+
     <update id="updateErpAppInfo" parameterType="com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO">
         update erp_app_info
         <set>

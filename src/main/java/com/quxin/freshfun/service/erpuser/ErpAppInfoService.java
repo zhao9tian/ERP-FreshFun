@@ -35,4 +35,11 @@ public interface ErpAppInfoService {
      * @return 受影响行数
      */
     Integer removeAppInfo(Long appId);
+
+    /**
+     * 根据appId获取商城信息
+     * @param appId 商城id
+     * @return 商城信息
+     */
+    ErpAppInfoPOJO queryAppById(Long appId);
 }

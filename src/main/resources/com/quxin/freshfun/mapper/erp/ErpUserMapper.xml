@@ -18,8 +18,8 @@
 
     <!--根据appid查询用户信息-->
     <select id="selectErpUserByAppId" parameterType="java.lang.String" resultType="com.quxin.freshfun.model.erpuser.ErpUserPOJO">
-        select user_id as userId,account as account,password as password,nick_name as nickName,
-        app_id as appId,phone_number as phoneNumber,
+        select user_id as userId,account as userName,password as password,
+        app_id as appId,
         created,updated from erp_user where
         app_id = #{appId} and is_deleted=0
     </select>
@@ -29,12 +29,6 @@
         <set>
             <if test="password!=null">
                 password = #{password},
-            </if>
-            <if test="nickName!=null">
-                nick_name = #{nickName},
-            </if>
-            <if test="phoneNumber!=null">
-                phone_number = #{phoneNumber},
             </if>
         </set>
         updated=#{updated} where user_id=#{userId}
@@ -48,8 +42,8 @@
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into erp_user (user_id,account,password,nick_name,app_id,phone_number,created,updated,is_deleted)
-        values(0,#{account},#{password},#{nickName},#{appId},#{phoneNumber},#{created},#{updated},0)
+        insert into erp_user (user_id,account,password,app_id,is_admin,created,updated,is_deleted)
+        values(0,#{userName},#{password},#{appId},0,#{created},#{updated},0)
     </insert>
 
 </mapper>

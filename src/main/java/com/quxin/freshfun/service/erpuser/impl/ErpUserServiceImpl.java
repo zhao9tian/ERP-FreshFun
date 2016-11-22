@@ -48,14 +48,8 @@ public class ErpUserServiceImpl implements ErpUserService{
             map.put("userId", erpUser.getUserId());
             map.put("updated", System.currentTimeMillis() / 1000);
 
-            if (erpUser.getNickName() != null && !"".equals(erpUser.getNickName())) {
-                map.put("nickName", erpUser.getNickName());
-            }
             if (erpUser.getPassword() != null && !"".equals(erpUser.getPassword())) {
                 map.put("password", erpUser.getPassword());
-            }
-            if (erpUser.getPhoneNumber() != null) {
-                map.put("phoneNumber", erpUser.getPhoneNumber());
             }
             result = erpUserMapper.updateErpUserByUserId(map);
         } else {

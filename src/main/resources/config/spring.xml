@@ -23,4 +23,11 @@
 
     <!-- 引入配置文件 -->
     <context:property-placeholder location="classpath*:config.properties"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.quxin.freshfun.interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>
