@@ -49,4 +49,10 @@ public interface ErpAppInfoMapper {
      * @return 商城信息
      */
     ErpAppInfoPOJO selectAppById(Long appId);
+    /**
+     * 根据appName获取商城信息
+     * @param appName 商城名称
+     * @return 商城信息
+     */
+    ErpAppInfoPOJO selectAppByName(String appName);
 }

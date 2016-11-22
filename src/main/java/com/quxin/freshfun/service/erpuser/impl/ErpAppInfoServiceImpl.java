@@ -108,4 +108,13 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
         }
         return erpAppInfoMapper.selectAppById(appId);
     }
+
+    @Override
+    public ErpAppInfoPOJO queryAppByName(String appName) {
+        if(appName==null||"".equals(appName)){
+            logger.warn("根据商城名称获取商城信息方法入参有误");
+            return null;
+        }
+        return erpAppInfoMapper.selectAppByName(appName);
+    }
 }

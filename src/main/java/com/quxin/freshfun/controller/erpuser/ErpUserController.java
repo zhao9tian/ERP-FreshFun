@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static javax.management.Query.value;
@@ -46,35 +48,42 @@ public class ErpUserController {
      * 后台用户注册
      * @return
      */
-    @RequestMapping(value = "/crmUserRegiste", method = RequestMethod.POST)
+    @RequestMapping(value = "/crmUserRegister", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> crmUserRegiste(HttpServletRequest request, @RequestBody ErpUserPOJO user) {
-        if (user == null) {
+    public Map<String, Object> crmUserRegister(@RequestBody Map<String, Object> userInfo) {
+        if (userInfo == null) {
             logger.warn("后台用户注册时，user对象为空");
             return ResultUtil.fail(1010, "用户参数为空！");
         }
-        if(user.getAppIdStr()==null||"".equals(user.getAppIdStr())){
-            if(user.getAppName()==null||"".equals(user.getAppId())){
+        ErpUserPOJO user = new ErpUserPOJO();
+        if(userInfo.get("appIdStr")==null||"".equals(userInfo.get("appIdStr").toString())){
+            if(userInfo.get("appName")==null||"".equals(userInfo.get("appName").toString())){
                 logger.warn("创建平台商城，名称为空！");
                 return ResultUtil.fail(1010, "创建平台商城，名称为空！");
             }else{
-                Long appId = erpAppInfoService.addErpAppInfo(user.getAppName());
+                if(erpAppInfoService.queryAppByName(userInfo.get("appName").toString())!=null){
+                    logger.warn("该商城已被注册"+userInfo.get("appName").toString());
+                    return ResultUtil.fail(1004, "该商城已被注册");
+                }
+                Long appId = erpAppInfoService.addErpAppInfo(userInfo.get("appName").toString());
                 user.setAppId(appId);
             }
         }else{
-            user.setAppId(FreshFunEncoder.urlToId(user.getAppIdStr()));
+            user.setAppId(FreshFunEncoder.urlToId(userInfo.get("appIdStr").toString()));
         }
-        if (user.getUserName() == null || "".equals(user.getUserName())) {
+        if (userInfo.get("userName") == null || "".equals(userInfo.get("userName").toString())) {
             logger.warn("用户参数帐号为空");
             return ResultUtil.fail(1010, "用户帐号不能为空！");
-        }else if( erpUserService.erpUserLogin(user.getUserName())!=null){
-            logger.warn("该帐号已被注册！帐号："+user.getUserName());
+        }else if( erpUserService.erpUserLogin(userInfo.get("userName").toString())!=null){
+            logger.warn("该帐号已被注册！帐号："+userInfo.get("userName").toString());
             return ResultUtil.fail(1005, "该帐号已被注册！");
         }
-        if (user.getPassword() == null || "".equals(user.getPassword())) {
+        if (userInfo.get("passWord") == null || "".equals(userInfo.get("passWord").toString())) {
             logger.warn("用户参数密码为空");
             return ResultUtil.fail(1010, "用户密码不能为空");
         }
+        user.setUserName(userInfo.get("userName").toString());
+        user.setPassword(userInfo.get("passWord").toString());
         user.setCreated(System.currentTimeMillis()/1000);
         user.setUpdated(System.currentTimeMillis()/1000);
 
@@ -96,7 +105,7 @@ public class ErpUserController {
      */
     @ResponseBody
     @RequestMapping("/crmUserLogin")
-    public Map<String, Object> crmUserLogin(String userName, String password) {
+    public Map<String, Object> crmUserLogin(HttpServletResponse response,String userName, String password) {
         if (userName == null || "".equals(userName)) {
             logger.warn("后台用户登录时，帐号为空");
             return ResultUtil.fail(1010, "登录帐号为空");
@@ -111,6 +120,12 @@ public class ErpUserController {
             } else {
                 if (password.equals(erpUser.getPassword())) {
                     //查询权限
+                    Cookie cookie = new Cookie("userId",CookieUtil.getCookieValueByUserId(erpUser.getUserId()));
+                    cookie.setMaxAge(CookieUtil.getCookieMaxAge());
+                    cookie.setDomain(".freshfun365.com");
+                    cookie.setPath("/");
+                    //cookie.setHttpOnly(true);
+                    response.addCookie(cookie);
                     ErpAppInfoPOJO erpAppInfoPOJO = erpAppInfoService.queryAppById(erpUser.getAppId());
                     Map<String, Object> resultMap = new HashMap<String, Object>();
                     resultMap.put("appName",erpAppInfoPOJO.getAppName());
@@ -141,6 +156,20 @@ public class ErpUserController {
         resultMap.put("status",1001);
         resultMap.put("msg","请求成功");
         return resultMap;//根据前端需要的信息进行组装
+    }
+
+    /**
+     * 后台用户注销
+     */
+    @ResponseBody
+    @RequestMapping("/getMenu")
+    public Map<String,Object> getMenu(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        List<String> list = new ArrayList<String>();
+        list.add("/index");
+        list.add("/order");
+        resultMap.put("menuList",list);
+        return ResultUtil.success(resultMap);//根据前端需要的信息进行组装
     }
 
     /**

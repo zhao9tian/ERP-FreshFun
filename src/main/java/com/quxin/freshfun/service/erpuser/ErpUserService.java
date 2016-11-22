@@ -36,4 +36,11 @@ public interface ErpUserService {
      * @return 用户信息
      */
     ErpUserPOJO erpUserLogin(String account);
+
+    /**
+     * 根据id查询用户信息
+     * @param userId 用户id
+     * @return 用户信息
+     */
+    ErpUserPOJO queryUserById(Long userId);
 }

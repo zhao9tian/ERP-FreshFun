@@ -42,4 +42,10 @@ public interface ErpAppInfoService {
      * @return 商城信息
      */
     ErpAppInfoPOJO queryAppById(Long appId);
+    /**
+     * 根据商城名称获取商城信息
+     * @param appName 商城名称
+     * @return 商城信息
+     */
+    ErpAppInfoPOJO queryAppByName(String appName);
 }

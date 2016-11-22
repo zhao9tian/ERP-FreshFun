@@ -26,7 +26,7 @@
 
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/**"/>
+            <mvc:mapping path="/goods/goods.do"/>
             <bean class="com.quxin.freshfun.interceptor.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>

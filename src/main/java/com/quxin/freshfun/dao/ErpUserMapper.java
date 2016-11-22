@@ -40,10 +40,10 @@ public interface ErpUserMapper {
 
     /**
      * 根据用户帐号查询用户信息
-     * @param userAccount 用户帐号
+     * @param userName 用户帐号
      * @return 用户信息
      */
-    ErpUserPOJO selectErpUserByAccount(String userAccount);
+    ErpUserPOJO selectErpUserByAccount(String userName);
 
     /**
      * 根据用户id查询用户信息

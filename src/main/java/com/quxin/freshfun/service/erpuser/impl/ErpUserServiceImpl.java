@@ -86,4 +86,19 @@ public class ErpUserServiceImpl implements ErpUserService{
             return erpUserMapper.selectErpUserByAccount(account);
         }
     }
+
+    /**
+     * 根据id查询用户信息
+     * @param userId 用户id
+     * @return 用户信息
+     */
+    @Override
+    public ErpUserPOJO queryUserById(Long userId) {
+        if(userId==null||userId==0){
+            logger.warn("根据appId查询用户信息，入参有误");
+            return null;
+        }else{
+            return erpUserMapper.selectErpUserByUserId(userId);
+        }
+    }
 }

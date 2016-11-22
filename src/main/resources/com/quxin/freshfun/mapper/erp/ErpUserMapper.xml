@@ -4,21 +4,21 @@
 
     <!--根据userId查询用户信息-->
     <select id="selectErpUserByUserId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.erpuser.ErpUserPOJO">
-        select user_id as userId,account,nick_name as nickName,app_id as appId,phone_number as phoneNumber,
+        select user_id as userId,account as userName,is_admin as isAdmin,app_id as appId,
         created,updated from erp_user where
         user_id = #{userId} and is_deleted=0
     </select>
 
     <!--根据帐号查询用户信息-->
     <select id="selectErpUserByAccount" parameterType="java.lang.String" resultType="com.quxin.freshfun.model.erpuser.ErpUserPOJO">
-        select user_id as userId,account,password,nick_name as nickName,app_id as appId,phone_number as phoneNumber,
+        select user_id as userId,account as userName,password,is_admin as isAdmin,app_id as appId,
         created,updated from erp_user where
-        account = #{account} and is_deleted=0
+        account = #{userName} and is_deleted=0
     </select>
 
     <!--根据appid查询用户信息-->
     <select id="selectErpUserByAppId" parameterType="java.lang.String" resultType="com.quxin.freshfun.model.erpuser.ErpUserPOJO">
-        select user_id as userId,account as userName,password as password,
+        select user_id as userId,account as userName,password as password,is_admin as isAdmin,
         app_id as appId,
         created,updated from erp_user where
         app_id = #{appId} and is_deleted=0
