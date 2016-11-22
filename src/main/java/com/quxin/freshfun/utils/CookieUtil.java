@@ -24,8 +24,6 @@ public class CookieUtil {
     //cookie 有效时间
     private static Integer cookieMaxDay = 30;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private ErpUserService erpUserService;
 
     /**
      * 获取cookie的有效时间（秒数）
@@ -124,21 +122,6 @@ public class CookieUtil {
     }
 
     /**
-     * 从cookie中获取appId
-     * @return appId  返回值为null，则是有错误
-     */
-    public static Long getAppId(HttpServletRequest request){
-        Long userId = getUserIdFromCookie(request);
-        ErpUserPOJO userInfo = new CookieUtil().getUserInfo(userId);
-        if(userInfo==null){
-            new CookieUtil().logger.warn("从cookie中获取appId时，用户查询结果为空");
-            return null;
-        }else{
-            return userInfo.getAppId();
-        }
-    }
-
-    /**
      * base64加密
      * @param strValue 要加密的字符串
      * @return  加密后的字符串
@@ -183,7 +166,4 @@ public class CookieUtil {
        return Long.parseLong(strArr[0]);
     }
 
-    private ErpUserPOJO getUserInfo(Long userId){
-        return erpUserService.queryUserById(userId);
-    }
 }

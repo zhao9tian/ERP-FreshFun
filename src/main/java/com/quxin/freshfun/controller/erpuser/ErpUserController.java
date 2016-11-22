@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,7 +106,7 @@ public class ErpUserController {
      */
     @ResponseBody
     @RequestMapping("/crmUserLogin")
-    public Map<String, Object> crmUserLogin(HttpServletResponse response,String userName, String password) {
+    public Map<String, Object> crmUserLogin(HttpServletRequest request,HttpServletResponse response,String userName, String password) {
         if (userName == null || "".equals(userName)) {
             logger.warn("后台用户登录时，帐号为空");
             return ResultUtil.fail(1010, "登录帐号为空");
@@ -124,8 +125,10 @@ public class ErpUserController {
                     cookie.setMaxAge(CookieUtil.getCookieMaxAge());
                     cookie.setDomain(".freshfun365.com");
                     cookie.setPath("/");
-                    //cookie.setHttpOnly(true);
                     response.addCookie(cookie);
+                    HttpSession session = request.getSession();
+                    session.setMaxInactiveInterval(10*60);//以秒为单位
+                    session.setAttribute("userId",CookieUtil.getCookieValueByUserId(erpUser.getUserId()));
                     ErpAppInfoPOJO erpAppInfoPOJO = erpAppInfoService.queryAppById(erpUser.getAppId());
                     Map<String, Object> resultMap = new HashMap<String, Object>();
                     resultMap.put("appName",erpAppInfoPOJO.getAppName());
@@ -155,6 +158,7 @@ public class ErpUserController {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("status",1001);
         resultMap.put("msg","请求成功");
+        request.getSession().setMaxInactiveInterval(0);
         return resultMap;//根据前端需要的信息进行组装
     }
 
