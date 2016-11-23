@@ -6,20 +6,22 @@
     <select id="selectCountByQC" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(id) from goods_base
         where is_deleted = 0
-        <if test="subTitle != null"> and sub_title like '%${subTitle}%'</if>
-        <if test="category2 != null"> and category2 = #{category2}</if>
-        <if test="isOnSale != null"> and is_on_sale = #{isOnSale}</if>
+        <if test="subTitle != null">and sub_title like '%${subTitle}%'</if>
+        <if test="category2 != null">and category2 = #{category2}</if>
+        <if test="isOnSale != null">and is_on_sale = #{isOnSale}</if>
     </select>
     <!--查询商品基本信息列表 -->
     <select id="selectGoodsList" parameterType="java.util.Map" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
         select id as goodsId ,title as title , sub_title as subtitle , des as goodsDes , shop_price as shopPrice ,
-		origin_price as originPrice , cost as goodsCost , img as goodsImg ,	sale_num as saleNum , stock_num as stockNum ,
-		is_on_sale as isOnSale , category1 as category1 , category2 as category2  , category3 as category3 ,category4 as category4 ,
-		app_id as appId , shop_id as shopId , created as created , updated as updated
-		from goods_base where is_deleted = 0
-        <if test="subTitle != null"> and sub_title like '%${subTitle}%'</if>
-        <if test="category2 != null"> and category2 = #{category2}</if>
-        <if test="isOnSale != null"> and is_on_sale = #{isOnSale}</if>
+        origin_price as originPrice , cost as goodsCost , img as goodsImg , sale_num as saleNum , stock_num as stockNum
+        ,
+        is_on_sale as isOnSale , category1 as category1 , category2 as category2 , category3 as category3 ,category4 as
+        category4 ,
+        app_id as appId , shop_id as shopId , created as created , updated as updated
+        from goods_base where is_deleted = 0
+        <if test="subTitle != null">and sub_title like '%${subTitle}%'</if>
+        <if test="category2 != null">and category2 = #{category2}</if>
+        <if test="isOnSale != null">and is_on_sale = #{isOnSale}</if>
         <if test="order != null">
             order by created ${order}
         </if>
@@ -32,13 +34,15 @@
         select count(id) from goods_base where title = #{title}
     </select>
     <!--为订单专门做的应急的接口-->
-    <select id="selectGoodsById" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsOrderOut">
+    <select id="selectGoodsById" parameterType="java.lang.Long"
+            resultType="com.quxin.freshfun.model.goods.GoodsOrderOut">
         select id ,title as goodsName , shop_price as goodsShopPrice ,img as goodsImg , des as goodsDes
         from goods_base where id = #{goodsId}
     </select>
 
     <!-- 根据商品编号查询商品基本信息 -->
-    <select id="selectGoodsByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
+    <select id="selectGoodsByGoodsId" parameterType="java.lang.Long"
+            resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
 		select id as goodsId ,title as title , sub_title as subtitle , des as goodsDes , shop_price as shopPrice ,
 		origin_price as originPrice , cost as goodsCost , img as goodsImg ,	sale_num as saleNum , stock_num as stockNum ,
 		is_on_sale as isOnSale , category1 as category1 , category2 as category2  , category3 as category3 ,category4 as category4 ,
@@ -46,15 +50,17 @@
 		from goods_base where id = #{goodsId} and is_deleted = 0
 	</select>
     <!--查询商品列表信息-->
-    <select id="selectGoodsImgByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
+    <select id="selectGoodsImgByGoodsId" parameterType="java.lang.Long"
+            resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
         select  detail_img as detailImg, carousel_img as carouselImg from goods_img where goods_id = #{goodsId}
     </select>
     <!--查询商品所有的图片信息-->
     <select id="selectGoodsImgs" resultType="com.quxin.freshfun.model.goods.GoodsPOJO">
         select goods_id as goodsId , detail_img as detailImg, carousel_img as carouselImg from goods_img
     </select>
-	<!--根据商品Id查询商品规格-->
-	<select id="selectGoodsStandardByGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.GoodsStandardPOJO">
+    <!--根据商品Id查询商品规格-->
+    <select id="selectGoodsStandardByGoodsId" parameterType="java.lang.Long"
+            resultType="com.quxin.freshfun.model.goods.GoodsStandardPOJO">
 		select id , goods_id as goodsId ,`name` as `name` ,brand as brand ,product_place as productPlace, goods_standard as goodsStandard, net_contents as netContents,
 		shelf_life as shelfLife ,storage_method as storageMethod ,ingredient_list as ingredientList ,is_sugary as isSugary ,is_organic as isOrganic ,
 		is_imported as isImported ,is_box_packed as isBoxPacked , package_component as packageComponent ,taste as taste ,facility ,unsuitable ,suitable ,
@@ -62,25 +68,27 @@
 		product_standard_num as productStandardNum ,fresh_store_temp as freshStoreTemp , proof , degree , adaptive_scene as adaptiveScene ,
 		packing_method as packingMethod ,packing_type as packingType , wine_style as wineStyle , suit_specification as suitSpecification ,
 		decante_duration as decanteDuration , particular_year as particularYear , smell ,colour_sort as colourSort , style_type as styleType,`size`,
-		specialty ,other from goods_standard where goods_id = #{goodsId}
+		specialty ,agtron , material , coffee_type as coffeeType , technics , series , pattern , coffee_cooked_degree as coffeeCookedDegree , color ,
+		mouthfeel , applicable_object as applicableObject, bowl_diameter as bowlDiameter, other from goods_standard where goods_id = #{goodsId}
 	</select>
 
     <!--添加商品基本信息 -->
-    <insert id = "insertGoodsBase" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO" useGeneratedKeys="true" keyProperty="goodsId">
+    <insert id="insertGoodsBase" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO" useGeneratedKeys="true"
+            keyProperty="goodsId">
         insert into goods_base(title , sub_title , des , shop_price , origin_price , cost , img , sale_num , stock_num , is_on_sale , category1 , category2 ,
         category3 , category4 , shop_id , app_id ,created , updated )
         values(#{title},#{subtitle},#{goodsDes},#{shopPrice},#{originPrice},#{goodsCost},#{goodsImg},#{saleNum},#{stockNum},#{isOnSale},
         #{category1},#{category2},#{category3},#{category4},#{shopId},#{appId},#{created},#{updated})
     </insert>
     <!--添加商品图片信息-->
-    <insert id = "insertGoodsImg" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO">
+    <insert id="insertGoodsImg" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO">
         insert into goods_img(goods_id , detail_img , carousel_img) values(#{goodsId} , #{detailImg} , #{carouselImg})
     </insert>
     <!--添加商品规格-->
     <insert id="insertGoodsStandard" parameterType="com.quxin.freshfun.model.goods.GoodsStandardPOJO">
         INSERT INTO goods_standard
         <trim prefix="(" suffix=")" suffixOverrides=",">
-                  goods_id,
+            goods_id,
             <if test="name != null">
                 `name`,
             </if>
@@ -195,12 +203,45 @@
             <if test="specialty != null">
                 specialty,
             </if>
+            <if test="agtron != null">
+                agtron,
+            </if>
+            <if test="material != null">
+                material,
+            </if>
+            <if test="coffeeType != null">
+                coffee_type,
+            </if>
+            <if test="technics != null">
+                technics,
+            </if>
+            <if test="series != null">
+                series,
+            </if>
+            <if test="pattern != null">
+                pattern,
+            </if>
+            <if test="coffeeCookedDegree != null">
+                coffee_cooked_degree,
+            </if>
+            <if test="color != null">
+                color,
+            </if>
+            <if test="mouthfeel != null">
+                mouthfeel,
+            </if>
+            <if test="applicableObject != null">
+                applicable_object,
+            </if>
+            <if test="bowlDiameter != null">
+                bowl_diameter,
+            </if>
             <if test="other != null">
                 other,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-             #{goodsId},
+            #{goodsId},
             <if test="name != null">
                 #{name},
             </if>
@@ -315,6 +356,39 @@
             <if test="specialty != null">
                 #{specialty},
             </if>
+            <if test="agtron != null">
+                #{agtron},
+            </if>
+            <if test="material != null">
+                #{material},
+            </if>
+            <if test="coffeeType != null">
+                #{coffeeType},
+            </if>
+            <if test="technics != null">
+                #{technics},
+            </if>
+            <if test="series != null">
+                #{series},
+            </if>
+            <if test="pattern != null">
+                #{pattern},
+            </if>
+            <if test="coffeeCookedDegree != null">
+                #{coffeeCookedDegree},
+            </if>
+            <if test="color != null">
+                #{color},
+            </if>
+            <if test="mouthfeel != null">
+                #{mouthfeel},
+            </if>
+            <if test="applicableObject != null">
+                #{applicableObject},
+            </if>
+            <if test="bowlDiameter != null">
+                #{bowlDiameter},
+            </if>
             <if test="other != null">
                 #{other}
             </if>
@@ -322,29 +396,29 @@
     </insert>
 
     <!-- 修改商品基本信息-->
-	<update id="updateGoods" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO">
-		  update goods_base
-		  <set>
-              id = #{goodsId},
-              <if test="title != null">title = #{title} , </if>
-              <if test="subtitle != null">sub_title = #{subtitle}, </if>
-              <if test="goodsDes != null">des = #{goodsDes}, </if>
-              <if test="shopPrice != null">shop_price = #{shopPrice},</if>
-              <if test="originPrice != null">origin_price = #{originPrice},</if>
-              <if test="goodsCost != null">cost = #{goodsCost},</if>
-              <if test="goodsImg != null">img = #{goodsImg},</if>
-              <if test="saleNum != null">sale_num = #{saleNum},</if>
-              <if test="stockNum != null">stock_num = #{stockNum},</if>
-              <if test="isOnSale != null">is_on_sale = #{isOnSale},</if>
-              <if test="category1 != null">category1 = #{category1},</if>
-              <if test="category2 != null">category2 = #{category2},</if>
-              <if test="category3 != null">category3 = #{category3},</if>
-              <if test="category4 != null">category4 = #{category4},</if>
-              <if test="shopId != null">shop_id = #{shopId},</if>
-              <if test="updated != null">updated = #{updated},</if>
-          </set>
-		  where id = #{goodsId}
-	</update>
+    <update id="updateGoods" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO">
+        update goods_base
+        <set>
+            id = #{goodsId},
+            <if test="title != null">title = #{title} ,</if>
+            <if test="subtitle != null">sub_title = #{subtitle},</if>
+            <if test="goodsDes != null">des = #{goodsDes},</if>
+            <if test="shopPrice != null">shop_price = #{shopPrice},</if>
+            <if test="originPrice != null">origin_price = #{originPrice},</if>
+            <if test="goodsCost != null">cost = #{goodsCost},</if>
+            <if test="goodsImg != null">img = #{goodsImg},</if>
+            <if test="saleNum != null">sale_num = #{saleNum},</if>
+            <if test="stockNum != null">stock_num = #{stockNum},</if>
+            <if test="isOnSale != null">is_on_sale = #{isOnSale},</if>
+            <if test="category1 != null">category1 = #{category1},</if>
+            <if test="category2 != null">category2 = #{category2},</if>
+            <if test="category3 != null">category3 = #{category3},</if>
+            <if test="category4 != null">category4 = #{category4},</if>
+            <if test="shopId != null">shop_id = #{shopId},</if>
+            <if test="updated != null">updated = #{updated},</if>
+        </set>
+        where id = #{goodsId}
+    </update>
     <!-- 修改商品基本信息-->
     <update id="updateGoodsImg" parameterType="com.quxin.freshfun.model.goods.GoodsPOJO">
         update goods_img
@@ -397,6 +471,17 @@
             style_type = #{styleType},
             `size` = #{size},
             specialty = #{specialty},
+            agtron = #{agtron} ,
+            material = #{material},
+            coffee_type = #{coffeeType},
+            technics =#{technics},
+            series = #{series},
+            pattern = #{pattern},
+            coffee_cooked_degree = #{coffeeCookedDegree},
+            color = #{color},
+            mouthfeel = #{mouthfeel},
+            applicable_object = #{applicableObject},
+            bowl_diameter = #{bowlDiameter},
             other = #{other}
         where goods_id = #{goodsId}
     </update>

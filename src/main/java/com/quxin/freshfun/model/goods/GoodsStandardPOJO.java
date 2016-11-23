@@ -14,7 +14,7 @@ public class GoodsStandardPOJO {
     /**
      * 品名
      */
-    private String name ;
+    private String name;
     /**
      * 品牌
      */
@@ -136,7 +136,7 @@ public class GoodsStandardPOJO {
      */
     private String suitSpecification;
     /**
-     *  醒酒时间
+     * 醒酒时间
      */
     private String decanteDuration;
     /**
@@ -163,6 +163,52 @@ public class GoodsStandardPOJO {
      * 特产品种
      */
     private String specialty;
+
+    /**
+     * 烘焙程度
+     */
+    private String agtron;
+
+    /**
+     * 材质
+     */
+    private String material;
+    /**
+     * 咖啡种类
+     */
+    private String coffeeType;
+    /**
+     * 工艺
+     */
+    private String technics;
+    /**
+     * 系列
+     */
+    private String series;
+    /**
+     * 图案
+     */
+    private String pattern;
+    /**
+     * 咖啡豆生熟程度
+     */
+    private String coffeeCookedDegree;
+    /**
+     * 颜色
+     */
+    private String color;
+    /**
+     * 口感
+     */
+    private String mouthfeel;
+    /**
+     * 应用对象
+     */
+    private String applicableObject;
+    /**
+     * 碗口直径
+     */
+    private String bowlDiameter;
     /**
      * 其他
      */
@@ -480,6 +526,94 @@ public class GoodsStandardPOJO {
         this.specialty = specialty;
     }
 
+    public String getAgtron() {
+        return agtron;
+    }
+
+    public void setAgtron(String agtron) {
+        this.agtron = agtron;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
+    public String getCoffeeType() {
+        return coffeeType;
+    }
+
+    public void setCoffeeType(String coffeeType) {
+        this.coffeeType = coffeeType;
+    }
+
+    public String getTechnics() {
+        return technics;
+    }
+
+    public void setTechnics(String technics) {
+        this.technics = technics;
+    }
+
+    public String getSeries() {
+        return series;
+    }
+
+    public void setSeries(String series) {
+        this.series = series;
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+
+    public String getCoffeeCookedDegree() {
+        return coffeeCookedDegree;
+    }
+
+    public void setCoffeeCookedDegree(String coffeeCookedDegree) {
+        this.coffeeCookedDegree = coffeeCookedDegree;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getMouthfeel() {
+        return mouthfeel;
+    }
+
+    public void setMouthfeel(String mouthfeel) {
+        this.mouthfeel = mouthfeel;
+    }
+
+    public String getApplicableObject() {
+        return applicableObject;
+    }
+
+    public void setApplicableObject(String applicableObject) {
+        this.applicableObject = applicableObject;
+    }
+
+    public String getBowlDiameter() {
+        return bowlDiameter;
+    }
+
+    public void setBowlDiameter(String bowlDiameter) {
+        this.bowlDiameter = bowlDiameter;
+    }
+
     public String getOther() {
         return other;
     }
@@ -539,51 +673,18 @@ public class GoodsStandardPOJO {
                 ", styleType='" + styleType + '\'' +
                 ", size='" + size + '\'' +
                 ", specialty='" + specialty + '\'' +
+                ", agtron='" + agtron + '\'' +
+                ", material='" + material + '\'' +
+                ", coffeeType='" + coffeeType + '\'' +
+                ", technics='" + technics + '\'' +
+                ", series='" + series + '\'' +
+                ", pattern='" + pattern + '\'' +
+                ", coffeeCookedDegree='" + coffeeCookedDegree + '\'' +
+                ", color='" + color + '\'' +
+                ", mouthfeel='" + mouthfeel + '\'' +
+                ", applicableObject='" + applicableObject + '\'' +
+                ", bowlDiameter='" + bowlDiameter + '\'' +
                 ", other='" + other + '\'' +
                 '}';
     }
-
-    public GoodsStandardPOJO(String name, String brand, String productPlace, String goodsStandard, String netContents, String shelfLife, String storageMethod, String ingredientList, String isSugary, String isOrganic, String isImported, String isBoxPacked, String packageComponent, String taste, String facility, String unsuitable, String suitable, String productForm, String foodAdditives, String setCycle, String factoryName, String factorySite, String productStandardNum, String freshStoreTemp, String proof, String degree, String adaptiveScene, String packingMethod, String packingType, String wineStyle, String suitSpecification, String decanteDuration, String particularYear, String smell, String colourSort, String styleType, String size, String specialty, String other) {
-        this.name = name;
-        this.brand = brand;
-        this.productPlace = productPlace;
-        this.goodsStandard = goodsStandard;
-        this.netContents = netContents;
-        this.shelfLife = shelfLife;
-        this.storageMethod = storageMethod;
-        this.ingredientList = ingredientList;
-        this.isSugary = isSugary;
-        this.isOrganic = isOrganic;
-        this.isImported = isImported;
-        this.isBoxPacked = isBoxPacked;
-        this.packageComponent = packageComponent;
-        this.taste = taste;
-        this.facility = facility;
-        this.unsuitable = unsuitable;
-        this.suitable = suitable;
-        this.productForm = productForm;
-        this.foodAdditives = foodAdditives;
-        this.setCycle = setCycle;
-        this.factoryName = factoryName;
-        this.factorySite = factorySite;
-        this.productStandardNum = productStandardNum;
-        this.freshStoreTemp = freshStoreTemp;
-        this.proof = proof;
-        this.degree = degree;
-        this.adaptiveScene = adaptiveScene;
-        this.packingMethod = packingMethod;
-        this.packingType = packingType;
-        this.wineStyle = wineStyle;
-        this.suitSpecification = suitSpecification;
-        this.decanteDuration = decanteDuration;
-        this.particularYear = particularYear;
-        this.smell = smell;
-        this.colourSort = colourSort;
-        this.styleType = styleType;
-        this.size = size;
-        this.specialty = specialty;
-        this.other = other;
-    }
-
-    public GoodsStandardPOJO(){}
 }

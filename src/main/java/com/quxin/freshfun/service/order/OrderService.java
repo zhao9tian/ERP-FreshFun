@@ -115,6 +115,15 @@ public interface OrderService {
     List<OrderDetailsPOJO> findFinishIntervalOrder(Long startTime,Long endTime) throws BusinessException;
 
     /**
+     * 根据订单Id查询订单详情
+     * create by qucheng
+     * @param orderId 订单Id
+     * @return 订单详情
+     */
+    OrderDetailsPOJO queryOrderDetailByOrderId(Long orderId);
+
+
+    /**
      * 根据appId查询下单数
      * @param appId 商城id
      * @return 下单数

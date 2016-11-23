@@ -25,7 +25,7 @@ public class UploadUtils {
      */
     public static Map<String, Object> uploadPic(HttpServletRequest request) throws IOException {
         Map<String ,Object> result = new HashMap<>();
-        String imgPath = "";
+        String imgPath;
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         Iterator<String> iter = multiRequest.getFileNames();
         while (iter.hasNext()) {

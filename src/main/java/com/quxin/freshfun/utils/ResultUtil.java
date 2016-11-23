@@ -130,6 +130,19 @@ public class ResultUtil {
     }
 
     /**
+     * 成功参数封装
+     * @return
+     */
+    public static Map<String, Object> success(){
+        Map<String, Object>  map = new HashMap<String, Object>();
+        map.put("code",1001);
+        map.put("msg","请求成功");
+        Map<String, Object>  resultMap = new HashMap<String, Object>();
+        resultMap.put("status",map);
+        return resultMap;
+    }
+
+    /**
      * 失败参数封装
      * @param code
      * @param msg

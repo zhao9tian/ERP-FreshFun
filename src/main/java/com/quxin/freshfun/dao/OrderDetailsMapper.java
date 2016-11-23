@@ -149,4 +149,11 @@ public interface OrderDetailsMapper {
      * @return
      */
     List<OrderDetailsPOJO> selectFinishIntervalOrder(Map<String,Object> map);
+
+    /**
+     * 根据订单Id查询订单详情
+     * @param orderId 订单Id
+     * @return 订单详情
+     */
+    OrderDetailsPOJO selectOrderDetailByOrderId(Long orderId);
 }

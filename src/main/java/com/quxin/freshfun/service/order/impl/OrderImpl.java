@@ -296,6 +296,16 @@ public class OrderImpl implements OrderService {
         return orderDetails;
     }
 
+    @Override
+    public OrderDetailsPOJO queryOrderDetailByOrderId(Long orderId) {
+        if(orderId == null){
+            logger.error("orderId为空");
+        }else{
+            return orderDetailsMapper.selectOrderDetailByOrderId(orderId);
+        }
+        return null;
+    }
+
     /**
      * 根据appId查询下单数
      * @param appId 商城id

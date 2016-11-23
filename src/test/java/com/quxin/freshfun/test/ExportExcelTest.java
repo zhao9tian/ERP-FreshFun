@@ -9,9 +9,13 @@ import org.junit.After;
 import org.junit.Before;
 
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static javafx.scene.input.KeyCode.M;
 
 /**
  * 商品单元测试
@@ -111,7 +115,7 @@ public class ExportExcelTest extends TestBase {
             row.createCell(6).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsCost()));
             row.createCell(7).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getOriginPrice()));
             row.createCell(8).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
-            row.createCell(9).setCellValue(((double)(goods.getOriginPrice()-goods.getShopPrice()))/(double)goods.getOriginPrice());
+            row.createCell(9).setCellValue(((double)(goods.getShopPrice()-goods.getGoodsCost()))/(double)goods.getShopPrice());
             row.createCell(10).setCellValue("https://www.freshfun365.com/api/app/FreshFunApp/goodsInfo.html?goodsId="+goods.getGoodsId());
         }
         // 第六步，将文件存到指定位置
@@ -152,8 +156,21 @@ public class ExportExcelTest extends TestBase {
                 catogary = "生鲜蔬果";
                 break;
         }
-
         return catogary;
+    }
+
+
+    public static void main(String[] args) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        double a = 19.9;
+        df.format(19.9);
+        BigDecimal aa = new BigDecimal(a);
+        BigDecimal bb = new BigDecimal(100);
+//        System.out.println(Double.parseDouble(df.format())*100);//自动四舍五入
+
+        System.out.println(1990d/100);//
+        System.out.println(9.9*100);//
+//        System.out.println(Math.round(19));//
     }
 
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quxin.freshfun.dao.FlowMapper">
+
+    <!--插入流水记录-->
+    <insert id="insertFlow" parameterType="com.quxin.freshfun.model.flow.FlowPOJO" useGeneratedKeys="true"
+            keyProperty="flowId">
+        insert into flow_base( app_id , flow_type , flow_money , created , updated ,
+        <if test="orderId != null">
+            order_id ,
+        </if>
+        <if test="balance != null">
+            balance ,
+        </if>
+        is_deleted
+        )values(#{appId} , #{flowType} ,#{flowMoney} , #{created} , #{updated} ,
+        <if test="orderId != null">
+            #{orderId} ,
+        </if>
+        <if test="balance != null">
+            #{balance} ,
+        </if>
+        #{isDeleted})
+    </insert>
+
+    <!--根据appId查询余额-->
+    <select id="selectBalanceByAppId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select balance from flow_base where id = (select max(id) from flow_base
+        where app_id = #{appId} and is_deleted = 0)
+    </select>
+
+    <!--根据appId查询流水列表-->
+    <select id="selectFlowListByAppId" resultType="com.quxin.freshfun.model.flow.FlowPOJO">
+        select `id` as flowId , app_id as appId , order_id as orderId , flow_money as flowMoney , created , updated ,
+         is_deleted as isDeleted, balance , flow_type as flowType
+        from flow_base
+        where app_id = #{appId} and is_deleted = 0 order by created desc
+        limit #{start} , #{pageSize}
+    </select>
+
+    <!--根据appId 查询总记录数做分页-->
+    <select id="selectCountByAppId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select count(id) from flow_base where app_id = #{appId}
+    </select>
+
+    <select id="selectFlowByOrderId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.flow.FlowPOJO">
+        select `id` as flowId , app_id as appId , order_id as orderId , flow_money as flowMoney , created , updated ,
+        is_deleted as isDeleted , balance , flow_type as flowType
+        from flow_base
+        where order_id = #{orderId} and is_deleted = 0
+    </select>
+
+</mapper>

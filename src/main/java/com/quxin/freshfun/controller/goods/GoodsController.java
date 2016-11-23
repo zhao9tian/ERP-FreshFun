@@ -7,6 +7,7 @@ import com.quxin.freshfun.model.goods.GoodsStandardKV;
 import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
 import com.quxin.freshfun.service.goods.GoodsService;
 import com.quxin.freshfun.service.goods.GoodsSortService;
+import com.quxin.freshfun.utils.MoneyFormatUtils;
 import com.quxin.freshfun.utils.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -134,9 +136,15 @@ public class GoodsController {
                 GoodsBaseOut goodsBase = new GoodsBaseOut();
                 goodsBase.setGoodsId(goodsPOJO.getGoodsId());
                 goodsBase.setImg(goodsPOJO.getGoodsImg());
-                goodsBase.setShopPrice(df.format(((double)goodsPOJO.getShopPrice())/100));
-                goodsBase.setOriginPrice(df.format(((double)goodsPOJO.getOriginPrice())/100));
+                goodsBase.setShopPrice(MoneyFormatUtils.getMoneyFromInteger(goodsPOJO.getShopPrice()));//售价
+                goodsBase.setOriginPrice(MoneyFormatUtils.getMoneyFromInteger(goodsPOJO.getOriginPrice()));//原价
+                goodsBase.setCostPrice(MoneyFormatUtils.getMoneyFromInteger(goodsPOJO.getGoodsCost()));//成本价
+                double grossMargin = ((double)(goodsPOJO.getShopPrice()-goodsPOJO.getGoodsCost()))/(double)goodsPOJO.getShopPrice();
+                NumberFormat nf = NumberFormat.getPercentInstance();
+                nf.setMaximumFractionDigits(1);//保留小数位-四舍五入
+                goodsBase.setGrossMargin(nf.format(grossMargin));//毛利率
                 goodsBase.setTitle(goodsPOJO.getTitle());
+                goodsBase.setSubTitle(goodsPOJO.getSubtitle());
                 goodsBase.setCreateTime(goodsPOJO.getCreated());
                 goodsBase.setIsOnSale(goodsPOJO.getIsOnSale());
                 goodsBase.setSaleNum(goodsPOJO.getSaleNum());
@@ -301,9 +309,9 @@ public class GoodsController {
                 goods.setTitle((String) basicInfo.get("title"));
                 goods.setSubtitle((String) basicInfo.get("subTitle"));
                 goods.setGoodsDes((String) basicInfo.get("authorString"));//小编说
-                goods.setShopPrice((int) ((Double.parseDouble((String) basicInfo.get("sellPrice"))) * 100));//转int存数据库 售价
-                goods.setOriginPrice((int) ((Double.parseDouble((String) basicInfo.get("originalPrice"))) * 100));//转int存数据库 原价
-                goods.setGoodsCost((int) ((Double.parseDouble((String) basicInfo.get("costPrice"))) * 100));//转int 成本价
+                goods.setShopPrice(Math.round(Float.parseFloat((String) basicInfo.get("sellPrice")) * 100));//转int存数据库 售价
+                goods.setOriginPrice(Math.round(Float.parseFloat((String) basicInfo.get("originalPrice")) * 100));//转int存数据库 原价
+                goods.setGoodsCost(Math.round(Float.parseFloat((String) basicInfo.get("costPrice")) * 100));//转int 成本价
                 goods.setStockNum((Integer) basicInfo.get("storeNum") );//库存
                 //图片信息
                 Map picInfo = (Map) goodsInfo.get("picInfo");
@@ -315,7 +323,7 @@ public class GoodsController {
                 //商品规格属性
                 List properties = (List) goodsInfo.get("propertyInfo");
                 for(Object object : properties){
-                    Map propertyInfo = (Map) object;
+                    Map propertyInfo = (Map) object; //50个属性
                     if("name".equals(propertyInfo.get("key"))){
                         goodsStandard.setName((String) propertyInfo.get("value"));
                     }
@@ -429,6 +437,39 @@ public class GoodsController {
                     }
                     if("specialty".equals(propertyInfo.get("key"))){
                         goodsStandard.setSpecialty((String) propertyInfo.get("value"));
+                    }
+                    if("agtron".equals(propertyInfo.get("key"))){
+                        goodsStandard.setAgtron((String) propertyInfo.get("value"));
+                    }
+                    if("material".equals(propertyInfo.get("key"))){
+                        goodsStandard.setMaterial((String) propertyInfo.get("value"));
+                    }
+                    if("coffeeType".equals(propertyInfo.get("key"))){
+                        goodsStandard.setCoffeeType((String) propertyInfo.get("value"));
+                    }
+                    if("technics".equals(propertyInfo.get("key"))){
+                        goodsStandard.setTechnics((String) propertyInfo.get("value"));
+                    }
+                    if("series".equals(propertyInfo.get("key"))){
+                        goodsStandard.setSeries((String) propertyInfo.get("value"));
+                    }
+                    if("pattern".equals(propertyInfo.get("key"))){
+                        goodsStandard.setPattern((String) propertyInfo.get("value"));
+                    }
+                    if("coffeeCookedDegree".equals(propertyInfo.get("key"))){
+                        goodsStandard.setCoffeeCookedDegree((String) propertyInfo.get("value"));
+                    }
+                    if("color".equals(propertyInfo.get("key"))){
+                        goodsStandard.setColor((String) propertyInfo.get("value"));
+                    }
+                    if("mouthfeel".equals(propertyInfo.get("key"))){
+                        goodsStandard.setMouthfeel((String) propertyInfo.get("value"));
+                    }
+                    if("applicableObject".equals(propertyInfo.get("key"))){
+                        goodsStandard.setApplicableObject((String) propertyInfo.get("value"));
+                    }
+                    if("bowlDiameter".equals(propertyInfo.get("key"))){
+                        goodsStandard.setBowlDiameter((String) propertyInfo.get("value"));
                     }
                     if("other".equals(propertyInfo.get("key"))){
                         goodsStandard.setOther((String) propertyInfo.get("value"));
@@ -711,6 +752,72 @@ public class GoodsController {
                 Map<String , Object> map = new HashMap<>();
                 map.put("key","specialty");
                 map.put("value",standard.getSpecialty());
+                result.add(map);
+            }
+            if(standard.getAgtron() != null && !"".equals(standard.getAgtron())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","agtron");
+                map.put("value",standard.getAgtron());
+                result.add(map);
+            }
+            if(standard.getMaterial() != null && !"".equals(standard.getMaterial())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","material");
+                map.put("value",standard.getMaterial());
+                result.add(map);
+            }
+            if(standard.getCoffeeType() != null && !"".equals(standard.getCoffeeType())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","coffeeType");
+                map.put("value",standard.getCoffeeType());
+                result.add(map);
+            }
+            if(standard.getTechnics() != null && !"".equals(standard.getTechnics())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","technics");
+                map.put("value",standard.getTechnics());
+                result.add(map);
+            }
+            if(standard.getSeries() != null && !"".equals(standard.getSeries())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","series");
+                map.put("value",standard.getSeries());
+                result.add(map);
+            }
+            if(standard.getPattern() != null && !"".equals(standard.getPattern())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","pattern");
+                map.put("value",standard.getPattern());
+                result.add(map);
+            }
+            if(standard.getCoffeeCookedDegree() != null && !"".equals(standard.getCoffeeCookedDegree())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","coffeeCookedDegree");
+                map.put("value",standard.getCoffeeCookedDegree());
+                result.add(map);
+            }
+            if(standard.getColor() != null && !"".equals(standard.getColor())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","color");
+                map.put("value",standard.getColor());
+                result.add(map);
+            }
+            if(standard.getMouthfeel() != null && !"".equals(standard.getMouthfeel())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","mouthfeel");
+                map.put("value",standard.getMouthfeel());
+                result.add(map);
+            }
+            if(standard.getApplicableObject() != null && !"".equals(standard.getApplicableObject())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","applicableObject");
+                map.put("value",standard.getApplicableObject());
+                result.add(map);
+            }
+            if(standard.getBowlDiameter() != null && !"".equals(standard.getBowlDiameter())){
+                Map<String , Object> map = new HashMap<>();
+                map.put("key","bowlDiameter");
+                map.put("value",standard.getBowlDiameter());
                 result.add(map);
             }
             if(standard.getOther() != null && !"".equals(standard.getOther())){

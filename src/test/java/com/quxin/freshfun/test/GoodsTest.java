@@ -5,7 +5,8 @@ import com.quxin.freshfun.controller.goods.GoodsController;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
 import com.quxin.freshfun.service.goods.GoodsService;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,11 +147,7 @@ public class GoodsTest extends TestBase {
     }
 
     private GoodsStandardPOJO createGoodsStandard(){
-        GoodsStandardPOJO goodsStandardPOJO = new GoodsStandardPOJO(
-                "爱马仕1",null,"13","14","15","16","17","18","19","110",
-                "11","12","13","114","1","115","16","17","18","19","110",
-                "11","11","11","11","111","111","11","11","19","110",
-                "11","12","13","14","15","116","17","18");
+        GoodsStandardPOJO goodsStandardPOJO = new GoodsStandardPOJO();
         return goodsStandardPOJO;
     }
 
