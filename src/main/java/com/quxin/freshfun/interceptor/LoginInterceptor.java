@@ -33,11 +33,12 @@ public class LoginInterceptor implements HandlerInterceptor {
         Map<String,Object> map = new HashMap<String,Object>();
         Map<String,Object> mapStatus = new HashMap<String,Object>();
         Integer result = 0;
-        HttpSession session = httpServletRequest.getSession();
-        Object userIdString = session.getAttribute("userId");
-        if(userIdString!=null){
+        /*HttpSession session = httpServletRequest.getSession();
+        Object userIdString = session.getAttribute("userId");*/
+        if(true){
+        /*if(userIdString!=null){
             session.setAttribute("userId",userIdString.toString());
-            session.setMaxInactiveInterval(10*60);
+            session.setMaxInactiveInterval(10*60);*/
             boolean isLogin = CookieUtil.checkAuth(httpServletRequest);//是否存在cookie
             if(!isLogin){
                 result = 1;
@@ -92,13 +93,6 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
             return false;
         }
-        /*
-        boolean isLogin = CookieUtil.checkAuth(httpServletRequest);
-        if(!isLogin){
-            result = 0;
-        }
-        Long userId = CookieUtil.getUserIdFromCookie(httpServletRequest);*/
-
     }
 
     @Override
