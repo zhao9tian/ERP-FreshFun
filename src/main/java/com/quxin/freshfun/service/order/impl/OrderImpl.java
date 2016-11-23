@@ -297,9 +297,35 @@ public class OrderImpl implements OrderService {
     }
 
     /**
+     * 根据appId查询下单数
+     * @param appId 商城id
+     * @return 下单数
+     */
+    @Override
+    public Integer querySucOrderNum(String appId) {
+        if (appId == null || "".equals(appId)) {
+            logger.warn("查询下单数时，appId不能为空");
+            return 0;
+        }
+        return orderDetailsMapper.selectSucOrderNum(appId);
+    }
+
+    /**
+     * 根据appId查询下单金额
+     * @param appId 商城id
+     * @return 下单金额
+     */
+    @Override
+    public Integer queryTotalRevenue(String appId) {
+        if (appId == null || "".equals(appId)) {
+            logger.warn("查询下单金额时，appId不能为空");
+            return 0;
+        }
+        return orderDetailsMapper.selectSucOrderNum(appId);
+    }
+
+    /**
      * 订单退款
-     * @param orderId
-     * @return
      */
     @Override
     public String orderRefunds(Long orderId) throws BusinessException {

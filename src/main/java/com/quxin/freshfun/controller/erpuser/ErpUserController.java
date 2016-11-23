@@ -106,11 +106,11 @@ public class ErpUserController {
      */
     @ResponseBody
     @RequestMapping("/crmUserLogin")
-    public Map<String, Object> crmUserLogin(HttpServletRequest request,HttpServletResponse response,String userName, String password) {
+    public Map<String, Object> crmUserLogin(HttpServletRequest request,HttpServletResponse response,String userName, String passWord) {
         if (userName == null || "".equals(userName)) {
             logger.warn("后台用户登录时，帐号为空");
             return ResultUtil.fail(1010, "登录帐号为空");
-        } else if (password == null || "".equals(password)) {
+        } else if (passWord == null || "".equals(passWord)) {
             logger.warn("后台用户登录时，密码为空");
             return ResultUtil.fail(1010, "登录密码为空");
         } else {
@@ -119,7 +119,7 @@ public class ErpUserController {
                 logger.warn("后台用户登录时，根据帐号" + userName + "未查询出用户信息");
                 return ResultUtil.fail(1005, "用户不存在");
             } else {
-                if (password.equals(erpUser.getPassword())) {
+                if (passWord.equals(erpUser.getPassword())) {
                     //查询权限
                     Cookie cookie = new Cookie("userId",CookieUtil.getCookieValueByUserId(erpUser.getUserId()));
                     cookie.setMaxAge(CookieUtil.getCookieMaxAge());

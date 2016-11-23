@@ -1,12 +1,12 @@
 package com.quxin.freshfun.controller.order;
 
+import com.quxin.freshfun.model.erpuser.ErpUserPOJO;
 import com.quxin.freshfun.model.goods.GoodsOrderOut;
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
 import com.quxin.freshfun.model.order.RefundOut;
+import com.quxin.freshfun.service.erpuser.ErpUserService;
 import com.quxin.freshfun.service.order.OrderService;
-import com.quxin.freshfun.utils.BusinessException;
-import com.quxin.freshfun.utils.ExportOrderExcelUtils;
-import com.quxin.freshfun.utils.MoneyFormatUtils;
+import com.quxin.freshfun.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,6 +34,8 @@ import java.util.Map;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ErpUserService erpUserService;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     /**
@@ -190,6 +193,21 @@ public class OrderController {
         resultMap.put("status",map);
         resultMap.put("data",refundInfo);
         return resultMap;
+    }
+
+    /**
+     * 查询订单总览信息
+     */
+    public Map<String, Object> findDetials(HttpServletRequest request) {
+        Long userId = CookieUtil.getUserIdFromCookie(request);
+        ErpUserPOJO user = erpUserService.queryUserById(userId);
+        Integer sucOrders = 0;
+        Integer totalAevenue = 0;
+        if(user!=null){
+            sucOrders = orderService.querySucOrderNum(user.getAppId().toString());
+            totalAevenue = orderService.queryTotalRevenue(user.getAppId().toString());
+        }
+        return ResultUtil.success("");
     }
 
     /**

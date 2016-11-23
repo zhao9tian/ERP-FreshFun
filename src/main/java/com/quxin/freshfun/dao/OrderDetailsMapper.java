@@ -54,6 +54,20 @@ public interface OrderDetailsMapper {
     Integer selectFinishOrderCount();
 
     /**
+     * 根据appId查询下单数
+     * @param appId 商城id
+     * @return 下单数
+     */
+    Integer selectSucOrderNum(String appId);
+
+    /**
+     * 根据appId查询下单金额
+     * @param appId 商城id
+     * @return 下单金额
+     */
+    Integer selectTotalRevenue(String appId);
+
+    /**
      * 根据订单编号查询微信返回的订单编号
      * @param orderId
      * @return

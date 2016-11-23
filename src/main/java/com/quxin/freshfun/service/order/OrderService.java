@@ -113,4 +113,18 @@ public interface OrderService {
      * @return
      */
     List<OrderDetailsPOJO> findFinishIntervalOrder(Long startTime,Long endTime) throws BusinessException;
+
+    /**
+     * 根据appId查询下单数
+     * @param appId 商城id
+     * @return 下单数
+     */
+    Integer querySucOrderNum(String appId);
+
+    /**
+     * 根据appId查询下单金额
+     * @param appId 商城id
+     * @return 下单金额
+     */
+    Integer queryTotalRevenue(String appId);
 }

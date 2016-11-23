@@ -76,6 +76,15 @@
     select count(*) from order_details where order_status = #{orderStatus} and is_deleted = 0
   </select>
 
+  <!--查询下单数-->
+  <select id="selectSucOrderNum" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) from order_details where order_status in (30,35,40,50,70,100) and app_id=#{appId} and is_deleted = 0
+  </select>
+  <!--查询累计销售额-->
+  <select id="selectTotalRevenue" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select SUM(actual_price) from order_details where order_status in (30,35,40,50,70,100) and app_id=#{appId} and is_deleted = 0
+  </select>
+
   <!--根据订单状态查询订单列表-->
   <select id="selectOrderByOrderStatus" resultMap="BaseResultMap">
     select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`name`,`tel`,`city`,`address`,`create_date`,`province_code`,`city_code`,`district_code`

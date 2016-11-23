@@ -96,18 +96,18 @@ public class ErpTest extends TestBase {
 //        }else{
 //            System.out.println("登录失败！没有该用户");
 //        }
-        String userAccount = "testUserAccount";
-        String userPwd = "testPwd4654asd645a4";
+        String userAccount = "ziming";
+        String userPwd = "haohaoaiziji";
         ErpUserPOJO user = erpUserService.erpUserLogin(userAccount);
-//        if(user!=null){
-//            if(user.getUserPassword()!=null&&userPwd.equals(user.getUserPassword())){
-//                System.out.println("登录成功！用户昵称："+user.getUserName());
-//            }else{
-//                System.out.println("登录失败！密码错误");
-//            }
-//        }else{
-//            System.out.println("登录失败！没有该用户");
-//        }
+        if(user!=null){
+            if(user.getPassword()!=null&&userPwd.equals(user.getPassword())){
+                System.out.println("登录成功！用户昵称："+user.getUserName());
+            }else{
+                System.out.println("登录失败！密码错误");
+            }
+        }else{
+            System.out.println("登录失败！没有该用户");
+        }
     }
 
     @Test
