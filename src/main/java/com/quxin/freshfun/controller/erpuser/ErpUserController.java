@@ -126,9 +126,9 @@ public class ErpUserController {
                     cookie.setDomain(".freshfun365.com");
                     cookie.setPath("/");
                     response.addCookie(cookie);
-                    HttpSession session = request.getSession();
+                    /*HttpSession session = request.getSession();
                     session.setMaxInactiveInterval(10*60);//以秒为单位
-                    session.setAttribute("userId",CookieUtil.getCookieValueByUserId(erpUser.getUserId()));
+                    session.setAttribute("userId",CookieUtil.getCookieValueByUserId(erpUser.getUserId()));*/
                     ErpAppInfoPOJO erpAppInfoPOJO = erpAppInfoService.queryAppById(erpUser.getAppId());
                     Map<String, Object> resultMap = new HashMap<String, Object>();
                     resultMap.put("appName",erpAppInfoPOJO.getAppName());
