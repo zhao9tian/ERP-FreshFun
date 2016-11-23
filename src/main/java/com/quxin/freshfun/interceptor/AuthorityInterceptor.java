@@ -24,9 +24,10 @@ public class AuthorityInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-        Map<String,Object> map = new HashMap<String,Object>();
-        Map<String,Object> mapStatus = new HashMap<String,Object>();
-        ErpUserPOJO user = erpUserService.queryUserById(CookieUtil.getUserIdFromCookie(httpServletRequest));
+        Map<String,Object> map = new HashMap<String,Object>();//返回的map数据
+        Map<String,Object> mapStatus = new HashMap<String,Object>();//status的map数据
+        boolean result = false;   //拦截器处理结果
+        ErpUserPOJO user = erpUserService.queryUserById(CookieUtil.getUserIdFromCookie(httpServletRequest)); //根据cookie中的userId查询当前登录用户
         Byte isAdmin = 0;
         if(user!=null){
             isAdmin = user.getIsAdmin();
@@ -34,44 +35,32 @@ public class AuthorityInterceptor implements HandlerInterceptor {
             mapStatus.put("code", 1022);
             mapStatus.put("msg", "当前cookie无效");
             map.put("status", mapStatus);
-            JSONObject responseJSONObject = JSONObject.fromObject(map);
-            httpServletResponse.setCharacterEncoding("UTF-8");
-            httpServletResponse.setContentType("application/json; charset=utf-8");
-            PrintWriter out = null;
-            try {
-                out = httpServletResponse.getWriter();
-                out.append(responseJSONObject.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (out != null) {
-                    out.close();
-                }
-            }
-            return false;
+            result= false;
         }
         if(isAdmin==0) {
             mapStatus.put("code", 1044);
             mapStatus.put("msg", "该用户没有操作权限");
             map.put("status", mapStatus);
-            JSONObject responseJSONObject = JSONObject.fromObject(map);
-            httpServletResponse.setCharacterEncoding("UTF-8");
-            httpServletResponse.setContentType("application/json; charset=utf-8");
-            PrintWriter out = null;
-            try {
-                out = httpServletResponse.getWriter();
-                out.append(responseJSONObject.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (out != null) {
-                    out.close();
-                }
-            }
-            return false;
+            result = false;
         }
-        else
-            return true;
+        else {
+            result = true;
+        }
+        JSONObject responseJSONObject = JSONObject.fromObject(map);
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        httpServletResponse.setContentType("application/json; charset=utf-8");
+        PrintWriter out = null;
+        try {
+            out = httpServletResponse.getWriter();
+            out.append(responseJSONObject.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
+        return result;
     }
 
     @Override

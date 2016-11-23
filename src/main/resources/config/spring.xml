@@ -36,6 +36,7 @@
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/crmUser/**"/>
+            <mvc:exclude-mapping path="/withdraw/**"/>
             <bean class="com.quxin.freshfun.interceptor.AuthorityInterceptor">
             </bean>
         </mvc:interceptor>
