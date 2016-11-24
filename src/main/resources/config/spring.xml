@@ -27,7 +27,12 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/crmUser/crmUserRegster.do"/>
+            <bean class="com.quxin.freshfun.interceptor.ResponseInterceptor">
+            </bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/crmUser/crmUserRegister.do"/>
             <mvc:exclude-mapping path="/crmUser/crmUserLogin.do"/>
             <mvc:exclude-mapping path="/crmUser/crmUserLogout.do"/>
             <bean class="com.quxin.freshfun.interceptor.LoginInterceptor">

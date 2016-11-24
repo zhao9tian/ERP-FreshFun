@@ -24,8 +24,6 @@ public class CookieUtil {
     //cookie 有效时间
     private static Integer cookieMaxDay = 7;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private ErpUserService erpUserService;
 
     /**
      * 获取cookie的有效时间（秒数）
