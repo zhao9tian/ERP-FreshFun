@@ -123,4 +123,24 @@ public class WithdrawImpl implements WithdrawService {
         }
         return null;
     }
+
+    @Override
+    public Integer queryTotalMoney(Long appId) {
+        if (appId != null) {
+            return withdrawMapper.selectTotalMoneyByAppId(appId);
+        } else {
+            logger.error("appId为空");
+        }
+        return null;
+    }
+
+    @Override
+    public Integer queryUnrecordMoney(Long appId) {
+        if (appId != null) {
+            return withdrawMapper.selectUnrecordMoneyByAppId(appId);
+        } else {
+            logger.error("appId为空");
+        }
+        return null;
+    }
 }

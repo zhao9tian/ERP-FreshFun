@@ -24,6 +24,9 @@
     <!-- 引入配置文件 -->
     <context:property-placeholder location="classpath*:config.properties"/>
 
+    <task:annotation-driven scheduler="myScheduler"/>
+    <task:scheduler id="myScheduler" pool-size="25"/>
+
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>

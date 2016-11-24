@@ -8,6 +8,7 @@ import com.quxin.freshfun.service.flow.FlowService;
 import com.quxin.freshfun.service.goods.GoodsService;
 import com.quxin.freshfun.service.order.OrderService;
 import com.quxin.freshfun.service.withdraw.WithdrawService;
+import com.quxin.freshfun.utils.CookieUtil;
 import com.quxin.freshfun.utils.MoneyFormatUtils;
 import com.quxin.freshfun.utils.ResultUtil;
 import org.slf4j.Logger;
@@ -59,13 +60,10 @@ public class WithdrawController {
     @ResponseBody
     public Map<String, Object> queryUserFlows(Integer currentPage, Integer pageSize, HttpServletRequest request) {
         List<Map> flowlist = new ArrayList<>();
-//        Long appId = erpUserService.
-
-        //todo 参数校验 处理分页
-        Long appId = 90010L;
-//        if(appId == null){
-//            return ResultUtil.fail(1004 , "appId为空");
-//        }
+        Long appId = getAppIdByRequest(request);
+        if (appId == null) {
+            return ResultUtil.fail(1004, "获取appId有误");
+        }
         Integer count = flowService.queryCountByAppId(appId);
         if (count == null) {
             count = 0;
@@ -76,32 +74,39 @@ public class WithdrawController {
         Integer totalPage = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
         if (currentPage == null) {
             return ResultUtil.fail(1004, "currentPage为空");
-        } else if (currentPage == 0) {
-            currentPage = 1;
-        } else if (currentPage > totalPage) {
-            currentPage = totalPage;
+        } else {
+            if (currentPage > totalPage) {
+                currentPage = totalPage;
+            }
+            if (currentPage == 0) {
+                currentPage = 1;
+            }
         }
         Integer start = (currentPage - 1) * pageSize;
-
         List<FlowPOJO> flows = flowService.queryFlowListByAppId(appId, start, pageSize);
-        long now = System.currentTimeMillis();
         if (flows != null && flows.size() > 0) {
             for (FlowPOJO flow : flows) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("tradingTime", flow.getCreated());
-                Long goodsId = Long.valueOf(orderService.queryOrderDetailByOrderId(flow.getOrderId()).getGoodsId());
-                map.put("content", goodsService.queryGoodsByGoodsId(goodsId).getTitle());//通过orderId查询商品title
-                String flowMoney = "";
-                if (flow.getFlowType() == 0) {
+                String flowMoney = null;
+                String content = null;
+                if (flow.getFlowType() == 0) {//入账
+                    try {
+                        Long goodsId = Long.valueOf(orderService.queryOrderDetailByOrderId(flow.getOrderId()).getGoodsId());
+                        content = goodsService.queryGoodsByGoodsId(goodsId).getTitle();
+                    } catch (NullPointerException e) {
+                        logger.error("未查询到相关的商品信息" + e);
+                    }
                     flowMoney = "+" + MoneyFormatUtils.getMoneyFromInteger(flow.getFlowMoney());
-                } else if (flow.getFlowType() == 1) {
+                } else if (flow.getFlowType() == 1) {//提现
+                    content = "提现";
                     flowMoney = "-" + MoneyFormatUtils.getMoneyFromInteger(flow.getFlowMoney());
                 }
+                map.put("content", content);//通过orderId查询商品title
                 map.put("money", flowMoney);
                 flowlist.add(map);
             }
         }
-        System.out.println(System.currentTimeMillis() - now);
         Map<String, Object> data = new HashMap<>();
         data.put("flows", flowlist);
         data.put("totalPage", totalPage);
@@ -118,29 +123,37 @@ public class WithdrawController {
     @RequestMapping(value = "/queryAvailableMoney", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> queryAvailableMoney(HttpServletRequest request) {
-        Long appId = 90010L;//TODO
+        Long appId = getAppIdByRequest(request);
         if (appId != null) {
             Integer availableMoney = withdrawService.queryAvailableMoney(appId);
+            if (availableMoney == null) {
+                availableMoney = 0;
+            }
             Map<String, Object> data = new HashMap<>();
             data.put("availableMoney", MoneyFormatUtils.getMoneyFromInteger(availableMoney));
             return ResultUtil.success(data);
         } else {
-            return ResultUtil.fail(1004, "无法获取到appId");
+            return ResultUtil.fail(1004, "获取appId有误");
         }
     }
 
 
+    /**
+     * 查询提现记录
+     *
+     * @param currentPage 当前页
+     * @param pageSize    页面大小
+     * @param request     请求
+     * @return 请求结果
+     */
     @RequestMapping(value = "/queryWithdrawList", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> queryWithdrawList(Integer currentPage, Integer pageSize, HttpServletRequest request) {
         List<Map> withdrawlist = new ArrayList<>();
-//        Long appId = erpUserService.
-
-        //todo 参数校验 处理分页
-        Long appId = 90010L;
-//        if(appId == null){
-//            return ResultUtil.fail(1004 , "appId为空");
-//        }
+        Long appId = getAppIdByRequest(request);
+        if (appId == null) {
+            return ResultUtil.fail(1004, "获取appId有误");
+        }
         Integer count = withdrawService.queryCountWithdrawByAppId(appId);
         if (count == null) {
             count = 0;
@@ -151,10 +164,13 @@ public class WithdrawController {
         Integer totalPage = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
         if (currentPage == null) {
             return ResultUtil.fail(1004, "currentPage为空!");
-        } else if (currentPage == 0) {
-            currentPage = 1;
-        } else if (currentPage > totalPage) {
-            currentPage = totalPage;
+        } else {
+            if (currentPage > totalPage) {
+                currentPage = totalPage;
+            }
+            if (currentPage == 0) {
+                currentPage = 1;
+            }
         }
         Integer start = (currentPage - 1) * pageSize;
         List<WithdrawPOJO> withdraws = withdrawService.queryWithdrawListByAppId(appId, start, pageSize);
@@ -183,34 +199,63 @@ public class WithdrawController {
      */
     @RequestMapping(value = "/addWithdrawApply", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> addWithdrawApply(@RequestBody Map<String, Object> param) {
+    public Map<String, Object> addWithdrawApply(@RequestBody Map<String, Object> param, HttpServletRequest request) {
         //校验入参
         if (validate(param)) {
-            Long appId = null;
+            Long appId = getAppIdByRequest(request);
             if (appId == null) {
-                return ResultUtil.fail(1004, "提现appId为空");
+                return ResultUtil.fail(1004, "获取appId有误");
             }
             Integer availableMoney = withdrawService.queryAvailableMoney(appId);
-            Integer withdrawMoney = Math.round((float) param.get("withdrawMoney") * 100) ;
-            if(withdrawMoney > availableMoney){
-                return ResultUtil.fail(1004 , "提现金额大于可提现金额");
+            Integer withdrawMoney = Math.round(Float.parseFloat((String) param.get("withdrawMoney")) * 100);
+            if (withdrawMoney > availableMoney) {
+                return ResultUtil.fail(1004, "提现金额大于可提现金额");
             }
             WithdrawPOJO withdrawPOJO = new WithdrawPOJO();
             withdrawPOJO.setAppId(appId);
+            withdrawPOJO.setUserId(CookieUtil.getUserIdFromCookie(request));
             withdrawPOJO.setAccountType((Integer) param.get("accountType"));
             withdrawPOJO.setAccountNum((String) param.get("accountNum"));
             withdrawPOJO.setWithdrawMoney(withdrawMoney);
-            if(withdrawService.addWithdraw(withdrawPOJO)){
+            if (withdrawService.addWithdraw(withdrawPOJO)) {
                 return ResultUtil.success();
-            }else{
-                return ResultUtil.fail(1004 , "保存提现申请失败");
+            } else {
+                return ResultUtil.fail(1004, "保存提现申请失败");
             }
         } else {
             return ResultUtil.fail(1004, "提现入参有误:" + JSON.toJSONString(param));
         }
     }
 
-
+    /**
+     * 查询我的钱
+     *
+     * @param request 请求
+     * @return 请求结果
+     */
+    @RequestMapping(value = "/queryMyMoney", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> queryMyMoney(HttpServletRequest request) {
+        Long appId = getAppIdByRequest(request);
+        if (appId != null) {
+            Integer totalMoney = withdrawService.queryTotalMoney(appId);//查询累计入账
+            Integer unrecord = withdrawService.queryUnrecordMoney(appId);//查询未入账
+            if (totalMoney == null) {
+                totalMoney = 0;
+            }
+            totalMoney = Math.round(((float) totalMoney) / 10);//TODO 10%
+            if (unrecord == null) {
+                unrecord = 0;
+            }
+            unrecord = Math.round(((float) unrecord) / 10);//TODO 10%
+            Map<String, Object> data = new HashMap<>();
+            data.put("totalMoney", MoneyFormatUtils.getMoneyFromInteger(totalMoney));
+            data.put("unrecord", MoneyFormatUtils.getMoneyFromInteger(unrecord));
+            return ResultUtil.success(data);
+        } else {
+            return ResultUtil.fail(1004, "获取appId有误");
+        }
+    }
 
     /**
      * 校验提现入参
@@ -221,10 +266,10 @@ public class WithdrawController {
     private boolean validate(Map<String, Object> param) {
         if (param != null) {
             try {
-                Float withdrawMoney = (Float) param.get("withdrawMoney");//TODO ceshi
+                String withdrawMoney = (String) param.get("withdrawMoney");
                 Integer accountType = (Integer) param.get("accountType");
                 String accountNum = (String) param.get("accountNum");
-                if (withdrawMoney == null || withdrawMoney <= 0) {
+                if (withdrawMoney == null) {
                     logger.error("提现金额必须大于0");
                     return false;
                 }
@@ -245,5 +290,29 @@ public class WithdrawController {
         }
         return true;
     }
+
+    /**
+     * 查询appId
+     *
+     * @param request 请求
+     * @return appId
+     */
+    private Long getAppIdByRequest(HttpServletRequest request) {
+        Long userId = CookieUtil.getUserIdFromCookie(request);
+        Long appId = null;
+        if (userId == null) {
+            logger.error("无法获取用户Id");
+        }
+        if (erpUserService.queryUserById(userId) == null) {
+            logger.error("没有userId为" + userId + "的用户");
+        } else {
+            appId = erpUserService.queryUserById(userId).getAppId();
+            if (appId == null) {
+                logger.error("用户" + userId + "没有appId");
+            }
+        }
+        return appId;
+    }
+
 
 }

@@ -38,16 +38,18 @@ public class FlowTest extends TestBase {
     @org.junit.Test
     public void AddFlow(){
         FlowPOJO flow = new FlowPOJO();
-        flow.setAppId(90010L);
-        flow.setFlowType(0);
+        flow.setAppId(557150L);
+        flow.setFlowType(1);
         flow.setFlowMoney(9000);
-        flow.setOrderId(13566614L);
+//        flow.setOrderId(13566614L);
+        flow.setCreated(System.currentTimeMillis()/1000 - 600);
+        flow.setUpdated(System.currentTimeMillis()/1000 - 600);
         flowService.addFlow(flow);
     }
 
     @org.junit.Test
     public void flows(){
-        System.out.println(flowService.queryFlowListByAppId(90010L , 0 , 5));
+        System.out.println(flowService.queryFlowListByAppId(888888L , 0 , 5));
     }
 
 

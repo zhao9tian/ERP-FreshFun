@@ -39,4 +39,18 @@ public interface WithdrawService {
      * @return 记录数
      */
     Integer queryCountWithdrawByAppId(Long appId);
+
+    /**
+     * 查询累计入账金额
+     * @param appId 商户Id
+     * @return 累计入账金额
+     */
+    Integer queryTotalMoney(Long appId);
+
+    /**
+     * 查询未入账金额
+     * @param appId 商户Id
+     * @return 未入账金额
+     */
+    Integer queryUnrecordMoney(Long appId);
 }

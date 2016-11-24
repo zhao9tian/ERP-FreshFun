@@ -6,6 +6,7 @@ import com.quxin.freshfun.model.withdraw.WithdrawPOJO;
 import com.quxin.freshfun.service.flow.FlowService;
 import com.quxin.freshfun.service.withdraw.WithdrawService;
 import org.junit.*;
+import org.junit.Test;
 
 /**
  * 商品单元测试
@@ -35,13 +36,13 @@ public class WithdrawTest extends TestBase {
     @org.junit.Test
     public void queryWithdrawListByAppId(){
 
-        System.out.println(withdrawService.queryWithdrawListByAppId(90010L , 0 ,2));
+        System.out.println(withdrawService.queryWithdrawListByAppId(888888L , 0 ,2));
     }
 
     @org.junit.Test
     public void addWithdraw(){
         WithdrawPOJO withdrawPOJO = new WithdrawPOJO();
-        withdrawPOJO.setAppId(90010L);
+        withdrawPOJO.setAppId(888888L);
         withdrawPOJO.setUserId(1234L);
         withdrawPOJO.setAccountType(10);
         withdrawPOJO.setAccountNum("qucheng12345");
@@ -51,4 +52,16 @@ public class WithdrawTest extends TestBase {
         System.out.println(withdrawService.addWithdraw(withdrawPOJO));
     }
 
+    @Test
+    public void queryCountWithdrawByAppId(){
+        System.out.println(withdrawService.queryCountWithdrawByAppId(888888L));
+    }
+    @Test
+    public void queryTotalMoney(){
+        System.out.println(withdrawService.queryTotalMoney(888888L));
+    }
+    @Test
+    public void queryUnrecordMoney(){
+        System.out.println(withdrawService.queryUnrecordMoney(888888L));
+    }
 }

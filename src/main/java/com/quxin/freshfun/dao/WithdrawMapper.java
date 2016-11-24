@@ -42,4 +42,18 @@ public interface WithdrawMapper {
      * @return 记录条数
      */
     Integer selectCountWithdrawByAppId(Long appId);
+
+    /**
+     * 根据商户Id查询累计入账金额
+     * @param appId 商户ID
+     * @return 累计入账金额
+     */
+    Integer selectTotalMoneyByAppId(Long appId);
+
+    /**
+     * 根据商户Id查询未入账金额
+     * @param appId 商户ID
+     * @return 未入账金额
+     */
+    Integer selectUnrecordMoneyByAppId(Long appId);
 }
