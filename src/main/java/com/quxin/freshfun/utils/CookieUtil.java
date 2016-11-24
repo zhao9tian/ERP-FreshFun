@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class CookieUtil {
     //cookie 有效时间
-    private static Integer cookieMaxDay = 30;
+    private static Integer cookieMaxDay = 7;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
@@ -159,11 +159,4 @@ public class CookieUtil {
         }
         return result;
     }
-
-   public static Long test(String str){
-       String string = getFromBase64("MzcyODkzLTE0NzY5NjE1NzktMjU5MjAwMA");
-       String[] strArr = string.split("-");
-       return Long.parseLong(strArr[0]);
-    }
-
 }
