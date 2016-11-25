@@ -2,6 +2,7 @@ package com.quxin.freshfun.service.erpuser.impl;
 
 import com.quxin.freshfun.dao.ErpUserMapper;
 import com.quxin.freshfun.model.erpuser.ErpUserPOJO;
+import com.quxin.freshfun.service.erpuser.ErpAppInfoService;
 import com.quxin.freshfun.service.erpuser.ErpUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ public class ErpUserServiceImpl implements ErpUserService{
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private ErpUserMapper erpUserMapper;
+    @Autowired
+    private ErpAppInfoService erpAppInfoService;
 
     /**
      * 新增用户
@@ -28,6 +31,10 @@ public class ErpUserServiceImpl implements ErpUserService{
      */
     @Override
     public Integer addErpUser(ErpUserPOJO erpUser) {
+        if(erpUser!=null&&erpUser.getAppName()!=null&&!"".equals(erpUser.getAppName())){
+            Long appId = erpAppInfoService.addErpAppInfo(erpUser.getAppName());
+            erpUser.setAppId(appId);
+        }
         Integer result = erpUserMapper.insertErpUser(erpUser);
         if(result==1){
             result = erpUserMapper.updateErpUserIdById(erpUser.getId());
