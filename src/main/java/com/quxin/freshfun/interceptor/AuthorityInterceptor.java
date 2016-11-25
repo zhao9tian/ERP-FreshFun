@@ -46,18 +46,20 @@ public class AuthorityInterceptor implements HandlerInterceptor {
         else {
             result = true;
         }
-        JSONObject responseJSONObject = JSONObject.fromObject(map);
-        httpServletResponse.setCharacterEncoding("UTF-8");
-        httpServletResponse.setContentType("application/json; charset=utf-8");
-        PrintWriter out = null;
-        try {
-            out = httpServletResponse.getWriter();
-            out.append(responseJSONObject.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (out != null) {
-                out.close();
+        if(!result){
+            JSONObject responseJSONObject = JSONObject.fromObject(map);
+            httpServletResponse.setCharacterEncoding("UTF-8");
+            httpServletResponse.setContentType("application/json; charset=utf-8");
+            PrintWriter out = null;
+            try {
+                out = httpServletResponse.getWriter();
+                out.append(responseJSONObject.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (out != null) {
+                    out.close();
+                }
             }
         }
         return result;

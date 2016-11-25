@@ -32,7 +32,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         Map<String,Object> map = new HashMap<String,Object>();  //最终返回的map数据
         Map<String,Object> mapStatus = new HashMap<String,Object>();  //status的map数据
-        boolean result = true;
         boolean finalResult;
         /*HttpSession session = httpServletRequest.getSession();
         Object userIdString = session.getAttribute("userId");*/
@@ -50,7 +49,6 @@ public class LoginInterceptor implements HandlerInterceptor {
                 Long userId = CookieUtil.getUserIdFromCookie(httpServletRequest);//获取cookie中的userId
                 ErpUserPOJO user = erpUserService.queryUserById(userId);//根据cookie中的userId查询用户
                 if(user==null){  //用户user为空，标识cookie中保存的是无效userId，返回1022重新登录
-                    result=false;
                     mapStatus.put("code", 1022);
                     mapStatus.put("msg", "cookie中userId无效");
                     map.put("status",mapStatus);
