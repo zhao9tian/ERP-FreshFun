@@ -209,6 +209,9 @@ public class WithdrawController {
             }
             Integer availableMoney = withdrawService.queryAvailableMoney(appId);
             Integer withdrawMoney = Math.round(Float.parseFloat((String) param.get("withdrawMoney")) * 100);
+            if(withdrawMoney == 0){
+                return ResultUtil.fail(1004 ,"提现金额不能为0");
+            }
             if (withdrawMoney > availableMoney) {
                 return ResultUtil.fail(1004, "提现金额大于可提现金额");
             }
@@ -271,7 +274,7 @@ public class WithdrawController {
                 Integer accountType = (Integer) param.get("accountType");
                 String accountNum = (String) param.get("accountNum");
                 if (withdrawMoney == null) {
-                    logger.error("提现金额必须大于0");
+                    logger.error("提现金额为空");
                     return false;
                 }
                 if (accountType == null) {
