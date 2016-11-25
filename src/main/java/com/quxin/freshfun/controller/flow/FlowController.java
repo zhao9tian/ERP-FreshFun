@@ -8,14 +8,14 @@ import org.springframework.stereotype.Controller;
 public class FlowController {
 
 
-    /**
-     * 7天自动走账单流程,计入流水
-     * 每天凌晨1.2.3.4点执行
-     */
-    @Scheduled(cron="0/10 * * * * ? ")
-    public void autoConfirmFlow() throws BusinessException {
-//        System.out.println("定时器是你吗？");
-        //将状态为100的
-    }
+//    /**
+//     * 7天自动走账单流程,计入流水
+//     * 每天凌晨1.2.3.4点执行
+//     */
+//    @Scheduled(cron="0/10 * * * * ? ")
+//    public void autoConfirmFlow() throws BusinessException {
+////        System.out.println("定时器是你吗？");
+//        //将状态为100的
+//    }
 
 }

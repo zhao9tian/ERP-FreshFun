@@ -94,7 +94,8 @@ public class WithdrawController {
                     try {
                         Long goodsId = Long.valueOf(orderService.queryOrderDetailByOrderId(flow.getOrderId()).getGoodsId());
                         content = goodsService.queryGoodsByGoodsId(goodsId).getTitle();
-                    } catch (NullPointerException e) {
+                    } catch (Exception e) {
+                        content = "未查询到相关商品信息";
                         logger.error("未查询到相关的商品信息" + e);
                     }
                     flowMoney = "+" + MoneyFormatUtils.getMoneyFromInteger(flow.getFlowMoney());
