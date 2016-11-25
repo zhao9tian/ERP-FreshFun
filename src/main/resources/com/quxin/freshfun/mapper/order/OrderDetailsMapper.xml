@@ -64,11 +64,11 @@
     <if test="appId != null">
       and app_id = #{appId}
     </if>
-    <if test="orderStatus != null and orderStatus != 0">
+    <if test="orderStatus != null and orderStatus != 0 and orderStatus != 70">
       and order_status = #{orderStatus}
     </if>
     <if test="orderStatus == 70">
-      or order_status = 100
+      and order_status in (70,100)
     </if>
     <if test="orderId != null">
       and id = #{orderId}
@@ -84,11 +84,11 @@
     <if test="appId != null">
       and app_id = #{appId}
     </if>
-    <if test="orderStatus != null and orderStatus != 0">
+    <if test="orderStatus != null and orderStatus != 0 and orderStatus != 70">
       and order_status = #{orderStatus}
     </if>
     <if test="orderStatus == 70">
-      or order_status = 100
+      and order_status in (70,100)
     </if>
     <if test="orderId != null">
       and id = #{orderId}
@@ -114,7 +114,7 @@
   </select>
   <!--查询销售信息-->
   <select id="selectSaleInfo" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.order.OrderSaleInfo">
-    select count(*) as `orderNumber`,SUM(actual_price) as `sumActualPrice` from order_details where order_status >= 30 and app_id=#{appId} and is_deleted = 0
+    select count(*) as `orderNumber`,IFNULL(SUM(actual_price),0) as `sumActualPrice` from order_details where order_status >= 30 and app_id=#{appId} and is_deleted = 0
   </select>
 
   <!--根据订单状态查询订单列表-->
