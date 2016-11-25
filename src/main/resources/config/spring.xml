@@ -45,6 +45,8 @@
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/crmUser/**"/>
             <mvc:exclude-mapping path="/withdraw/**"/>
+            <mvc:exclude-mapping path="/findOrdersByPlatform.do"/>
+            <mvc:exclude-mapping path="/findSaleInfo.do"/>
             <bean class="com.quxin.freshfun.interceptor.AuthorityInterceptor">
             </bean>
         </mvc:interceptor>
