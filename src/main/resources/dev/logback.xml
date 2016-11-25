@@ -44,11 +44,11 @@
         </encoder>
     </appender>
 
-    <logger name="org.apache.ibatis" level="WARN">
+    <logger name="org.apache.ibatis" level="INFO">
         <appender-ref ref="DATASOURCE_FILE" />
     </logger>
 
-    <logger name="com.quxin.freshfun" level="WARN">
+    <logger name="com.quxin.freshfun" level="INFO">
         <appender-ref ref="FILE" />
     </logger>
 

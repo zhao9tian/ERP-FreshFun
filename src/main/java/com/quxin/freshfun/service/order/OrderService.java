@@ -1,6 +1,8 @@
 package com.quxin.freshfun.service.order;
 
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
+import com.quxin.freshfun.model.order.OrderQueryParam;
+import com.quxin.freshfun.model.order.OrderSaleInfo;
 import com.quxin.freshfun.model.order.RefundOut;
 import com.quxin.freshfun.utils.BusinessException;
 import org.apache.ibatis.annotations.Param;
@@ -16,19 +18,26 @@ public interface OrderService {
      * 查询所有订单
      * @return
      */
-    List<OrderDetailsPOJO> selectBackstageOrders(@Param("currentPage") int currentPage, @Param("pageSize") int pageSize);
+    List<OrderDetailsPOJO> selectBackstageOrders(int currentPage,int pageSize);
+
+    /**
+     * 根据平台查询所有订单
+     * @param orderQueryParam
+     * @return
+     */
+    List<OrderDetailsPOJO> findOrdersByPlatform(OrderQueryParam orderQueryParam) throws BusinessException;
 
     /**
      * 查询所有订单数量
      * @return
      */
-    Integer selectBackstageOrdersCount();
+    Integer selectBackstageOrdersCount(OrderQueryParam orderQueryParam);
 
     /**
      * 根据订单状态查询订单列表
      * @return
      */
-    List<OrderDetailsPOJO> selectOrderByOrderStatus(@Param("orderStatus") Integer orderStatus, @Param("currentPage") int currentPage, @Param("pageSize") int pageSize);
+    List<OrderDetailsPOJO> selectOrderByOrderStatus(Integer orderStatus,int currentPage,int pageSize);
 
     /**
      * 根据订单状态查询订单数量
@@ -84,7 +93,7 @@ public interface OrderService {
      * 后去订单数量
      * @return
      */
-    Map<String,Object> getOrderNum();
+    Map<String,Object> getOrderNum(Long appId);
 
     /**
      * 根据订单编号查询退款详情
@@ -122,18 +131,10 @@ public interface OrderService {
      */
     OrderDetailsPOJO queryOrderDetailByOrderId(Long orderId);
 
-
     /**
-     * 根据appId查询下单数
-     * @param appId 商城id
-     * @return 下单数
+     * 根据appId查询销售信息
+     * @param appId
+     * @return
      */
-    Integer querySucOrderNum(String appId);
-
-    /**
-     * 根据appId查询下单金额
-     * @param appId 商城id
-     * @return 下单金额
-     */
-    Integer queryTotalRevenue(String appId);
+    OrderSaleInfo findSaleInfo(Long appId) throws BusinessException;
 }

@@ -3,6 +3,8 @@ package com.quxin.freshfun.controller.order;
 import com.quxin.freshfun.model.erpuser.ErpUserPOJO;
 import com.quxin.freshfun.model.goods.GoodsOrderOut;
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
+import com.quxin.freshfun.model.order.OrderQueryParam;
+import com.quxin.freshfun.model.order.OrderSaleInfo;
 import com.quxin.freshfun.model.order.RefundOut;
 import com.quxin.freshfun.service.erpuser.ErpUserService;
 import com.quxin.freshfun.service.order.OrderService;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +73,7 @@ public class OrderController {
         switch (orderStatus){
             case 0:
                 order = orderService.selectBackstageOrders(currentPage,pageSize);
-                Integer count = orderService.selectBackstageOrdersCount();
+                Integer count = orderService.selectBackstageOrdersCount(new OrderQueryParam());
                 total = count;
                 if(count % pageSize == 0){
                     size = count / pageSize;
@@ -89,7 +92,6 @@ public class OrderController {
                 }
                 break;
         }
-
         order = setBackstageMoney(order);
         map.put("code",1001);
         map.put("msg","请求成功");
@@ -103,16 +105,95 @@ public class OrderController {
         return resultMap;
     }
 
+    @RequestMapping("/findOrdersByPlatform")
+    @ResponseBody
+    public Map<String,Object> findOrdersByPlatform(HttpServletRequest request,OrderQueryParam orderParam) throws BusinessException {
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+        Map<String,Object> resultData = new HashMap<>();
+        if(orderParam == null || orderParam.getOrderStatus() == null || orderParam.getPage() == null || orderParam.getPageSize() == null){
+            map.put("code",1004);
+            map.put("msg","参数不能为null");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        //获取AppId
+        Long appId = getAppId(request);
+        orderParam.setAppId(appId);
+
+        orderParam.setPage((orderParam.getPage()-1)*orderParam.getPageSize());
+        List<OrderDetailsPOJO> order = null;
+        int size = 0;
+        int total = 0;
+        if(!((order = orderService.findOrdersByPlatform(orderParam)) == null && (order =new ArrayList<>()) != null)) {
+            total = orderService.selectBackstageOrdersCount(orderParam);
+            if (total % orderParam.getPageSize() == 0) {
+                size = total / orderParam.getPageSize();
+            } else {
+                size = total / orderParam.getPageSize() + 1;
+            }
+            order = setBackstageMoney(order);
+        }
+        map.put("code",1001);
+        map.put("msg","请求成功");
+        resultData.put("totalPage",size);
+        resultData.put("total",total);
+        resultData.put("list",order);
+        resultMap.put("status",map);
+        resultMap.put("data",resultData);
+        return resultMap;
+    }
+
+    /**
+     * 获取AppId
+     * @param request 请求
+     * @return AppId
+     */
+    public Long getAppId(HttpServletRequest request) throws BusinessException {
+        Long userId = CookieUtil.getUserIdFromCookie(request);
+        ErpUserPOJO erpUserPOJO = erpUserService.queryUserById(userId);
+        if(erpUserPOJO == null || erpUserPOJO.getAppId() == null)
+            throw new BusinessException("订单获取AppId失败");
+        return erpUserPOJO.getAppId();
+    }
+    /**
+     *  查询商户对应销售额信息
+     * @return
+     * @throws BusinessException
+     */
+    @RequestMapping("/findSaleInfo")
+    @ResponseBody
+    public Map<String,Object> findSaleInfo(HttpServletRequest request) throws BusinessException {
+        Map<String, Object>  map = new HashMap<>();
+        Map<String, Object>  resultMap = new HashMap<>();
+
+        Long appId = getAppId(request);
+        if(appId == null){
+            logger.error("查询商户销售额AppId为null");
+            map.put("code",1004);
+            map.put("msg","查询失败");
+            resultMap.put("status",map);
+            return resultMap;
+        }
+        OrderSaleInfo saleInfo = orderService.findSaleInfo(appId);
+        if(saleInfo == null)
+            saleInfo = new OrderSaleInfo();
+        map.put("code",1001);
+        map.put("msg","请求成功");
+        resultMap.put("status",map);
+        resultMap.put("data",saleInfo);
+        return resultMap;
+    }
     /**
      * 获取订单数目
      * @return
      */
     @RequestMapping("/getOrderNum")
     @ResponseBody
-    public Map<String,Object> getOrderNum(){
+    public Map<String,Object> getOrderNum(Long appId){
         Map<String, Object>  map = new HashMap<>();
         Map<String, Object>  resultMap = new HashMap<>();
-        Map<String, Object> orderNumList = orderService.getOrderNum();
+        Map<String, Object> orderNumList = orderService.getOrderNum(appId);
         map.put("code",1001);
         map.put("msg","请求成功");
         resultMap.put("status",map);
@@ -151,9 +232,9 @@ public class OrderController {
                 break;
             case 1:
                 String refundResult = orderService.orderRefunds(orderId);
-                if(refundResult == null || "FAIL".equals(refundResult)){
+                if(!"SUCCESS".equals(refundResult)){
                     map.put("code",1004);
-                    map.put("msg","退款订单不存在");
+                    map.put("msg",refundResult);
                     resultMap.put("status",map);
                     return resultMap;
                 }
@@ -193,21 +274,6 @@ public class OrderController {
         resultMap.put("status",map);
         resultMap.put("data",refundInfo);
         return resultMap;
-    }
-
-    /**
-     * 查询订单总览信息
-     */
-    public Map<String, Object> findDetials(HttpServletRequest request) {
-        Long userId = CookieUtil.getUserIdFromCookie(request);
-        ErpUserPOJO user = erpUserService.queryUserById(userId);
-        Integer sucOrders = 0;
-        Integer totalAevenue = 0;
-        if(user!=null){
-            sucOrders = orderService.querySucOrderNum(user.getAppId().toString());
-            totalAevenue = orderService.queryTotalRevenue(user.getAppId().toString());
-        }
-        return ResultUtil.success("");
     }
 
     /**
@@ -388,7 +454,13 @@ public class OrderController {
      * @return 订单列表
      */
     private List<OrderDetailsPOJO> setBackstageMoney(List<OrderDetailsPOJO> order){
+        if(order == null)
+            return null;
         for (OrderDetailsPOJO o: order) {
+            if(o.getActualPrice() != null){
+                o.setActualMoney(MoneyFormatUtils.getMoneyFromInteger(o.getActualPrice()));
+                o.setActualPrice(null);
+            }
             if(o.getGoodsCost() != null){
                 o.setCostMoney(MoneyFormatUtils.getMoneyFromInteger(o.getGoodsCost()));
                 o.setGoodsCost(null);

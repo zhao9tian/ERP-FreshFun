@@ -4,13 +4,11 @@ import com.google.common.collect.Maps;
 import com.quxin.freshfun.dao.OrderDetailsMapper;
 import com.quxin.freshfun.dao.RefundMapper;
 import com.quxin.freshfun.dao.UserBaseMapper;
-import com.quxin.freshfun.model.order.OrderDetailsPOJO;
-import com.quxin.freshfun.model.order.RefundOut;
-import com.quxin.freshfun.model.order.RefundPOJO;
-import com.quxin.freshfun.model.order.WxResult;
+import com.quxin.freshfun.model.order.*;
 import com.quxin.freshfun.model.user.UserInfoOutParam;
 import com.quxin.freshfun.service.address.AddressUtilService;
 import com.quxin.freshfun.service.order.OrderService;
+import com.quxin.freshfun.service.withdraw.WithdrawService;
 import com.quxin.freshfun.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +35,8 @@ public class OrderImpl implements OrderService {
     private RefundMapper refundMapper;
     @Autowired
     private AddressUtilService addressUtilService;
+    @Autowired
+    private WithdrawService withdrawService;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -61,9 +61,56 @@ public class OrderImpl implements OrderService {
      */
     @Override
     public List<OrderDetailsPOJO> selectBackstageOrders(int currentPage,int pageSize) {
-        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectBackstageOrders(currentPage, pageSize);
+        OrderQueryParam orderQueryParam = new OrderQueryParam();
+        orderQueryParam.setPage(currentPage);
+        orderQueryParam.setPageSize(pageSize);
+        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectBackstageOrders(orderQueryParam);
         orderDetails = getOrderDetails(orderDetails);
         return orderDetails;
+    }
+
+    /**
+     * 根据平台查询所有订单
+     * @param orderQueryParam 查询条件实体
+     * @return
+     */
+    @Override
+    public List<OrderDetailsPOJO> findOrdersByPlatform(OrderQueryParam orderQueryParam) throws BusinessException {
+        if(orderQueryParam == null)
+            throw new BusinessException("查询所有订单条件不能为空");
+        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectBackstageOrders(orderQueryParam);
+        //设置用户信息
+        setOrderUserInfo(orderDetails);
+        return orderDetails;
+    }
+
+    /**
+     * 设置订单用户信息
+     * @param orderDetails
+     */
+    private void setOrderUserInfo(List<OrderDetailsPOJO> orderDetails) {
+        if(orderDetails != null){
+            for (OrderDetailsPOJO order : orderDetails) {
+                //设置用户地址信息
+                getAddress(order);
+                //设置用户隐私信息
+                setUserPrivacy(order);
+                //设置用户昵称
+                setUserNickname(order);
+            }
+        }
+    }
+
+    /**
+     * 设置用户隐私信息
+     * @param order
+     */
+    private void setUserPrivacy(OrderDetailsPOJO order) {
+        if(!StringUtils.isEmpty(order.getName()))
+            order.setName(order.getName().replaceAll("([\\u4e00-\\u9fa5{1}])([\\u4e00-\\u9fa5]+)","$1**"));
+        if(!StringUtils.isEmpty(order.getTel()))
+            order.setTel(order.getTel().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+        order.setAddress("******");
     }
 
     /**
@@ -74,18 +121,27 @@ public class OrderImpl implements OrderService {
         for (OrderDetailsPOJO order : orderDetails) {
             //获取用户地址
             getAddress(order);
-            UserInfoOutParam userInfo = userBaseMapper.selectUserInfoByUserId(order.getUserId());
-            if(userInfo != null) {
-                if(userInfo.getUserName() != null) {
-                    order.setNickName(userInfo.getUserName());
-                    order.setUserId(null);
-                    order.setGoodsId(null);
-                }
-            }else{
-                order.setNickName("");
-            }
+            //设置用户昵称
+            setUserNickname(order);
         }
         return orderDetails;
+    }
+
+    /**
+     * 设置用户昵称
+     * @param order
+     */
+    private void setUserNickname(OrderDetailsPOJO order) {
+        UserInfoOutParam userInfo = userBaseMapper.selectUserInfoByUserId(order.getUserId());
+        if(userInfo != null) {
+            if(userInfo.getUserName() != null) {
+                order.setNickName(userInfo.getUserName());
+                order.setUserId(null);
+                order.setGoodsId(null);
+            }
+        }else{
+            order.setNickName("");
+        }
     }
 
     /**
@@ -96,12 +152,19 @@ public class OrderImpl implements OrderService {
         if(StringUtils.isEmpty(orderDetailsPOJO.getCity())){
             String city = addressUtilService.queryNameByCode(orderDetailsPOJO.getProvCode(), orderDetailsPOJO.getCityCode(), orderDetailsPOJO.getDistCode());
             orderDetailsPOJO.setCity(city);
+            orderDetailsPOJO.setProvCode(null);
+            orderDetailsPOJO.setCityCode(null);
+            orderDetailsPOJO.setDistCode(null);
+        }else{
+            orderDetailsPOJO.setProvCode(null);
+            orderDetailsPOJO.setCityCode(null);
+            orderDetailsPOJO.setDistCode(null);
         }
     }
 
     @Override
-    public Integer selectBackstageOrdersCount() {
-        return orderDetailsMapper.selectBackstageOrdersCount();
+    public Integer selectBackstageOrdersCount(OrderQueryParam orderQueryParam) {
+        return orderDetailsMapper.selectBackstageOrdersCount(orderQueryParam);
     }
 
     /**
@@ -117,16 +180,8 @@ public class OrderImpl implements OrderService {
         for (OrderDetailsPOJO order: orderDetails) {
             //获取用户地址
             getAddress(order);
-            UserInfoOutParam userInfo = userBaseMapper.selectUserInfoByUserId(order.getUserId());
-            if(userInfo != null){
-                if(userInfo.getUserName() != null) {
-                    order.setNickName(userInfo.getUserName());
-                    order.setUserId(null);
-                }
-            }else{
-                order.setNickName("");
-            }
-
+            //设置用户昵称
+            setUserNickname(order);
         }
         return orderDetails;
     }
@@ -189,20 +244,20 @@ public class OrderImpl implements OrderService {
     }
 
     @Override
-    public Map<String, Object> getOrderNum() {
+    public Map<String, Object> getOrderNum(Long appId) {
         Map<String,Object> map = new HashMap<>();
         //等待付款
-        map.put("awaitPayment",orderDetailsMapper.selectOrderNum(AWAIT_PAYMENT));
+        map.put("awaitPayment",orderDetailsMapper.selectOrderNum(AWAIT_PAYMENT,appId));
         //待发货
-        map.put("awaitDelivery",orderDetailsMapper.selectOrderNum(AWAIT_DELIVERY));
+        map.put("awaitDelivery",orderDetailsMapper.selectOrderNum(AWAIT_DELIVERY,appId));
         //待收货
-        map.put("takeGoods",orderDetailsMapper.selectOrderNum(AWAIT_TAKE_GOODS));
+        map.put("takeGoods",orderDetailsMapper.selectOrderNum(AWAIT_TAKE_GOODS,appId));
         //退款中
-        map.put("refunding",orderDetailsMapper.selectOrderNum(REFUNDING));
+        map.put("refunding",orderDetailsMapper.selectOrderNum(REFUNDING,appId));
         //退款完成
-        map.put("refunded",orderDetailsMapper.selectOrderNum(WAIT_DELIVERY));
+        map.put("refunded",orderDetailsMapper.selectOrderNum(WAIT_DELIVERY,appId));
         //订单关闭
-        map.put("closeOrder",orderDetailsMapper.selectOrderNum(CLOSE_ORDER));
+        map.put("closeOrder",orderDetailsMapper.selectOrderNum(CLOSE_ORDER,appId));
         return map;
     }
 
@@ -307,31 +362,20 @@ public class OrderImpl implements OrderService {
     }
 
     /**
-     * 根据appId查询下单数
-     * @param appId 商城id
-     * @return 下单数
+     * 根据appId查询销售信息
+     * @param appId
+     * @return
      */
     @Override
-    public Integer querySucOrderNum(String appId) {
-        if (appId == null || "".equals(appId)) {
-            logger.warn("查询下单数时，appId不能为空");
-            return 0;
-        }
-        return orderDetailsMapper.selectSucOrderNum(appId);
-    }
-
-    /**
-     * 根据appId查询下单金额
-     * @param appId 商城id
-     * @return 下单金额
-     */
-    @Override
-    public Integer queryTotalRevenue(String appId) {
-        if (appId == null || "".equals(appId)) {
-            logger.warn("查询下单金额时，appId不能为空");
-            return 0;
-        }
-        return orderDetailsMapper.selectSucOrderNum(appId);
+    public OrderSaleInfo findSaleInfo(Long appId) throws BusinessException {
+        if(StringUtils.isEmpty(appId))
+            throw new BusinessException("根据appId查询订单销售信息不能为null");
+        OrderSaleInfo orderSaleInfo = orderDetailsMapper.selectSaleInfo(appId);
+        orderSaleInfo.setSumActualMoney(MoneyFormatUtils.getMoneyFromInteger(orderSaleInfo.getSumActualPrice()));
+        orderSaleInfo.setSumActualPrice(null);
+        Integer availableMoney = withdrawService.queryAvailableMoney(appId);
+        orderSaleInfo.setWithdrawMoney(MoneyFormatUtils.getMoneyFromInteger(availableMoney));
+        return orderSaleInfo;
     }
 
     /**
@@ -402,7 +446,7 @@ public class OrderImpl implements OrderService {
                     break;
                 case 2:
                     keyStore = KeyStore.getInstance("PKCS12");
-                    instream = OrderImpl.class.getClassLoader().getResourceAsStream("wxconfig/apiclient_cert_app.p12");
+                    instream = OrderImpl.class.getClassLoader().getResourceAsStream("wxconfig/apiclient_cert.p12");
                     keyStore.load(instream, ConstantUtil.PARTNER.toCharArray());
                     break;
             }
@@ -451,7 +495,7 @@ public class OrderImpl implements OrderService {
          */
         WxResult result = refundHandle.sendRefund(keyStore,partner);
         String refundResult = null;
-        if("SUCCESS".equals(result.getReturn_code())){
+        if("SUCCESS".equals(result.getReturn_code()) && "SUCCESS".equals(result.getResult_code())){
             //修改订单退款状态
             if(modifyRefundOrderStatus(orderDetails.getId())){
                 refundResult = "SUCCESS";
@@ -460,8 +504,12 @@ public class OrderImpl implements OrderService {
                 logger.error("退款时修改订单状态失败");
             }
         }else{
-            refundResult = "FAIL";
-            logger.error("退款失败："+result.getReturn_msg());
+            try {
+                refundResult = new String(result.getErr_code_des().getBytes("ISO8859-1"),"utf-8");
+                logger.error("退款失败："+ refundResult);
+            } catch (UnsupportedEncodingException e) {
+                logger.error("退款转码异常",e);
+            }
         }
         return refundResult;
     }

@@ -5,6 +5,7 @@ import com.quxin.freshfun.utils.*;
 import net.sf.json.JSONSerializer;
 import net.sf.json.xml.XMLSerializer;
 
+import java.io.UnsupportedEncodingException;
 import java.security.KeyStore;
 import java.util.*;
 
@@ -117,5 +118,15 @@ public class RefundHandle {
      */
     public String xmlToJson(String xmlStr){
         return new XMLSerializer().read(xmlStr).toString();
+    }
+
+    public static void main(String [] args){
+        String s = "äº¤æ\u0098\u0093æ\u009Cªç»\u0093ç®\u0097èµ\u0084é\u0087\u0091ä¸\u008Dè¶³ï¼\u008Cè¯·ä½¿ç\u0094¨å\u008F¯ç\u0094¨ä½\u0099é¢\u009Dé\u0080\u0080æ¬¾";
+        try {
+            String str = new String(s.getBytes("ISO8859-1"),"utf-8");
+            System.out.println(str);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }

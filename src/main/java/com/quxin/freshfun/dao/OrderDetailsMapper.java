@@ -1,6 +1,8 @@
 package com.quxin.freshfun.dao;
 
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
+import com.quxin.freshfun.model.order.OrderQueryParam;
+import com.quxin.freshfun.model.order.OrderSaleInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,19 +16,19 @@ public interface OrderDetailsMapper {
      * 查询所有订单
      * @return
      */
-    List<OrderDetailsPOJO> selectBackstageOrders(@Param("currentPage") int currentPage, @Param("pageSize") int pageSize);
+    List<OrderDetailsPOJO> selectBackstageOrders(OrderQueryParam orderQueryParam);
 
     /**
      * 查询所有订单数量
      * @return
      */
-    Integer selectBackstageOrdersCount();
+    Integer selectBackstageOrdersCount(OrderQueryParam orderQueryParam);
 
     /**
      * 查询订单数量
      * @return
      */
-    Integer selectOrderNum(Integer orderStatus);
+    Integer selectOrderNum(@Param("orderStatus") Integer orderState,@Param("appId") Long appId);
 
     /**
      * 根据订单状态查询订单列表
@@ -54,18 +56,11 @@ public interface OrderDetailsMapper {
     Integer selectFinishOrderCount();
 
     /**
-     * 根据appId查询下单数
-     * @param appId 商城id
-     * @return 下单数
+     * 根据appId查询销售信息
+     * @param appId
+     * @return
      */
-    Integer selectSucOrderNum(String appId);
-
-    /**
-     * 根据appId查询下单金额
-     * @param appId 商城id
-     * @return 下单金额
-     */
-    Integer selectTotalRevenue(String appId);
+    OrderSaleInfo selectSaleInfo(Long appId);
 
     /**
      * 根据订单编号查询微信返回的订单编号
