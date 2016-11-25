@@ -18,7 +18,6 @@ public class ResponseInterceptor implements HandlerInterceptor {
             httpServletResponse.setHeader("Access-Control-Allow-Origin", httpServletRequest.getHeader("origin"));
             httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
         }
-        System.out.println("校验请求的控制器,请求和响应的参数设置完成");
         return true;
     }
 
