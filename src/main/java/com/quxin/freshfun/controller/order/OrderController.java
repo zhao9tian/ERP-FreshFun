@@ -190,15 +190,22 @@ public class OrderController {
      */
     @RequestMapping("/getOrderNum")
     @ResponseBody
-    public Map<String,Object> getOrderNum(Long appId){
-        Map<String, Object>  map = new HashMap<>();
-        Map<String, Object>  resultMap = new HashMap<>();
+    public Map<String,Object> getOrderNum(){
+        Map<String, Object> orderNumList = orderService.getOrderNum(null);
+        if(orderNumList == null)
+            orderNumList = new HashMap<>();
+        return ResultUtil.success(orderNumList);
+    }
+
+    @RequestMapping("/getPlatformOrderNum")
+    @ResponseBody
+    public Map<String,Object> getPlatformOrderNum(HttpServletRequest request) throws BusinessException {
+        //获取AppId
+        Long appId = getAppId(request);
         Map<String, Object> orderNumList = orderService.getOrderNum(appId);
-        map.put("code",1001);
-        map.put("msg","请求成功");
-        resultMap.put("status",map);
-        resultMap.put("data",orderNumList);
-        return resultMap;
+        if(orderNumList == null)
+            orderNumList = new HashMap<>();
+        return ResultUtil.success(orderNumList);
     }
 
     /**
