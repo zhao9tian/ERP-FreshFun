@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class CookieUtil {
     //cookie 有效时间
-    private static Integer cookieMaxDay = 7;
+    private static Integer cookieMaxDay = 14;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
