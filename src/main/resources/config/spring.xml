@@ -28,11 +28,11 @@
     <task:scheduler id="myScheduler" pool-size="25"/>
 
     <mvc:interceptors>
-        <mvc:interceptor>
+        <!--<mvc:interceptor>
             <mvc:mapping path="/**"/>
             <bean class="com.quxin.freshfun.interceptor.ResponseInterceptor">
             </bean>
-        </mvc:interceptor>
+        </mvc:interceptor>-->
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/crmUser/crmUserRegister.do"/>
