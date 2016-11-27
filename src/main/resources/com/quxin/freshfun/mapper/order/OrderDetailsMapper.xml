@@ -58,7 +58,7 @@
 
   <!--查询所有订单-->
   <select id="selectBackstageOrders" parameterType="com.quxin.freshfun.model.order.OrderQueryParam" resultMap="BaseResultMap">
-    select `id` as `order_id`,`actual_price`,`user_id`,`count`,`order_status`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code`
+    select `id` as `order_id`,`actual_price`,`user_id`,`count`,`order_status`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`pay_plateform`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code`
       from order_details
       where is_deleted = 0
     <if test="appId != null">
