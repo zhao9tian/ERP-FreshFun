@@ -17,6 +17,8 @@
                 `return_reason` as `returnReason`,
                 `return_money` as `returnMoney`,
                 `return_des` as `returnDes`
-                from refund where order_details_id = #{orderId} and is_delete = 0
+        from refund
+        where id = (select max(id) from refund where order_details_id = #{orderId} and is_delete = 0)
+
     </select>
 </mapper>
