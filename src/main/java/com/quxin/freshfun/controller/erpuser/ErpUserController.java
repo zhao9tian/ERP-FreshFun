@@ -136,7 +136,7 @@ public class ErpUserController {
                 if (remember == null) //如果没有保存密码标记，默认为浏览器关闭
                     remember = 0;
                 //创建cookie对象
-                Cookie cookie = new Cookie("userId", CookieUtil.getCookieValueByUserId(erpUser.getUserId()));
+                Cookie cookie = new Cookie("crmUserId", CookieUtil.getCookieValueByUserId(erpUser.getUserId()));
                 if (remember == 1)      //remember=1，表示记住密码，两周自动登录
                     cookie.setMaxAge(CookieUtil.getCookieMaxAge());
                 else    //不记住密码，cookie的有效期直到浏览器关闭
@@ -191,7 +191,7 @@ public class ErpUserController {
     @RequestMapping("/crmUserLogout")
     public Map<String,Object> crmUserLogout(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> map = new HashMap<String, Object>();
-        Cookie cookie = new Cookie("userId", null);
+        Cookie cookie = new Cookie("crmUserId", null);
         cookie.setMaxAge(0);
         cookie.setDomain(".freshfun365.com");
         cookie.setPath("/");
