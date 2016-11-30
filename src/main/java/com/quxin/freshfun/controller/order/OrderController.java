@@ -444,7 +444,7 @@ public class OrderController {
                     break;
             }
             if(orderList != null) {
-                String[] title = {"订单编号", "商品名", "成交价", "单价", "数量", "成本价", "成交时间", "订单来源", "收货人", "收货地址"};
+                String[] title = {"订单编号", "商品名", "成交价", "单价", "数量", "成本价", "成交时间", "订单来源", "收货人","电话", "收货地址"};
                 ExportOrderExcelUtils exportOrder = new ExportOrderExcelUtils();
                 exportOrder.ExportExcel(title, orderList, response.getOutputStream(),orderState);
             }

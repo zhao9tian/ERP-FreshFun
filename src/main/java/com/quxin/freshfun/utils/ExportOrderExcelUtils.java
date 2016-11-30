@@ -169,8 +169,12 @@ public class ExportOrderExcelUtils {
             cell = bodyRow.createCell(8);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getName());
-            //收货地址
+            //电话
             cell = bodyRow.createCell(9);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(order.getTel());
+            //收货地址
+            cell = bodyRow.createCell(10);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getCity()+order.getAddress());
         }
