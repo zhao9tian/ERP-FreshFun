@@ -1,10 +1,18 @@
 package com.quxin.freshfun.test;
 
 import com.alibaba.fastjson.JSON;
+import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
+import com.quxin.freshfun.utils.ResultUtil;
+import org.apache.commons.beanutils.BeanUtils;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.MethodDescriptor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -12,14 +20,17 @@ import java.util.List;
  */
 public class Test {
     public static void main(String[] args) {
-//        System.out.println(JSON.parseArray("[1,2]"));
-        File file = new File("d://1.png");
-        System.out.println(file.length());
-//        List<String> sss = new ArrayList<>();
-//        sss.add("d:1.png");
-//        sss.add("http://aadadad.jpg");
-//        sss.add("http://aadadad.jpg");
-//        sss.add("http://aadadad.jpg");
-//        System.out.println(JSON.toJSONString(sss));
+
+
+        GoodsStandardPOJO standardPOJO = new GoodsStandardPOJO();
+        standardPOJO.setCoffeeType("coffee");
+        standardPOJO.setAgtron("哈哈");
+        Map<String , Object> map = ResultUtil.bean2map(standardPOJO);
+        System.out.println(map);
+//        BeanUtils.populate();
+
+
+
+
     }
 }

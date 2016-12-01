@@ -1,5 +1,7 @@
 package com.quxin.freshfun.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -7,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -15,6 +18,8 @@ import java.util.*;
  * @author qucheng
  */
 public class UploadUtils {
+
+    private static Logger logger = LoggerFactory.getLogger(UploadUtils.class);
 
     /**
      * 上传图片
@@ -54,6 +59,38 @@ public class UploadUtils {
         }
         return result;
     }
+
+
+    /**
+     * 上传excel文件
+     * @param request 请求
+     * @return 返回文件的inputSteam
+     * @throws IOException 异常
+     */
+    public static InputStream uploadExcel(HttpServletRequest request) throws IOException {
+        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;//多文件解析对象
+        Iterator<String> iter = multiRequest.getFileNames();
+        if (iter.hasNext()) {
+            MultipartFile file = multiRequest.getFile(iter.next());
+            if (file.getSize() < 10485760) {//10M
+                String originalName = file.getOriginalFilename();//文件名
+                if(originalName.toLowerCase().endsWith("xlsx") || originalName.toLowerCase().endsWith("xls")){
+                    return file.getInputStream();
+                }else{
+                    logger.error("文件格式不正确");
+                }
+            } else {
+                logger.error("文件大于10M");
+            }
+        }else{
+            logger.error("未获取到上传文件");
+        }
+        return null;
+    }
+
+
+
+
 
     /**
      * 生成文件保存目录
