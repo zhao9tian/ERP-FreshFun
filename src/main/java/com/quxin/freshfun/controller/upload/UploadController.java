@@ -60,7 +60,6 @@ public class UploadController {
     @ResponseBody
     public Map<String, Object> uploadExcel(HttpServletRequest request) {
         Map<String, Object> result;
-        Long now1 = System.currentTimeMillis();
         try {
             InputStream excelInputStream = UploadUtils.uploadExcel(request);
             if (excelInputStream == null) {
@@ -85,7 +84,6 @@ public class UploadController {
         } catch (IOException e) {
             return ResultUtil.fail(1004, "获取图片InputStream异常");
         }
-        System.out.println("修改时间"+(System.currentTimeMillis() - now1));
         return result;
     }
 
