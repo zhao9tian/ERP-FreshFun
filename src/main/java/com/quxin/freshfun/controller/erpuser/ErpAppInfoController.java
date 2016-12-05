@@ -1,7 +1,13 @@
 package com.quxin.freshfun.controller.erpuser;
 
 import com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO;
+import com.quxin.freshfun.model.order.OrderSaleInfo;
+import com.quxin.freshfun.model.outparam.AppInfoOutParam;
 import com.quxin.freshfun.service.erpuser.ErpAppInfoService;
+import com.quxin.freshfun.service.order.OrderService;
+import com.quxin.freshfun.service.withdraw.WithdrawService;
+import com.quxin.freshfun.utils.BusinessException;
+import com.quxin.freshfun.utils.MoneyFormatUtils;
 import com.quxin.freshfun.utils.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +30,31 @@ public class ErpAppInfoController {
 
     @Autowired
     private ErpAppInfoService erpAppInfoService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private WithdrawService withdrawService;
 
     @RequestMapping("/getAppInfos")
-    public Map<String, Object> getAppInfos() {
+    @ResponseBody
+    public Map<String, Object> getAppInfos(String appName) throws BusinessException{
         Map<String,Object> map = new HashMap<String,Object>();
-        List<ErpAppInfoPOJO> appInfoList = erpAppInfoService.queryErpAppInfo();
+        List<AppInfoOutParam> appInfoList = null;
+        if(appName==null||"".equals(appName))
+            appInfoList = erpAppInfoService.queryErpAppInfo();
+        else
+            appInfoList = erpAppInfoService.queryAppByName(appName);
         if(appInfoList==null){
             return ResultUtil.fail(1004,"公司列表获取失败");
         }else if(appInfoList.size()<1){
-            return ResultUtil.fail(1005,"公司列表获取为空");
+            return ResultUtil.fail(1004,"公司列表获取为空");
         }else{
+            for(AppInfoOutParam aiop : appInfoList){
+                aiop.setSumActualMoney(aiop.getSumActualMoney()==null?"0.00":MoneyFormatUtils.getMoneyFromInteger(Integer.parseInt(aiop.getSumActualMoney())));
+                Integer withDraw = withdrawService.queryAvailableMoney(aiop.getAppId());
+                aiop.setWithdrawMoney(MoneyFormatUtils.getMoneyFromInteger(withDraw));
+            }
+            map.put("appList",appInfoList);
             return ResultUtil.success(map);
         }
     }

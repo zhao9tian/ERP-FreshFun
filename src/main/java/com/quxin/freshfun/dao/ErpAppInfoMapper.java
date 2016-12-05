@@ -1,6 +1,7 @@
 package com.quxin.freshfun.dao;
 
 import com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO;
+import com.quxin.freshfun.model.outparam.AppInfoOutParam;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public interface ErpAppInfoMapper {
      * 查询平台列表
      * @return 平台信息列表
      */
-    List<ErpAppInfoPOJO> selectErpAppInfo();
+    List<AppInfoOutParam> selectErpAppInfo();
 
     /**
      * 更新平台信息
@@ -54,5 +55,5 @@ public interface ErpAppInfoMapper {
      * @param appName 商城名称
      * @return 商城信息
      */
-    ErpAppInfoPOJO selectAppByName(String appName);
+    List<AppInfoOutParam> selectAppByName(String appName);
 }

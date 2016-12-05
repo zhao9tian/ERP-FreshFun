@@ -2,6 +2,7 @@ package com.quxin.freshfun.service.erpuser.impl;
 
 import com.quxin.freshfun.dao.ErpAppInfoMapper;
 import com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO;
+import com.quxin.freshfun.model.outparam.AppInfoOutParam;
 import com.quxin.freshfun.service.erpuser.ErpAppInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
      * @return 平台信息列表
      */
     @Override
-    public List<ErpAppInfoPOJO> queryErpAppInfo() {
+    public List<AppInfoOutParam> queryErpAppInfo() {
         return erpAppInfoMapper.selectErpAppInfo();
     }
 
@@ -110,11 +111,12 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
     }
 
     @Override
-    public ErpAppInfoPOJO queryAppByName(String appName) {
+    public List<AppInfoOutParam> queryAppByName(String appName) {
         if(appName==null||"".equals(appName)){
             logger.warn("根据商城名称获取商城信息方法入参有误");
             return null;
         }
+        appName = appName+"%";
         return erpAppInfoMapper.selectAppByName(appName);
     }
 }
