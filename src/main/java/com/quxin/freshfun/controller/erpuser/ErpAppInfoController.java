@@ -1,7 +1,5 @@
 package com.quxin.freshfun.controller.erpuser;
 
-import com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO;
-import com.quxin.freshfun.model.order.OrderSaleInfo;
 import com.quxin.freshfun.model.outparam.AppInfoOutParam;
 import com.quxin.freshfun.service.erpuser.ErpAppInfoService;
 import com.quxin.freshfun.service.order.OrderService;
@@ -16,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,26 +36,44 @@ public class ErpAppInfoController {
     @Autowired
     private WithdrawService withdrawService;
 
+    /**
+     * 公众号管理查询
+     *
+     * @param appName  模糊匹配的公众号名称
+     * @param curPage  当前页
+     * @param pageSize 页面数据量
+     * @throws BusinessException
+     */
     @RequestMapping("/getAppInfos")
     @ResponseBody
-    public Map<String, Object> getAppInfos(String appName) throws BusinessException{
-        Map<String,Object> map = new HashMap<String,Object>();
+    public Map<String, Object> getAppInfos( String appName, Integer curPage, Integer pageSize) throws BusinessException {
+        try {
+            appName = URLDecoder.decode(appName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
         List<AppInfoOutParam> appInfoList = null;
-        if(appName==null||"".equals(appName))
-            appInfoList = erpAppInfoService.queryErpAppInfo();
-        else
-            appInfoList = erpAppInfoService.queryAppByName(appName);
-        if(appInfoList==null){
-            return ResultUtil.fail(1004,"公司列表获取失败");
-        }else if(appInfoList.size()<1){
-            return ResultUtil.fail(1004,"公司列表获取为空");
-        }else{
-            for(AppInfoOutParam aiop : appInfoList){
-                aiop.setSumActualMoney(aiop.getSumActualMoney()==null?"0.00":MoneyFormatUtils.getMoneyFromInteger(Integer.parseInt(aiop.getSumActualMoney())));
+        Integer total = 0;
+        if (appName == null || "".equals(appName)) {
+            appInfoList = erpAppInfoService.queryErpAppInfo(curPage, pageSize);
+            total = erpAppInfoService.queryErpAppCount(null);
+        } else {
+            appInfoList = erpAppInfoService.queryAppsByName(appName, curPage, pageSize);
+            total = erpAppInfoService.queryErpAppCount(appName);
+        }
+        if (appInfoList == null) {
+            return ResultUtil.fail(1004, "公司列表获取失败");
+        } else if (appInfoList.size() < 1) {
+            return ResultUtil.fail(1004, "公司列表获取为空");
+        } else {
+            for (AppInfoOutParam aiop : appInfoList) {
+                aiop.setSumActualMoney(aiop.getSumActualMoney() == null ? "0.00" : MoneyFormatUtils.getMoneyFromInteger(Integer.parseInt(aiop.getSumActualMoney())));
                 Integer withDraw = withdrawService.queryAvailableMoney(aiop.getAppId());
                 aiop.setWithdrawMoney(MoneyFormatUtils.getMoneyFromInteger(withDraw));
             }
-            map.put("appList",appInfoList);
+            map.put("appList", appInfoList);
+            map.put("total", total);
             return ResultUtil.success(map);
         }
     }

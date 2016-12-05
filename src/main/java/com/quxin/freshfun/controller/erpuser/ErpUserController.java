@@ -1,10 +1,8 @@
 package com.quxin.freshfun.controller.erpuser;
 
 import com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO;
-import com.quxin.freshfun.model.erpuser.ErpUserJurisdictionPOJO;
 import com.quxin.freshfun.model.erpuser.ErpUserPOJO;
 import com.quxin.freshfun.service.erpuser.ErpAppInfoService;
-import com.quxin.freshfun.service.erpuser.ErpUserJurisdictionService;
 import com.quxin.freshfun.service.erpuser.ErpUserService;
 import com.quxin.freshfun.utils.CookieUtil;
 import com.quxin.freshfun.utils.FreshFunEncoder;
@@ -21,15 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static javax.management.Query.value;
 
 /**
  * Created by Ziming on 2016/10/31.
@@ -295,5 +290,7 @@ public class ErpUserController {
         adminMenus.add("/themeOrder");
         adminMenus.add("/themeLists");
         adminMenus.add("/selectionOrder");
+        adminMenus.add("/officialAccounts");
+        adminMenus.add("/withdrawCtrl");
     }
 }

@@ -20,7 +20,13 @@ public interface ErpAppInfoService {
      * 查询平台列表
      * @return 平台信息列表
      */
-    List<AppInfoOutParam> queryErpAppInfo();
+    List<AppInfoOutParam> queryErpAppInfo(Integer curPage,Integer pageSize);
+
+    /**
+     * 查询平台列表
+     * @return 平台信息列表
+     */
+    Integer queryErpAppCount(String appName);
 
     /**
      * 更新平台信息
@@ -48,5 +54,12 @@ public interface ErpAppInfoService {
      * @param appName 商城名称
      * @return 商城信息
      */
-    List<AppInfoOutParam> queryAppByName(String appName);
+    List<AppInfoOutParam> queryAppsByName(String appName,Integer curPage,Integer pageSize);
+
+    /**
+     * 根据商城名称获取商城信息
+     * @param appName 商城名称
+     * @return 商城信息
+     */
+    AppInfoOutParam queryAppByName(String appName);
 }
