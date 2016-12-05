@@ -6,7 +6,7 @@
         <Encoding>UTF-8</Encoding>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <fileNamePattern>devLogs/ERP-FreshFun/service.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>Logs/ERP-FreshFun/service.%d{yyyy-MM-dd}.log</fileNamePattern>
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -25,7 +25,7 @@
         <Encoding>UTF-8</Encoding>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <fileNamePattern>devLogs/ERP-FreshFun/datasource.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>Logs/ERP-FreshFun/datasource.%d{yyyy-MM-dd}.log</fileNamePattern>
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -51,6 +51,8 @@
     <logger name="com.quxin.freshfun" level="INFO">
         <appender-ref ref="FILE" />
     </logger>
+
+    <logger name="com.quxin.freshfun.dao" level="debug"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />

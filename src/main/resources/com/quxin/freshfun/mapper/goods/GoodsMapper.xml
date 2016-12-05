@@ -6,7 +6,7 @@
     <select id="selectCountByQC" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(id) from goods_base
         where is_deleted = 0
-        <if test="subTitle != null">and sub_title like '%${subTitle}%'</if>
+        <if test="subTitle != null">and sub_title like '${subTitle}%'</if>
         <if test="category2 != null">and category2 = #{category2}</if>
         <if test="isOnSale != null">and is_on_sale = #{isOnSale}</if>
     </select>
@@ -19,11 +19,14 @@
         category4 ,
         app_id as appId , shop_id as shopId , created as created , updated as updated
         from goods_base where is_deleted = 0
-        <if test="subTitle != null">and sub_title like '%${subTitle}%'</if>
+        <if test="subTitle != null">and sub_title like '${subTitle}%'</if>
         <if test="category2 != null">and category2 = #{category2}</if>
         <if test="isOnSale != null">and is_on_sale = #{isOnSale}</if>
-        <if test="order != null">
-            order by created ${order}
+        <if test="created != null">
+            order by created ${created}
+        </if>
+        <if test="saleNum != null">
+            order by sale_num ${saleNum}
         </if>
         <if test="start != null and pageSize != null">
             limit #{start} , #{pageSize}

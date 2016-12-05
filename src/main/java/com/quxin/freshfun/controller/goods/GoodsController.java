@@ -98,7 +98,8 @@ public class GoodsController {
      */
     @RequestMapping(value = "/goodsList", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> queryGoodsList(String subTitle , Integer category2 ,Integer isOnSale , Integer currentPage ,Integer pageSize ,Integer orderByCreate) {
+    public Map<String, Object> queryGoodsList(String subTitle , Integer category2 ,Integer isOnSale , Integer currentPage ,
+                                              Integer pageSize ,Integer orderByCreate , Integer orderBySaleNum) {
         Map<String, Object> result;
         Map<String, Object> queryCondition = new HashMap<>();
         if(subTitle != null && !"".equals(subTitle.trim())){
@@ -127,6 +128,9 @@ public class GoodsController {
         }
         if(orderByCreate != null){
             queryCondition.put("orderByCreate" ,orderByCreate);
+        }
+        if(orderBySaleNum != null){
+            queryCondition.put("orderBySaleNum" ,orderBySaleNum);
         }
         List<GoodsPOJO> goods = goodsService.queryAllGoods(queryCondition);
         List<GoodsBaseOut> goodsBases = new ArrayList<>();

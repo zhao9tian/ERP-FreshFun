@@ -236,19 +236,39 @@ public class GoodsServiceImpl implements GoodsService {
         }
         Integer start = pagingInfo.get("start");
         Integer pageSize = pagingInfo.get("pageSize");
-        if(queryCondition == null ){
-            queryCondition = new HashMap<>();
-        }else{
-           Integer order = (Integer) queryCondition.get("orderByCreate");
-            if(order == null || order == 0){
-                queryCondition.put("order" ,"desc");
-            }else if(order == 1){
-                queryCondition.put("order" ,"asc");
-            }
+        //创建一个新的查询对象
+        Map<String, Object> qc = new HashMap<>();
+        //1.过滤查询条件
+        String subtitle = (String) queryCondition.get("subTitle");
+        Integer category2 = (Integer) queryCondition.get("category2");
+        Integer isOnSale = (Integer) queryCondition.get("isOnSale");// 0:所有 1:上架 2:下架
+        if (subtitle != null && !"".equals(subtitle.trim())) {
+            qc.put("subTitle", subtitle);
         }
-        queryCondition.put("start",start);
-        queryCondition.put("pageSize",pageSize);
-        return goodsMapper.selectGoodsList(queryCondition);
+        if (category2 != null) {
+            qc.put("category2", category2);
+        }
+        if (isOnSale != null) {
+            qc.put("isOnSale", isOnSale);
+        }
+        //排序字段 -- 只按一个排序条件查询,没有排序条件就按创建时间默认倒序
+        Integer orderByCreate = (Integer) queryCondition.get("orderByCreate");
+        Integer orderBySaleNum = (Integer) queryCondition.get("orderBySaleNum");
+
+        if(orderBySaleNum == null || orderBySaleNum == 0){
+            if(orderByCreate == null || orderByCreate == 0 || orderByCreate == 1){
+                qc.put("created" ,"desc");
+            }else if(orderByCreate == 2){
+                qc.put("created" ,"asc");
+            }
+        }else if(orderBySaleNum == 1){
+            qc.put("saleNum" ,"desc");
+        }else if(orderBySaleNum == 2){
+            qc.put("saleNum" ,"asc");
+        }
+        qc.put("start",start);
+        qc.put("pageSize",pageSize);
+        return goodsMapper.selectGoodsList(qc);
     }
 
     @Override
