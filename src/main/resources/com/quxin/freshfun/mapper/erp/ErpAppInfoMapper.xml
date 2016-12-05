@@ -13,26 +13,30 @@
         update erp_app_info set app_id=#{id} where id=#{id}
     </update>
 
-    <select id="selectErpAppInfo" resultType="com.quxin.freshfun.model.outparam.AppInfoOutParam">
+    <select id="selectErpAppInfo" resultType="com.quxin.freshfun.model.outparam.AppInfoOutParam" parameterType="java.util.Map" >
         SELECT
         erp_app_info.app_id AS appId,erp_app_info.app_name AS appName,erp_app_info.created AS created  ,
         COUNT(order_details.id) AS orderNumber,SUM(order_details.actual_price) AS sumActualMoney
          FROM erp_app_info LEFT OUTER JOIN order_details ON erp_app_info.app_id = order_details.app_id
-         AND erp_app_info.is_deleted=0 AND order_details.order_status>=30 AND order_details.is_deleted=0 GROUP BY erp_app_info.app_id
+         AND erp_app_info.is_deleted=0 AND order_details.order_status>=30 AND order_details.is_deleted=0 GROUP BY erp_app_info.app_id LIMIT #{begin},#{pageSize}
     </select>
 
     <select id="selectAppById" resultType="com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO" parameterType="java.lang.Long">
         select app_id as appId,app_name as appName,created,updated from erp_app_info where app_id=#{appId} and is_deleted =0
     </select>
 
-    <select id="selectAppByName" resultType="com.quxin.freshfun.model.outparam.AppInfoOutParam" parameterType="java.lang.String">
-        select app_id as appId,app_name as appName,created from erp_app_info where app_name like #{appName} and is_deleted =0
+    <select id="selectAppByName" resultType="com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO" parameterType="java.lang.String">
+        select app_id as appId,app_name as appName,created,updated from erp_app_info where app_name=#{appName} and is_deleted =0
+    </select>
+
+    <select id="selectAppsByName" resultType="com.quxin.freshfun.model.outparam.AppInfoOutParam" parameterType="java.util.Map">
         SELECT
         erp_app_info.app_id AS appId,erp_app_info.app_name AS appName,erp_app_info.created AS created  ,
         COUNT(order_details.id) AS orderNumber,SUM(order_details.actual_price) AS sumActualMoney
          FROM erp_app_info LEFT OUTER JOIN order_details ON erp_app_info.app_id = order_details.app_id
-         AND erp_app_info.app_name like #{appName} AND order_details.order_status>=30
-         AND erp_app_info.is_deleted=0 AND order_details.is_deleted=0 GROUP BY erp_app_info.app_id
+         AND order_details.order_status>=30
+         AND erp_app_info.is_deleted=0 AND order_details.is_deleted=0
+         WHERE erp_app_info.app_name LIKE #{appName} GROUP BY erp_app_info.app_id LIMIT #{begin},#{pageSize}
     </select>
 
     <update id="updateErpAppInfo" parameterType="com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO">
@@ -48,4 +52,12 @@
     <update id="deleteErpAppInfo" parameterType="java.util.Map">
         update erp_app_info set is_deleted=1,updated=#{updated} where app_id=#{appId}
     </update>
+
+    <select id="selectAppCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(id) from erp_app_info where
+         <if test="appName!=null">
+             app_name like #{appName} and
+         </if>
+         is_deleted =0
+    </select>
 </mapper>

@@ -55,8 +55,22 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
      * @return 平台信息列表
      */
     @Override
-    public List<AppInfoOutParam> queryErpAppInfo() {
-        return erpAppInfoMapper.selectErpAppInfo();
+    public List<AppInfoOutParam> queryErpAppInfo(Integer curPage,Integer pageSize) {
+        Integer begin = (curPage-1)*pageSize;
+        Map<String ,Object> map = new HashMap<String ,Object>();
+        map.put("begin",begin);
+        map.put("pageSize",pageSize);
+        return erpAppInfoMapper.selectErpAppInfo(map);
+    }
+
+    @Override
+    public Integer queryErpAppCount(String appName) {
+        Map<String ,Object> map = new HashMap<String ,Object>();
+        if(appName!=null){
+            appName=appName+"%";
+            map.put("appName",appName);
+        }
+        return erpAppInfoMapper.selectAppCount(map);
     }
 
     /**
@@ -111,12 +125,29 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
     }
 
     @Override
-    public List<AppInfoOutParam> queryAppByName(String appName) {
+    public List<AppInfoOutParam> queryAppsByName(String appName,Integer curPage,Integer pageSize) {
         if(appName==null||"".equals(appName)){
             logger.warn("根据商城名称获取商城信息方法入参有误");
             return null;
         }
         appName = appName+"%";
-        return erpAppInfoMapper.selectAppByName(appName);
+        Integer begin = (curPage-1)*pageSize;
+        Map<String ,Object> map = new HashMap<String ,Object>();
+        map.put("appName",appName);
+        map.put("begin",begin);
+        map.put("pageSize",pageSize);
+        return erpAppInfoMapper.selectAppsByName(map);
+    }
+
+    @Override
+    public AppInfoOutParam queryAppByName(String appName) {
+        if(appName==null||"".equals(appName)){
+            logger.warn("根据商城名称获取商城信息方法入参有误");
+            return null;
+        }
+        List<AppInfoOutParam> list = erpAppInfoMapper.selectAppByName(appName);
+        if(list!=null&&list.size()>0)
+            return list.get(0);
+        return null;
     }
 }

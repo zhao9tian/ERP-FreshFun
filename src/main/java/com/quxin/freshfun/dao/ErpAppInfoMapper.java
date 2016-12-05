@@ -28,7 +28,14 @@ public interface ErpAppInfoMapper {
      * 查询平台列表
      * @return 平台信息列表
      */
-    List<AppInfoOutParam> selectErpAppInfo();
+    List<AppInfoOutParam> selectErpAppInfo(Map<String,Object> map);
+
+    /**
+     * 根据条件查询app总条数
+     * @param map appName 模糊查询的app名称
+     * @return 总条数
+     */
+    Integer selectAppCount(Map<String ,Object> map);
 
     /**
      * 更新平台信息
@@ -50,6 +57,13 @@ public interface ErpAppInfoMapper {
      * @return 商城信息
      */
     ErpAppInfoPOJO selectAppById(Long appId);
+    /**
+     * 根据appName获取商城信息
+     * @param map  appName 商城名称
+     * @return 商城信息
+     */
+    List<AppInfoOutParam> selectAppsByName(Map<String,Object> map);
+
     /**
      * 根据appName获取商城信息
      * @param appName 商城名称
