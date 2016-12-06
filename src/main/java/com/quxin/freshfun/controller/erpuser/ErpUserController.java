@@ -74,18 +74,18 @@ public class ErpUserController {
         Integer result = 0;
         if (userInfo == null) {   //校验参数是否为空
             logger.warn("后台用户注册时，user对象为空");
-            result = 1023;
+            return result = 1023;
         }
         //參數是否带有appId，有直接赋值给user，没有则校验appName
         if(userInfo.get("appIdStr")==null||"".equals(userInfo.get("appIdStr").toString())){
             //没有appId时是否有appName，有则新增商城
             if(userInfo.get("appName")==null||"".equals(userInfo.get("appName").toString())){
                 logger.warn("创建平台商城，名称为空！");
-                result = 1024;
+                return result = 1024;
             }else{
                 if(erpAppInfoService.queryAppByName(userInfo.get("appName").toString())!=null){
                     logger.warn("该商城已被注册"+userInfo.get("appName").toString());
-                    result = 1025;
+                    return result = 1025;
                 }
                 user.setAppName(userInfo.get("appName").toString());
             }
@@ -94,17 +94,17 @@ public class ErpUserController {
         }
         if (userInfo.get("userName") == null || "".equals(userInfo.get("userName").toString())) {
             logger.warn("用户参数帐号为空");
-            result = 1026;
+            return result = 1026;
         }else if (!ErpUserController.isRegularRptCode(userInfo.get("userName").toString())) {
             logger.warn("后台用户登录时，用户名格式有误");
-            result = 1027;
+            return result = 1027;
         }else if( erpUserService.erpUserLogin(userInfo.get("userName").toString())!=null){
             logger.warn("该帐号已被注册！帐号："+userInfo.get("userName").toString());
-            result = 1028;
+            return result = 1028;
         }
         if (userInfo.get("passWord") == null || "".equals(userInfo.get("passWord").toString())) {
             logger.warn("用户参数密码为空");
-            result = 1029;
+            return result = 1029;
         }
         return result;
     }

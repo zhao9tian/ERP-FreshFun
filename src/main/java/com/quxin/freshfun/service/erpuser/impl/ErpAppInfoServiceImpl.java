@@ -9,9 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Ziming on 2016/11/7.
@@ -34,17 +36,28 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
             logger.warn("新增公司信息入参有误");
             return 0l;
         }
+        Long id = erpAppInfoMapper.selectMaxId();
+        int number = new Random().nextInt(100);
         ErpAppInfoPOJO appInfo = new ErpAppInfoPOJO();
+        appInfo.setId(id+100+number);
+        appInfo.setAppId(id+100+number);
         appInfo.setAppName(appName);
         appInfo.setCreated(System.currentTimeMillis()/1000);
         appInfo.setUpdated(System.currentTimeMillis()/1000);
-        Integer result = erpAppInfoMapper.insertErpAppInfo(appInfo);
-        if(result!=1)
+        Integer result = 0;
+        try{
+            result = erpAppInfoMapper.insertErpAppInfo(appInfo);
+        }catch (Exception e){
+            logger.error("新增公众号信息异常");
+            e.printStackTrace();
+        }
+        /*if(result!=1)
             logger.warn("新增公司信息方法执行失败");
         else{
             result = erpAppInfoMapper.updateErpAppIdById(appInfo.getId());
-        }
+        }*/
         if(result!=1){
+            logger.warn("新增公司信息方法执行失败");
             return null;
         }
         return appInfo.getId();
@@ -140,12 +153,12 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
     }
 
     @Override
-    public AppInfoOutParam queryAppByName(String appName) {
+    public ErpAppInfoPOJO queryAppByName(String appName) {
         if(appName==null||"".equals(appName)){
             logger.warn("根据商城名称获取商城信息方法入参有误");
             return null;
         }
-        List<AppInfoOutParam> list = erpAppInfoMapper.selectAppByName(appName);
+        List<ErpAppInfoPOJO> list = erpAppInfoMapper.selectAppByName(appName);
         if(list!=null&&list.size()>0)
             return list.get(0);
         return null;

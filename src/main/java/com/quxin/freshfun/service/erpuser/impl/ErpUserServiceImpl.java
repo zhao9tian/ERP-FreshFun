@@ -33,7 +33,10 @@ public class ErpUserServiceImpl implements ErpUserService{
     public Integer addErpUser(ErpUserPOJO erpUser) {
         if(erpUser!=null&&erpUser.getAppName()!=null&&!"".equals(erpUser.getAppName())){
             Long appId = erpAppInfoService.addErpAppInfo(erpUser.getAppName());
-            erpUser.setAppId(appId);
+            if(appId!=null)
+                erpUser.setAppId(appId);
+            else
+                return 0;
         }
         Integer result = erpUserMapper.insertErpUser(erpUser);
         if(result==1){

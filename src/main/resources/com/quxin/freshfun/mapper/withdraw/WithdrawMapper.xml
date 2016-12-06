@@ -24,7 +24,7 @@
         values(#{appId} , #{userId} , #{accountType} ,#{accountNum} ,#{withdrawMoney} ,#{state} ,#{created},#{updated},#{isDeleted})
     </insert>
 
-    <!--查询提现记录数-->
+    <!--根据appId查询提现记录数-->
     <select id="selectCountWithdrawByAppId" parameterType="Long" resultType="Integer" >
         select count(id) from withdraw_base
         where app_id = #{appId} and is_deleted = 0
@@ -40,4 +40,35 @@
         select sum(actual_price) from order_details
         where is_deleted = 0 and app_id = #{appId} and order_status <![CDATA[>=]]> 30 and order_status <![CDATA[<]]> 100
     </select>
+
+    <!--查询提现申请-->
+    <select id="selectWithdraws" parameterType="java.util.Map" resultType="com.quxin.freshfun.model.outparam.WithdrawOutParam">
+        SELECT withdraw_base.id AS withDrawId,erp_app_info.app_name AS appName,withdraw_base.created AS applyDate,withdraw_base.updated AS dealDate,withdraw_base.withdraw_money AS withDrawMoney,
+        withdraw_base.account_type AS accountType,withdraw_base.account_num AS accountNum,withdraw_base.state FROM withdraw_base LEFT OUTER JOIN erp_app_info ON withdraw_base.app_id = erp_app_info.app_id
+        WHERE
+        <if test="state!=null">
+            withdraw_base.state=#{state} AND
+        </if>
+        withdraw_base.is_deleted = 0 LIMIT #{begin},#{pageSize}
+    </select>
+
+    <!--查询提现申请总数量-->
+    <select id="selectWithdrawCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM withdraw_base
+        WHERE
+        <if test="state!=null">
+            state=#{state} AND
+        </if>
+        is_deleted = 0
+    </select>
+
+    <select id="selectWithdrawById" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.withdraw.WithdrawPOJO">
+        SELECT app_id as appId,withdraw_money as withdrawMoney FROM withdraw_base
+        WHERE id=#{id} AND is_deleted = 0
+    </select>
+
+    <!--处理提现申请-->
+    <update id="dealWithdraw" parameterType="java.util.Map">
+        UPDATE withdraw_base set state = #{state},handler_id = #{handlerId},updated = #{updated} WHERE id=#{withdrawId}
+    </update>
 </mapper>
