@@ -23,7 +23,7 @@ public class ExportOrderExcelUtils {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String[] titles = {"订单编号","用户编号", "商品名", "成交价", "单价", "数量", "成本价", "成交时间", "订单来源", "收货人","电话", "收货地址","快递公司","物流编号","备注"};
+    private String[] titles = {"订单编号","用户编号", "商品名", "成交价", "单价", "数量", "成本价", "成交时间", "订单来源","订单状态", "收货人","电话", "收货地址","快递公司","物流编号","备注"};
 
     public ExportOrderExcelUtils(){
         // 创建一个workbook 对应一个excel应用文件
@@ -153,29 +153,33 @@ public class ExportOrderExcelUtils {
             //订单来源
             cell = bodyRow.createCell(8);
             cell.setCellStyle(bodyStyle);
+            cell.setCellValue(order.getAppId());
+            //订单状态
+            cell = bodyRow.createCell(9);
+            cell.setCellStyle(bodyStyle);
             cell.setCellValue(getSheet(order.getOrderStatus()));
             //收货人
-            cell = bodyRow.createCell(9);
+            cell = bodyRow.createCell(10);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getName());
             //电话
-            cell = bodyRow.createCell(10);
+            cell = bodyRow.createCell(11);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getTel());
             //收货地址
-            cell = bodyRow.createCell(11);
+            cell = bodyRow.createCell(12);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getCity()+order.getAddress());
             //快递公司
-            cell = bodyRow.createCell(12);
+            cell = bodyRow.createCell(13);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getDeliveryName());
             //物流编号
-            cell = bodyRow.createCell(13);
+            cell = bodyRow.createCell(14);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getDeliveryNum());
             //备注
-            cell = bodyRow.createCell(14);
+            cell = bodyRow.createCell(15);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getRemark());
         }
