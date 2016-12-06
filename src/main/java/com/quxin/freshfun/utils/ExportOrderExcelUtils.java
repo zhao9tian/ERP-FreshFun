@@ -23,6 +23,8 @@ public class ExportOrderExcelUtils {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    private String[] titles = {"订单编号","用户编号", "商品名", "成交价", "单价", "数量", "成本价", "成交时间", "订单来源", "收货人","电话", "收货地址","快递公司","物流编号","备注"};
+
     public ExportOrderExcelUtils(){
         // 创建一个workbook 对应一个excel应用文件
         this.xw = new XSSFWorkbook();
@@ -91,21 +93,18 @@ public class ExportOrderExcelUtils {
 
     /**
      * 到处订单Excel
-     * @param titles
      * @param orderList
      * @param outputStream
      */
-    public void ExportExcel(String[] titles, List<OrderDetailsPOJO> orderList, ServletOutputStream outputStream,Integer orderState) {
-        if(titles == null || orderList == null)
-            return;
+    public void ExportExcel(List<OrderDetailsPOJO> orderList, ServletOutputStream outputStream,Integer orderState) {
 
-        getSheet(orderState);
-
+        String state = getSheet(orderState);
+        this.sheet = xw.createSheet(state);
         XSSFCellStyle headStyle = getHeadStyle();
         XSSFCellStyle bodyStyle = getBodyStyle();
 
         // 构建表头
-        XSSFRow headRow = sheet.createRow(0);
+        XSSFRow headRow = this.sheet.createRow(0);
         XSSFCell cell = null;
 
         // 输出标题
@@ -116,67 +115,69 @@ public class ExportOrderExcelUtils {
         }
 
         for (int i = 0;i < orderList.size() ; i++) {
-            XSSFRow bodyRow = sheet.createRow(i + 1);
+            XSSFRow bodyRow = this.sheet.createRow(i + 1);
             OrderDetailsPOJO order = orderList.get(i);
             //编号
             cell = bodyRow.createCell(0);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getOrderId());
-            //商品名
+            //用户编号
             cell = bodyRow.createCell(1);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(order.getUserId());
+            //商品名
+            cell = bodyRow.createCell(2);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getGoods().getGoodsName());
             //成交价
-            cell = bodyRow.createCell(2);
-            cell.setCellStyle(bodyStyle);
-            cell.setCellValue(MoneyFormatUtils.getMoneyFromInteger(order.getActualPrice()));
-            //单价
             cell = bodyRow.createCell(3);
             cell.setCellStyle(bodyStyle);
-            cell.setCellValue(MoneyFormatUtils.getMoneyFromInteger(order.getPayPrice()));
-            //数量
+            cell.setCellValue(order.getActualMoney());
+            //单价
             cell = bodyRow.createCell(4);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(order.getPayMoney());
+            //数量
+            cell = bodyRow.createCell(5);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getCount());
             //成本价
-            cell = bodyRow.createCell(5);
+            cell = bodyRow.createCell(6);
             cell.setCellStyle(bodyStyle);
-            cell.setCellValue(MoneyFormatUtils.getMoneyFromInteger(order.getGoodsCost()));
+            cell.setCellValue(order.getCostMoney());
             //成交时间
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            cell = bodyRow.createCell(6);
+            cell = bodyRow.createCell(7);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(dateFormat.format(order.getPayTime()*1000));
             //订单来源
-            switch (order.getPayPlateform()){
-                case 0:
-                    cell = bodyRow.createCell(7);
-                    cell.setCellStyle(bodyStyle);
-                    cell.setCellValue("自然流量");
-                    break;
-                case 1:
-                    cell = bodyRow.createCell(7);
-                    cell.setCellStyle(bodyStyle);
-                    cell.setCellValue("捕手流量");
-                    break;
-                default:
-                    cell = bodyRow.createCell(7);
-                    cell.setCellStyle(bodyStyle);
-                    cell.setCellValue("自然流量");
-                    break;
-            }
-            //收货人
             cell = bodyRow.createCell(8);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(getSheet(order.getOrderStatus()));
+            //收货人
+            cell = bodyRow.createCell(9);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getName());
             //电话
-            cell = bodyRow.createCell(9);
+            cell = bodyRow.createCell(10);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getTel());
             //收货地址
-            cell = bodyRow.createCell(10);
+            cell = bodyRow.createCell(11);
             cell.setCellStyle(bodyStyle);
             cell.setCellValue(order.getCity()+order.getAddress());
+            //快递公司
+            cell = bodyRow.createCell(12);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(order.getDeliveryName());
+            //物流编号
+            cell = bodyRow.createCell(13);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(order.getDeliveryNum());
+            //备注
+            cell = bodyRow.createCell(14);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(order.getRemark());
         }
         try {
             xw.write(outputStream);
@@ -193,33 +194,34 @@ public class ExportOrderExcelUtils {
         }
     }
 
-    private void getSheet(Integer orderState) {
+    private String getSheet(Integer orderState) {
+        String state = "";
         switch (orderState){
             case 10:
-                //Sheet名称，可以自定义中文名称
-                this.sheet = xw.createSheet("未支付订单");
+                state = "未支付订单";
                 break;
             case 15:
-                this.sheet = xw.createSheet("关闭订单");
+                state = "关闭订单";
                 break;
             case 20:
-                this.sheet = xw.createSheet("退款完成订单");
+                state = "退款完成订单";
                 break;
             case 30:
-                this.sheet = xw.createSheet("已支付(待发货订单)");
+                state = "已支付(待发货订单)";
                 break;
             case 40:
-                this.sheet = xw.createSheet("退款中订单");
+                state = "退款中订单";
                 break;
             case 50:
-                this.sheet = xw.createSheet("待收货订单");
+                state = "待收货订单";
                 break;
             case 70:
-                this.sheet = xw.createSheet("已完成订单");
+                state = "已完成订单";
                 break;
             default:
-                this.sheet = xw.createSheet("所有订单");
+                state = "所有订单";
                 break;
         }
+        return state;
     }
 }

@@ -21,6 +21,10 @@ public class OrderDetailsPOJO {
     private Integer count;
     private Integer orderStatus;
     /**
+     * 平台标识
+     */
+    private Long appId;
+    /**
      * 商户编号
      */
     private Long agentId;
@@ -28,6 +32,10 @@ public class OrderDetailsPOJO {
      * 商户单笔订单提成
      */
     private Integer agentPrice;
+    /**
+     * 订单来源
+     */
+    private String orderSource;
     /**
      * 捕手编号
      */
@@ -108,6 +116,22 @@ public class OrderDetailsPOJO {
      * 订单用户昵称
      */
     private String nickName;
+
+    public Long getAppId() {
+        return appId;
+    }
+
+    public void setAppId(Long appId) {
+        this.appId = appId;
+    }
+
+    public String getOrderSource() {
+        return orderSource;
+    }
+
+    public void setOrderSource(String orderSource) {
+        this.orderSource = orderSource;
+    }
 
     public Integer getProvCode() {
         return provCode;

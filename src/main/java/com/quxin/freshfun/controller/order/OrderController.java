@@ -43,66 +43,15 @@ public class OrderController {
     private Logger logger = LoggerFactory.getLogger(getClass());
     /**
      * 查询所有订单
-     * @param page 当前页
-     * @param pageSize 页面大小
-     * @param orderStatus 订单状态
      * @return  返回请求结果
      */
     @RequestMapping("/selectBackstageOrders")
     @ResponseBody
-    public Map<String, Object> selectBackstageOrders(Integer page, Integer pageSize, Integer orderStatus){
-        Map<String, Object>  map = new HashMap<>();
-        Map<String, Object>  resultMap = new HashMap<>();
-        Map<String,Object> resultData = new HashMap<>();
-        if(page == null || page <= 0 || pageSize == null || pageSize <= 0){
-            map.put("code",1004);
-            map.put("msg","传入当前页码不正确");
-            resultMap.put("status",map);
-            return resultMap;
+    public Map<String, Object> selectBackstageOrders(OrderQueryParam orderParam) throws BusinessException {
+        if(orderParam == null || orderParam.getPage() == null || orderParam.getPage() <= 0 || orderParam.getPageSize() == null){
+            return ResultUtil.fail(1004,"传入参数有误");
         }
-        if(orderStatus == null){
-            map.put("code",1004);
-            map.put("msg","传入订单状态不正确");
-            resultMap.put("status",map);
-            return resultMap;
-        }
-        int currentPage = (page - 1) * pageSize;
-        List<OrderDetailsPOJO> order;
-        int size;
-        int total;
-        switch (orderStatus){
-            case 0:
-                order = orderService.selectBackstageOrders(currentPage,pageSize);
-                Integer count = orderService.selectBackstageOrdersCount(new OrderQueryParam());
-                total = count;
-                if(count % pageSize == 0){
-                    size = count / pageSize;
-                }else{
-                    size = count / pageSize + 1;
-                }
-                break;
-            default :
-                order = orderService.selectOrderByOrderStatus(orderStatus,currentPage,pageSize);
-                Integer number = orderService.selectOrderByOrderStatusCount(orderStatus);
-                total = number;
-                if(number % pageSize == 0){
-                    size = number / pageSize;
-                }else{
-                    size = number /pageSize + 1;
-                }
-                break;
-        }
-        order = setBackstageMoney(order);
-        map.put("code",1001);
-        map.put("msg","请求成功");
-        resultData.put("totalPage",size);
-        resultData.put("total",total);
-        resultData.put("page",page);
-        resultData.put("pageSize",pageSize);
-        resultData.put("list",order);
-        resultMap.put("status",map);
-        resultMap.put("data",resultData);
-        return resultMap;
+        return ResultUtil.success(orderService.selectBackstageOrders(orderParam));
     }
 
     @RequestMapping("/findOrdersByPlatform")
@@ -132,7 +81,7 @@ public class OrderController {
             } else {
                 size = total / orderParam.getPageSize() + 1;
             }
-            order = setBackstageMoney(order);
+            order = MoneyFormatUtils.setBackstageMoney(order);
         }
         map.put("code",1001);
         map.put("msg","请求成功");
@@ -302,7 +251,7 @@ public class OrderController {
         int currentPage = (page - 1) * pageSize;
         List<OrderDetailsPOJO> finishOrderList = orderService.findFinishOrder(currentPage, pageSize);
         Integer finishOrderCount = orderService.findFinishOrderCount();
-        finishOrderList = setBackstageMoney(finishOrderList);
+        finishOrderList = MoneyFormatUtils.setBackstageMoney(finishOrderList);
         int size = 1;
         if(finishOrderCount % pageSize == 0){
             size = finishOrderCount / pageSize;
@@ -421,32 +370,16 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/exportOrder")
-    public String exportOrder(HttpServletResponse response,Integer orderState,Long beginTime,Long endTime) throws BusinessException {
-        if(orderState == null || beginTime == null || endTime == null){
+    public String exportOrder(HttpServletResponse response,OrderQueryParam orderQueryParam) throws BusinessException {
+        if(orderQueryParam == null){
             return null;
         }
         try {
-            String fileName=new String(("订单管理").getBytes("gb2312"), "iso8859-1")+ ".xlsx";
-            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-            response.setCharacterEncoding("utf-8");
-
-            List<OrderDetailsPOJO> orderList = null;
-            switch (orderState){
-                case 0:
-                    orderList = orderService.findAllIntervalOrder(beginTime,endTime);
-                    break;
-                case 70:
-                    orderList = orderService.findFinishIntervalOrder(beginTime,endTime);
-                    break;
-                default:
-                    orderList = orderService.getIntervalOrder(orderState, beginTime, endTime);
-                    break;
-            }
+            setExcelTitle(response);
+            List<OrderDetailsPOJO> orderList = orderService.exportOrder(orderQueryParam);
             if(orderList != null) {
-                String[] title = {"订单编号", "商品名", "成交价", "单价", "数量", "成本价", "成交时间", "订单来源", "收货人","电话", "收货地址"};
                 ExportOrderExcelUtils exportOrder = new ExportOrderExcelUtils();
-                exportOrder.ExportExcel(title, orderList, response.getOutputStream(),orderState);
+                exportOrder.ExportExcel(orderList, response.getOutputStream(),orderQueryParam.getOrderStatus());
             }
         } catch (IOException e) {
             logger.error("导出Excel订单IO异常",e);
@@ -454,35 +387,47 @@ public class OrderController {
         return null;
     }
 
-
     /**
-     * 后台设置金额格式
-     * @param order 订单内容
-     * @return 订单列表
+     * 设置Excel信息
+     * @param response
+     * @throws UnsupportedEncodingException
      */
-    private List<OrderDetailsPOJO> setBackstageMoney(List<OrderDetailsPOJO> order){
-        if(order == null)
-            return null;
-        for (OrderDetailsPOJO o: order) {
-            if(o.getActualPrice() != null){
-                o.setActualMoney(MoneyFormatUtils.getMoneyFromInteger(o.getActualPrice()));
-                o.setActualPrice(null);
-            }
-            if(o.getGoodsCost() != null){
-                o.setCostMoney(MoneyFormatUtils.getMoneyFromInteger(o.getGoodsCost()));
-                o.setGoodsCost(null);
-            }
-            if(o.getPayPrice() != null) {
-                o.setPayMoney(MoneyFormatUtils.getMoneyFromInteger(o.getPayPrice()));
-                o.setPayPrice(null);
-            }
-            GoodsOrderOut goods = o.getGoods();
-            if(goods.getGoodsShopPrice() != null) {
-                goods.setMarketMoney(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsShopPrice()));
-                goods.setGoodsShopPrice(null);
-            }
-        }
-        return order;
+    private void setExcelTitle(HttpServletResponse response) throws UnsupportedEncodingException {
+        String fileName=new String(("订单管理").getBytes("gb2312"), "iso8859-1")+ ".xlsx";
+        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        response.setCharacterEncoding("utf-8");
     }
+
+
+//    /**
+//     * 后台设置金额格式
+//     * @param order 订单内容
+//     * @return 订单列表
+//     */
+//    private List<OrderDetailsPOJO> setBackstageMoney(List<OrderDetailsPOJO> order){
+//        if(order == null)
+//            return null;
+//        for (OrderDetailsPOJO o: order) {
+//            if(o.getActualPrice() != null){
+//                o.setActualMoney(MoneyFormatUtils.getMoneyFromInteger(o.getActualPrice()));
+//                o.setActualPrice(null);
+//            }
+//            if(o.getGoodsCost() != null){
+//                o.setCostMoney(MoneyFormatUtils.getMoneyFromInteger(o.getGoodsCost()));
+//                o.setGoodsCost(null);
+//            }
+//            if(o.getPayPrice() != null) {
+//                o.setPayMoney(MoneyFormatUtils.getMoneyFromInteger(o.getPayPrice()));
+//                o.setPayPrice(null);
+//            }
+//            GoodsOrderOut goods = o.getGoods();
+//            if(goods.getGoodsShopPrice() != null) {
+//                goods.setMarketMoney(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsShopPrice()));
+//                goods.setGoodsShopPrice(null);
+//            }
+//        }
+//        return order;
+//    }
 
 }

@@ -2,6 +2,7 @@ package com.quxin.freshfun.dao;
 
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
+import com.quxin.freshfun.model.order.OrderQueryParam;
 
 import java.util.List;
 import java.util.Map;
@@ -108,4 +109,11 @@ public interface GoodsMapper {
      * @return
      */
     List<GoodsPOJO> selectGoodsImgs();
+
+    /**
+     * 根据商品信息查询商品编号
+     * @param orderQueryParam
+     * @return
+     */
+    List<Long> selectGoodsIdByGoodsName(OrderQueryParam orderQueryParam);
 }

@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quxin.freshfun.dao.GoodsMapper">
+    <resultMap id="BaseResultMap" type="com.quxin.freshfun.model.goods.GoodsPOJO">
+        <id column="id" jdbcType="BIGINT" property="goodsId" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="sub_title" jdbcType="VARCHAR" property="subTitle" />
+        <result column="des" jdbcType="VARCHAR" property="goodsDes" />
+        <result column="shop_price" jdbcType="INTEGER" property="shopPrice" />
+        <result column="origin_price" jdbcType="INTEGER" property="originPrice" />
+        <result column="cost" jdbcType="INTEGER" property="goodsCost"/>
+        <result column="img" jdbcType="VARCHAR" property="goodsImg" />
+        <result column="sale_num" jdbcType="INTEGER" property="saleNum" />
+        <result column="stock_num" jdbcType="INTEGER" property="stockNum" />
+        <result column="category1" jdbcType="INTEGER" property="catagory1" />
+        <result column="catagory2" jdbcType="INTEGER" property="catagory2" />
+        <result column="catagory3" jdbcType="INTEGER" property="catagory3" />
+        <result column="catagory4" jdbcType="INTEGER" property="catagory4" />
+        <result column="shop_id" jdbcType="BIGINT" property="shopId" />
+        <result column="appId" jdbcType="BIGINT" property="appId" />
+        <result column="created" jdbcType="BIGINT" property="created" />
+        <result column="updated" jdbcType="BIGINT" property="updated" />
+    </resultMap>
+
+    <resultMap id="IdResultMap" type="java.lang.Long">
+        <id column="id" jdbcType="BIGINT" property="goodsId"/>
+    </resultMap>
 
     <!-- 查询所有的符合条件的记录总数-->
     <select id="selectCountByQC" parameterType="java.util.Map" resultType="java.lang.Integer">
@@ -32,6 +56,18 @@
             limit #{start} , #{pageSize}
         </if>
     </select>
+
+    <!--根据商品名查询商品编号-->
+    <select id="selectGoodsIdByGoodsName" resultMap="IdResultMap" parameterType="com.quxin.freshfun.model.order.OrderQueryParam">
+        select id from goods_base where 1=1
+         <if test="goodsName != null">
+            and title like CONCAT(#{goodsName},'%')
+         </if>
+         <if test="goodsTitle != null">
+            and sub_title like CONCAT(#{goodsTitle},'%')
+         </if>
+    </select>
+
     <!--商品重名校验-->
     <select id="selectCountByGoodsName" parameterType="java.lang.String" resultType="java.lang.Integer">
         select count(id) from goods_base where title = #{title}

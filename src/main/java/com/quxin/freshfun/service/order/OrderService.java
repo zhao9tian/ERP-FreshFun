@@ -18,7 +18,7 @@ public interface OrderService {
      * 查询所有订单
      * @return
      */
-    List<OrderDetailsPOJO> selectBackstageOrders(int currentPage,int pageSize);
+    Map<String,Object> selectBackstageOrders(OrderQueryParam orderParam) throws BusinessException;
 
     /**
      * 根据平台查询所有订单
@@ -102,26 +102,10 @@ public interface OrderService {
     RefundOut getRefundInfo(Long orderId) throws BusinessException;
 
     /**
-     * 按时间区间查询订单
+     * 导出订单
      * @return
      */
-    List<OrderDetailsPOJO> getIntervalOrder(Integer orderState,Long startTime,Long endTime) throws BusinessException;
-
-    /**
-     * 按时间区间查询所有订单
-     * @param startTime 开始时间
-     * @param endTime  结束时间
-     * @return
-     */
-    List<OrderDetailsPOJO> findAllIntervalOrder(Long startTime,Long endTime) throws BusinessException;
-
-    /**
-     * 按时间区间查询已完成订单
-     * @param startTime
-     * @param endTime
-     * @return
-     */
-    List<OrderDetailsPOJO> findFinishIntervalOrder(Long startTime,Long endTime) throws BusinessException;
+    List<OrderDetailsPOJO> exportOrder(OrderQueryParam orderQueryParam);
 
     /**
      * 根据订单Id查询订单详情

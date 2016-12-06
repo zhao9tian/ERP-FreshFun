@@ -125,27 +125,6 @@ public interface OrderDetailsMapper {
     Integer updateOrderState(Map<String,Object> map);
 
     /**
-     * 按时间区间查询订单
-     * @param map 数据集合
-     * @return
-     */
-    List<OrderDetailsPOJO> selectIntervalOrder(Map<String ,Object> map);
-
-    /**
-     * 按时间区间查询所有订单
-     * @param map
-     * @return
-     */
-    List<OrderDetailsPOJO> selectAllIntervalOrder(Map<String,Object> map);
-
-    /**
-     * 按时间区间查询已完成订单
-     * @param map
-     * @return
-     */
-    List<OrderDetailsPOJO> selectFinishIntervalOrder(Map<String,Object> map);
-
-    /**
      * 根据订单Id查询订单详情
      * @param orderId 订单Id
      * @return 订单详情

@@ -1,12 +1,15 @@
 package com.quxin.freshfun.service.order.impl;
 
 import com.google.common.collect.Maps;
+import com.quxin.freshfun.dao.GoodsMapper;
 import com.quxin.freshfun.dao.OrderDetailsMapper;
 import com.quxin.freshfun.dao.RefundMapper;
 import com.quxin.freshfun.dao.UserBaseMapper;
+import com.quxin.freshfun.model.goods.GoodsOrderOut;
 import com.quxin.freshfun.model.order.*;
 import com.quxin.freshfun.model.user.UserInfoOutParam;
 import com.quxin.freshfun.service.address.AddressUtilService;
+import com.quxin.freshfun.service.goods.GoodsService;
 import com.quxin.freshfun.service.order.OrderService;
 import com.quxin.freshfun.service.withdraw.WithdrawService;
 import com.quxin.freshfun.utils.*;
@@ -18,6 +21,7 @@ import org.springframework.util.StringUtils;
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +35,8 @@ public class OrderImpl implements OrderService {
     private OrderDetailsMapper orderDetailsMapper;
     @Autowired
     private UserBaseMapper userBaseMapper;
+    @Autowired
+    private GoodsMapper goodsMapper;
     @Autowired
     private RefundMapper refundMapper;
     @Autowired
@@ -55,18 +61,66 @@ public class OrderImpl implements OrderService {
 
     /**
      * 查询所有订单信息
-     * @param currentPage
-     * @param pageSize
      * @return
      */
     @Override
-    public List<OrderDetailsPOJO> selectBackstageOrders(int currentPage,int pageSize) {
-        OrderQueryParam orderQueryParam = new OrderQueryParam();
-        orderQueryParam.setPage(currentPage);
-        orderQueryParam.setPageSize(pageSize);
-        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectBackstageOrders(orderQueryParam);
+    public Map<String,Object> selectBackstageOrders(OrderQueryParam orderParam) throws BusinessException {
+        if(orderParam == null || orderParam.getPage() == null || orderParam.getPage() <= 0 || orderParam.getPageSize() == null)
+            throw new BusinessException("查询订单参数为异常");
+        Map<String,Object> map = new HashMap<>();
+        orderParam.setPage((orderParam.getPage() - 1) * orderParam.getPageSize());
+        //根据条件查询订单信息
+        List<OrderDetailsPOJO> orderDetails = queryOrder(orderParam);
+        //查询总页码
+        Integer totalPage = orderDetailsMapper.selectBackstageOrdersCount(orderParam);
+        //设置用户信息
         orderDetails = getOrderDetails(orderDetails);
-        return orderDetails;
+        //设置金额格式
+        orderDetails = MoneyFormatUtils.setBackstageMoney(orderDetails);
+        //设置分页信息
+        Integer total = getPageSize(totalPage,orderParam.getPageSize());
+
+        map.put("totalPage",total);
+        map.put("total",totalPage);
+        map.put("page",orderParam.getPage());
+        map.put("pageSize",orderParam.getPageSize());
+        map.put("list",orderDetails == null ? new ArrayList<>() : orderDetails);
+        return map;
+    }
+
+    /**
+     * 根据条件查询订单信息
+     * @param orderParam 条件参数
+     * @return
+     */
+    private List<OrderDetailsPOJO> queryOrder(OrderQueryParam orderParam) {
+        //根据商品信息查询
+        if(!StringUtils.isEmpty(orderParam.getGoodsName()) && StringUtils.isEmpty(orderParam.getGoodsTitle()))
+            orderParam.setGoodsIdList(goodsMapper.selectGoodsIdByGoodsName(orderParam));
+        //根据公号名称
+        if(!StringUtils.isEmpty(orderParam.getAppName()))
+            orderParam.setAppIdList(userBaseMapper.selectAppIdByAppName(orderParam.getAppName()));
+        //根据用户昵称
+        if(!StringUtils.isEmpty(orderParam.getNickName()))
+            orderParam.setUserIdList(userBaseMapper.selectUserIdByNickName(orderParam.getNickName()));
+
+        return orderDetailsMapper.selectBackstageOrders(orderParam);
+    }
+
+    /**
+     * 获取分页总页码
+     * @param totalPage
+     * @param pageSize
+     * @return
+     */
+    private Integer getPageSize(Integer totalPage,Integer pageSize){
+        Integer total = 0;
+        if(totalPage % pageSize == 0){
+            total = totalPage / pageSize;
+        } else {
+            total = totalPage / pageSize + 1;
+        }
+        return total;
     }
 
     /**
@@ -118,13 +172,28 @@ public class OrderImpl implements OrderService {
      * @return
      */
     private List<OrderDetailsPOJO> getOrderDetails(List<OrderDetailsPOJO> orderDetails) {
+        if(orderDetails == null)
+            return null;
         for (OrderDetailsPOJO order : orderDetails) {
             //获取用户地址
             getAddress(order);
             //设置用户昵称
             setUserNickname(order);
+            //设置订单来源
+            setOrderSource(order);
         }
         return orderDetails;
+    }
+
+    /**
+     * 设置订单来源
+     * @param order
+     */
+    private void setOrderSource(OrderDetailsPOJO order) {
+        if(order.getAppId() != null) {
+            order.setOrderSource(userBaseMapper.selectAppNameByAppId(order.getAppId()));
+            order.setAppId(null);
+        }
     }
 
     /**
@@ -283,72 +352,31 @@ public class OrderImpl implements OrderService {
     }
 
     /**
-     * 按时间区间查询订单集合
-     * @param orderState 订单状态
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @return  订单集合
+     * 导出订单
+     * @param orderQueryParam
+     * @return
      */
     @Override
-    public List<OrderDetailsPOJO> getIntervalOrder(Integer orderState, Long startTime, Long endTime) throws BusinessException {
-        if(orderState == null || startTime == null || endTime == null)
-            throw new BusinessException("按时间区间查询订单时间查询条件出错");
-        Map<String,Object> map = new HashMap<>();
-        map.put("orderStatus",orderState);
-        map.put("beginTime",startTime);
-        map.put("endTime",endTime);
-        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectIntervalOrder(map);
-        setAddress(orderDetails);
-        return orderDetails;
+    public List<OrderDetailsPOJO> exportOrder(OrderQueryParam orderQueryParam) {
+        if(orderQueryParam == null)
+            logger.error("订单导出参数为null");
+        List<OrderDetailsPOJO> orderList = queryOrder(orderQueryParam);
+        //设置金额格式
+        MoneyFormatUtils.setBackstageMoney(orderList);
+        exportOrderUserAddress(orderList);
+        return orderList;
     }
 
     /**
-     * 查询订单时设置地址信息
-     * @param orderDetails 订单数据
+     * 设置导出订单用户地址
+     * @param orderList
      */
-    private void setAddress(List<OrderDetailsPOJO> orderDetails) {
-        if(orderDetails != null){
-            for (OrderDetailsPOJO order : orderDetails) {
-                getAddress(order);
-            }
+    private void exportOrderUserAddress(List<OrderDetailsPOJO> orderList) {
+        if (orderList == null)
+            return;
+        for (OrderDetailsPOJO order : orderList) {
+            getAddress(order);
         }
-    }
-
-    /**
-     * 按时间区间查询所有订单
-     * @param startTime 开始时间
-     * @param endTime  结束时间
-     * @return
-     */
-    @Override
-    public List<OrderDetailsPOJO> findAllIntervalOrder(Long startTime, Long endTime) throws BusinessException {
-        if(startTime == null || endTime == null)
-            throw new BusinessException("按时间查询订单参数不能为null");
-        Map<String,Object> map = new HashMap<>();
-        map.put("beginTime",startTime);
-        map.put("endTime",endTime);
-        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectAllIntervalOrder(map);
-        setAddress(orderDetails);
-        return orderDetails;
-    }
-
-    /**
-     * 按时间区间查询已完成订单
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @return
-     * @throws BusinessException
-     */
-    @Override
-    public List<OrderDetailsPOJO> findFinishIntervalOrder(Long startTime, Long endTime) throws BusinessException {
-        if(startTime == null || endTime == null)
-            throw new BusinessException("按时间查询订单参数不能为null");
-        Map<String,Object> map = new HashMap<>();
-        map.put("beginTime",startTime);
-        map.put("endTime",endTime);
-        List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectFinishIntervalOrder(map);
-        setAddress(orderDetails);
-        return orderDetails;
     }
 
     @Override
