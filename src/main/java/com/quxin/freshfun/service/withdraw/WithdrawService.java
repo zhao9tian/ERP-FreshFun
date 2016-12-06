@@ -1,5 +1,6 @@
 package com.quxin.freshfun.service.withdraw;
 
+import com.quxin.freshfun.model.outparam.WithdrawOutParam;
 import com.quxin.freshfun.model.withdraw.WithdrawPOJO;
 
 import java.util.List;
@@ -53,4 +54,28 @@ public interface WithdrawService {
      * @return 未入账金额
      */
     Integer queryUnrecordMoney(Long appId);
+
+    /**
+     * 查询提现申请（分页）
+     * @param curPage 当前页
+     * @param pageSize 页面数据量
+     * @param status 状态
+     * @return 列表
+     */
+    List<WithdrawOutParam> queryWithdraws(Integer curPage, Integer pageSize, Integer status);
+
+    /**
+     * 处理提现申请
+     * @param dealType 处理类型   0：通过，1：拒绝
+     * @param withdrawId 提现申请id
+     * @param crmUserId 处理人id
+     * @return 处理结果
+     */
+    boolean dealWithdraw(Integer dealType,Long withdrawId,Long crmUserId,Long updated);
+
+    /**
+     * 查询提现申请（总数）
+     * @param state 状态
+     */
+    Integer queryWithdrawCount(Integer state);
 }

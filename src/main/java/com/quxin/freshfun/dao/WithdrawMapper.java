@@ -1,9 +1,11 @@
 package com.quxin.freshfun.dao;
 
+import com.quxin.freshfun.model.outparam.WithdrawOutParam;
 import com.quxin.freshfun.model.withdraw.WithdrawPOJO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 提现、流水接口
@@ -56,4 +58,24 @@ public interface WithdrawMapper {
      * @return 未入账金额
      */
     Integer selectUnrecordMoneyByAppId(Long appId);
+
+    /**
+     * 查询提现申请（分页）
+     */
+    List<WithdrawOutParam> selectWithdraws(Map<String,Object> map);
+
+    /**
+     * 处理提现申请
+     */
+    Integer dealWithdraw(Map<String ,Object> map);
+
+    /**
+     * 查询提现申请（总数）
+     */
+    Integer selectWithdrawCount(@Param(value="state")Integer state);
+
+    /**
+     * 根据id查询提现申请
+     */
+    WithdrawPOJO selectWithdrawById(Long id);
 }

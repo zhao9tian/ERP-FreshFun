@@ -2,6 +2,7 @@ package com.quxin.freshfun.controller.withdraw;
 
 import com.alibaba.fastjson.JSON;
 import com.quxin.freshfun.model.flow.FlowPOJO;
+import com.quxin.freshfun.model.outparam.WithdrawOutParam;
 import com.quxin.freshfun.model.withdraw.WithdrawPOJO;
 import com.quxin.freshfun.service.erpuser.ErpUserService;
 import com.quxin.freshfun.service.flow.FlowService;
@@ -318,5 +319,37 @@ public class WithdrawController {
         return appId;
     }
 
+    @ResponseBody
+    @RequestMapping("/getWithdrawList")
+    public Map<String,Object> getWithdrawList(Integer curPage,Integer pageSize,Integer status){
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (curPage == null || curPage == 0 || pageSize == null || pageSize == 0) {
+            logger.warn("查询提现申请时，controller层入参有误");
+            return ResultUtil.fail(1004,"列表查询失败");
+        }
+        List<WithdrawOutParam> list = withdrawService.queryWithdraws(curPage,pageSize,status);
+        Integer total = withdrawService.queryWithdrawCount(status);
+        map.put("withdrawList",list);
+        map.put("total",total);
+        return ResultUtil.success(map);
+    }
+
+    @ResponseBody
+    @RequestMapping("/dealWithdraw")
+    public Map<String ,Object> dealWithdraw(HttpServletRequest request,Long withdrawId,Integer dealType){
+        if(withdrawId==null||withdrawId==0||dealType==null){
+            return ResultUtil.fail(1004,"請求失敗");
+        }
+        Map<String,Object> map = new HashMap<String, Object>();
+
+        Long crmUserId = CookieUtil.getUserIdFromCookie(request);
+        Long updated = System.currentTimeMillis()/1000;
+        if(withdrawService.dealWithdraw(dealType,withdrawId,crmUserId,updated)){
+            map.put("dealDate",updated);
+            return ResultUtil.success(map);
+        }else{
+            return ResultUtil.fail(1004,"处理失败");
+        }
+    }
 
 }
