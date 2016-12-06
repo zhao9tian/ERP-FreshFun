@@ -1,7 +1,6 @@
 package com.quxin.freshfun.controller.order;
 
 import com.quxin.freshfun.model.erpuser.ErpUserPOJO;
-import com.quxin.freshfun.model.goods.GoodsOrderOut;
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
 import com.quxin.freshfun.model.order.OrderQueryParam;
 import com.quxin.freshfun.model.order.OrderSaleInfo;
@@ -51,7 +50,35 @@ public class OrderController {
         if(orderParam == null || orderParam.getPage() == null || orderParam.getPage() <= 0 || orderParam.getPageSize() == null){
             return ResultUtil.fail(1004,"传入参数有误");
         }
+        //设置字符编码
+        setQueryCoding(orderParam);
         return ResultUtil.success(orderService.selectBackstageOrders(orderParam));
+    }
+
+    /**
+     * 设置查询条件字符编码
+     * @param orderParam
+     */
+    private void setQueryCoding(OrderQueryParam orderParam) {
+        if(!StringUtils.isEmpty(orderParam.getAppName()))
+            orderParam.setAppName(EncodingFormat(orderParam.getAppName()));
+        if(!StringUtils.isEmpty(orderParam.getGoodsName()))
+            orderParam.setGoodsName(EncodingFormat(orderParam.getGoodsName()));
+        if(!StringUtils.isEmpty(orderParam.getGoodsTitle()))
+            orderParam.setGoodsTitle(EncodingFormat(orderParam.getGoodsTitle()));
+        if(!StringUtils.isEmpty(orderParam.getNickName()))
+            orderParam.setNickName(EncodingFormat(orderParam.getNickName()));
+        if(!StringUtils.isEmpty(orderParam.getDeliveryName()))
+            orderParam.setDeliveryName(EncodingFormat(orderParam.getDeliveryName()));
+    }
+
+    private String EncodingFormat(String code){
+        try {
+            return new String(code.getBytes("iso-8859-1") , "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error("字符编码异常",e);
+        }
+        return code;
     }
 
     @RequestMapping("/findOrdersByPlatform")
@@ -376,6 +403,8 @@ public class OrderController {
         }
         try {
             setExcelTitle(response);
+            //设置字符编码
+            setQueryCoding(orderQueryParam);
             List<OrderDetailsPOJO> orderList = orderService.exportOrder(orderQueryParam);
             if(orderList != null) {
                 ExportOrderExcelUtils exportOrder = new ExportOrderExcelUtils();
@@ -398,36 +427,5 @@ public class OrderController {
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
         response.setCharacterEncoding("utf-8");
     }
-
-
-//    /**
-//     * 后台设置金额格式
-//     * @param order 订单内容
-//     * @return 订单列表
-//     */
-//    private List<OrderDetailsPOJO> setBackstageMoney(List<OrderDetailsPOJO> order){
-//        if(order == null)
-//            return null;
-//        for (OrderDetailsPOJO o: order) {
-//            if(o.getActualPrice() != null){
-//                o.setActualMoney(MoneyFormatUtils.getMoneyFromInteger(o.getActualPrice()));
-//                o.setActualPrice(null);
-//            }
-//            if(o.getGoodsCost() != null){
-//                o.setCostMoney(MoneyFormatUtils.getMoneyFromInteger(o.getGoodsCost()));
-//                o.setGoodsCost(null);
-//            }
-//            if(o.getPayPrice() != null) {
-//                o.setPayMoney(MoneyFormatUtils.getMoneyFromInteger(o.getPayPrice()));
-//                o.setPayPrice(null);
-//            }
-//            GoodsOrderOut goods = o.getGoods();
-//            if(goods.getGoodsShopPrice() != null) {
-//                goods.setMarketMoney(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsShopPrice()));
-//                goods.setGoodsShopPrice(null);
-//            }
-//        }
-//        return order;
-//    }
 
 }
