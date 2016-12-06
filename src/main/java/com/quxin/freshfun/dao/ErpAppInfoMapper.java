@@ -69,5 +69,7 @@ public interface ErpAppInfoMapper {
      * @param appName 商城名称
      * @return 商城信息
      */
-    List<AppInfoOutParam> selectAppByName(String appName);
+    List<ErpAppInfoPOJO> selectAppByName(String appName);
+
+    Long selectMaxId();
 }

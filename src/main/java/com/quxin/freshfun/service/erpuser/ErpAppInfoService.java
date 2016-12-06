@@ -61,5 +61,5 @@ public interface ErpAppInfoService {
      * @param appName 商城名称
      * @return 商城信息
      */
-    AppInfoOutParam queryAppByName(String appName);
+    ErpAppInfoPOJO queryAppByName(String appName);
 }
