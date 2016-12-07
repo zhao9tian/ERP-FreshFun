@@ -83,4 +83,11 @@ public interface GoodsService {
      */
     Boolean changeGoodsImgs();
 
+    /**
+     * 根据商品Id查询商品基础信息
+     * @param goodsId 商品Id
+     * @return 商品详情
+     */
+    GoodsPOJO queryGoodsBaseByGoodsId(Long goodsId);
+
 }

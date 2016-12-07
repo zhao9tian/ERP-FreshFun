@@ -3,6 +3,7 @@ package com.quxin.freshfun.test;
 import com.alibaba.fastjson.JSON;
 import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
 import com.quxin.freshfun.utils.ResultUtil;
+import com.quxin.freshfun.utils.ShipperNameUtils;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.beans.BeanInfo;
@@ -22,14 +23,8 @@ public class Test {
     public static void main(String[] args) {
 
 
-        GoodsStandardPOJO standardPOJO = new GoodsStandardPOJO();
-        standardPOJO.setCoffeeType("coffee");
-        standardPOJO.setAgtron("哈哈");
-        Map<String , Object> map = ResultUtil.bean2map(standardPOJO);
-        System.out.println(map);
-//        BeanUtils.populate();
-
-
+        System.out.println(ShipperNameUtils.getShipperNameByCode("COE"));
+        System.out.println(ShipperNameUtils.getShipperNameByCode("YTO"));
 
 
     }

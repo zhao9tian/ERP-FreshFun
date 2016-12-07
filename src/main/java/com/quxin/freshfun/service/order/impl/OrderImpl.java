@@ -5,11 +5,10 @@ import com.quxin.freshfun.dao.GoodsMapper;
 import com.quxin.freshfun.dao.OrderDetailsMapper;
 import com.quxin.freshfun.dao.RefundMapper;
 import com.quxin.freshfun.dao.UserBaseMapper;
-import com.quxin.freshfun.model.goods.GoodsOrderOut;
+import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.order.*;
 import com.quxin.freshfun.model.user.UserInfoOutParam;
 import com.quxin.freshfun.service.address.AddressUtilService;
-import com.quxin.freshfun.service.goods.GoodsService;
 import com.quxin.freshfun.service.order.OrderService;
 import com.quxin.freshfun.service.withdraw.WithdrawService;
 import com.quxin.freshfun.utils.*;
@@ -18,8 +17,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import java.io.*;
-import java.security.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -293,7 +297,41 @@ public class OrderImpl implements OrderService {
         map.put("deliveryTime",currentDate);
         Double goodsCost = Double.parseDouble(order.getActualMoney())*100;
         map.put("goodsCost",goodsCost.intValue());
-        return orderDetailsMapper.deliverOrder(map);
+        Integer result = orderDetailsMapper.deliverOrder(map);
+        if(result == 1){
+            sendMessage(order);
+        }
+        return result;
+    }
+
+    private Boolean sendMessage(OrderDetailsPOJO order){
+            //发货成功发送短信
+            OrderDetailsPOJO orderDetailsPOJO = queryOrderDetailByOrderId(order.getOrderId());
+            if (orderDetailsPOJO != null) {
+                String phoneNum = orderDetailsPOJO.getTel();//手机号
+                String shipperCode = order.getDeliveryName();
+                String logisticCode = order.getDeliveryNum();
+                String shipperName = ShipperNameUtils.getShipperNameByCode(shipperCode);
+                Integer goodsId = orderDetailsPOJO.getGoodsId();
+                GoodsPOJO goodsPOJO = goodsMapper.selectGoodsByGoodsId(Long.valueOf(goodsId));
+                String title = "";
+                if (goodsPOJO != null)
+                    title = goodsPOJO.getTitle();
+                StringBuilder content = new StringBuilder("您在悦选美食购买的");
+                content.append(title).append("已经发货啦。发货暗号是").append(shipperName).append(logisticCode).
+                        append("。快递小哥已经出发，跋山涉水只为把最好的商品送到您的手中。" +
+                                "如您对订单还有什么疑问，可在悦选美食服务公众号后台留言，我们的萌妹子客服将竭诚为您服务。");
+                try {
+                    MessageUtils.messageAtDelivery(phoneNum, content.toString());
+                    return true ;
+                } catch (IOException e) {
+                    logger.error("订单Id为:" + order.getOrderId() + "短信发送失败");
+                    return false ;
+                }
+            } else {
+                logger.error("没有id为:" + order.getOrderId() + "订单");
+            }
+            return false;
     }
 
     @Override

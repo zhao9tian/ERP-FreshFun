@@ -1,7 +1,6 @@
 package com.quxin.freshfun.utils;
 
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -14,7 +13,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -39,22 +37,22 @@ public class Stream2Bean {
             Sheet sheet = workbook.getSheetAt(0);//此处只取第一个sheet
             for (int row = 1; row <= sheet.getLastRowNum(); row++) {//不取title
                 Row rowObject = sheet.getRow(row);
-                if (rowObject.getCell(0) != null) {//没有数据了
+                if (rowObject.getCell(0) != null && rowObject.getCell(0).getCellType()!= Cell.CELL_TYPE_BLANK) {//没有数据了
                     OrderDetailsPOJO orderDetailsPOJO = new OrderDetailsPOJO();
                     try {
                         rowObject.getCell(0).setCellType(Cell.CELL_TYPE_STRING);//将数字变为字符
                         Long orderId = Long.parseLong(rowObject.getCell(0).getStringCellValue());//订单号
                         orderDetailsPOJO.setOrderId(orderId);
-                        if (rowObject.getCell(1)!= null) {
+                        if (rowObject.getCell(1)!= null && rowObject.getCell(1).getCellType()!= Cell.CELL_TYPE_BLANK) {
                             String shipperCode = rowObject.getCell(1).getStringCellValue();//公司编号
                             orderDetailsPOJO.setDeliveryName(shipperCode);
                         }
-                        if (rowObject.getCell(2) != null) {
+                        if (rowObject.getCell(2) != null && rowObject.getCell(2).getCellType()!= Cell.CELL_TYPE_BLANK) {
                             rowObject.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
                             String logisticCode = rowObject.getCell(2).getStringCellValue(); //物流单号
                             orderDetailsPOJO.setDeliveryNum(logisticCode);
                         }
-                        if (rowObject.getCell(3) != null) {
+                        if (rowObject.getCell(3) != null && rowObject.getCell(3).getCellType()!= Cell.CELL_TYPE_BLANK) {
                             rowObject.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
                             String goodscost = rowObject.getCell(3).getStringCellValue(); //成本价
                             orderDetailsPOJO.setActualMoney(goodscost);
