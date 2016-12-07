@@ -1,12 +1,16 @@
 package com.quxin.freshfun.service.order.impl;
 
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import com.quxin.freshfun.dao.GoodsMapper;
 import com.quxin.freshfun.dao.OrderDetailsMapper;
 import com.quxin.freshfun.dao.RefundMapper;
 import com.quxin.freshfun.dao.UserBaseMapper;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.order.*;
+import com.quxin.freshfun.model.outparam.SendWxMessage;
+import com.quxin.freshfun.model.outparam.SendWxMessageContent;
+import com.quxin.freshfun.model.outparam.WxPushMessageResult;
 import com.quxin.freshfun.model.user.UserInfoOutParam;
 import com.quxin.freshfun.service.address.AddressUtilService;
 import com.quxin.freshfun.service.order.OrderService;
@@ -299,7 +303,10 @@ public class OrderImpl implements OrderService {
         map.put("goodsCost",goodsCost.intValue());
         Integer result = orderDetailsMapper.deliverOrder(map);
         if(result == 1){
+            //发送短信
             sendMessage(order);
+            //推送消息
+            sendWxOrderMessage(order);
         }
         return result;
     }
@@ -330,6 +337,70 @@ public class OrderImpl implements OrderService {
                 logger.error("没有id为:" + order.getOrderId() + "订单");
             }
             return false;
+    }
+
+    /**
+     * 下单成功发送消息
+     * @return
+     */
+    public void sendWxOrderMessage(OrderDetailsPOJO order) {
+        if(order == null)
+            return;
+        //查询订单信息
+        order = getOrderInfoById(order.getOrderId());
+        //获取accessToken
+        WxAccessTokenInfo accessTokenInfo = WxUtlis.getAccessToken(WzConstantUtil.APP_ID, WzConstantUtil.APP_SECRET);
+        sendOrderMessage(order,accessTokenInfo);
+    }
+
+    /**
+     * 获取订单信息
+     * @param orderId 订单编号
+     * @return
+     */
+    private OrderDetailsPOJO getOrderInfoById(Long orderId){
+        OrderDetailsPOJO orderDetailsPOJO = orderDetailsMapper.selectOrderDetailByOrderId(orderId);
+        return orderDetailsPOJO;
+    }
+    /**
+     * 发送订单信息
+     * @param order
+     * @param accessTokenInfo
+     */
+    private void sendOrderMessage(OrderDetailsPOJO order, WxAccessTokenInfo accessTokenInfo){
+        if (order == null || accessTokenInfo == null)
+            logger.error("往微信推订单信息，参数不能为空");
+        StringBuilder msgUrl = new StringBuilder();
+        msgUrl.append(WzConstantUtil.WX_MESSAGE);
+        msgUrl.append(accessTokenInfo.getAccess_token());
+        //获取用户openId
+        String openId = userBaseMapper.selectUserInfoByUserId(order.getUserId()).getOpenId();
+        SendWxMessage message = new SendWxMessage();
+        message.setTouser(openId);
+        message.setTemplate_id(WzConstantUtil.TEMPLATE_ID);
+        message.setUrl(WzConstantUtil.ORDER_URL+order.getOrderId());
+        message.setData(getOrderContent(order));
+        Gson gson = new Gson();
+        //发送请求
+        String result = HttpClientUtils.jsonToPost(msgUrl.toString(), gson.toJson(message));
+        WxPushMessageResult resultMessage = new WxPushMessageResult();
+        resultMessage = WxUtlis.strToJson(result, resultMessage);
+        if(!resultMessage.getErrmsg().equals("ok")){
+            logger.error(new StringBuilder().append("用户编号：").append(order.getUserId()).append("推送消息失败").toString());
+        }
+    }
+
+    /**
+     * 获取订单内容
+     * @param order
+     */
+    private Map<String,SendWxMessageContent> getOrderContent(OrderDetailsPOJO order) {
+        Map<String,SendWxMessageContent> map = new HashMap<>();
+        map.put("first",new SendWxMessageContent("您的订单已经标记发货，请留意查收。","#173177"));
+        map.put("orderProductPrice",new SendWxMessageContent(MoneyFormatUtils.getMoneyFromInteger(order.getActualPrice()),"#173177"));
+        map.put("orderProductName",new SendWxMessageContent(order.getGoods().getGoodsName(),"#173177"));
+        map.put("orderName",new SendWxMessageContent(order.getOrderId(),"#173177"));
+        return map;
     }
 
     @Override
