@@ -66,7 +66,8 @@ public class MessageUtils {
 
 
 	public static void main(String[] args) throws IOException {
-		messageAtDelivery("18721394619","wuliugongsi");
+		messageAtDelivery("18721394619","您在悦选美食购买的甜蜜整颗心的星空糖已经发货了。\n" +
+                "发货单号是圆通速递500407865990。" );
 //		messageAtDelivery("18721394619","nihao2");
 //		messageAtDelivery("18721394619","nihao3");
 //		messageAtDelivery("18721394619","nihao4");

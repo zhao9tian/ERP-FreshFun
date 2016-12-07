@@ -317,10 +317,8 @@ public class OrderImpl implements OrderService {
                 String title = "";
                 if (goodsPOJO != null)
                     title = goodsPOJO.getTitle();
-                StringBuilder content = new StringBuilder("您在悦选美食购买的");
-                content.append(title).append("已经发货啦。发货暗号是").append(shipperName).append(logisticCode).
-                        append("。快递小哥已经出发，跋山涉水只为把最好的商品送到您的手中。" +
-                                "如您对订单还有什么疑问，可在悦选美食服务公众号后台留言，我们的萌妹子客服将竭诚为您服务。");
+                StringBuilder content = new StringBuilder("您购买的");
+                content.append(title).append("已经发货啦。\n发货单号是").append(shipperName).append(logisticCode);
                 try {
                     MessageUtils.messageAtDelivery(phoneNum, content.toString());
                     return true ;

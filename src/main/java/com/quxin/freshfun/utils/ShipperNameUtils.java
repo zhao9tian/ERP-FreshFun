@@ -15,7 +15,6 @@ public class ShipperNameUtils {
     private static Map<Object , Object> shipper = new HashMap<>();
 
     static {
-        System.out.println("json启动了");
         String jsonString = "[\n" +
                 "{\"code\":\"AJ\",\"name\":\"安捷快递\"},\n" +
                 "{\"code\":\"ANE\",\"name\":\"安能物流\"},\n" +
@@ -124,7 +123,6 @@ public class ShipperNameUtils {
         for(Map map : shipperList){
             shipper.put(map.get("code"),map.get("name"));
         }
-        System.out.println(shipper);
     }
 
     public static String getShipperNameByCode(String shipperCode){
