@@ -347,21 +347,15 @@ public class OrderImpl implements OrderService {
         if(order == null)
             return;
         //查询订单信息
-        order = getOrderInfoById(order.getOrderId());
-        //获取accessToken
-        WxAccessTokenInfo accessTokenInfo = WxUtlis.getAccessToken(WzConstantUtil.APP_ID, WzConstantUtil.APP_SECRET);
-        sendOrderMessage(order,accessTokenInfo);
+        OrderDetailsPOJO orderDetails = orderDetailsMapper.selectOrderDetailByOrderId(order.getOrderId());
+        if(orderDetails != null){
+            //获取accessToken
+            WxAccessTokenInfo accessTokenInfo = WxUtlis.getAccessToken(WzConstantUtil.APP_ID, WzConstantUtil.APP_SECRET);
+            order.setUserId(orderDetails.getUserId());
+            sendOrderMessage(order,accessTokenInfo);
+        }
     }
 
-    /**
-     * 获取订单信息
-     * @param orderId 订单编号
-     * @return
-     */
-    private OrderDetailsPOJO getOrderInfoById(Long orderId){
-        OrderDetailsPOJO orderDetailsPOJO = orderDetailsMapper.selectOrderDetailByOrderId(orderId);
-        return orderDetailsPOJO;
-    }
     /**
      * 发送订单信息
      * @param order
@@ -396,10 +390,13 @@ public class OrderImpl implements OrderService {
      */
     private Map<String,SendWxMessageContent> getOrderContent(OrderDetailsPOJO order) {
         Map<String,SendWxMessageContent> map = new HashMap<>();
-        map.put("first",new SendWxMessageContent("您的订单已经标记发货，请留意查收。","#173177"));
-        map.put("orderProductPrice",new SendWxMessageContent(MoneyFormatUtils.getMoneyFromInteger(order.getActualPrice()),"#173177"));
-        map.put("orderProductName",new SendWxMessageContent(order.getGoods().getGoodsName(),"#173177"));
-        map.put("orderName",new SendWxMessageContent(order.getOrderId(),"#173177"));
+        map.put("first",new SendWxMessageContent("您的订单已经发货啦。","#173177"));
+        map.put("keyword1",new SendWxMessageContent(order.getOrderId(),"#173177"));
+        //物流公司
+        String shipperName = ShipperNameUtils.getShipperNameByCode(order.getDeliveryName());
+        map.put("keyword2",new SendWxMessageContent(shipperName,"#173177"));
+        map.put("keyword3",new SendWxMessageContent(order.getDeliveryNum(),"#173177"));
+        map.put("remark",new SendWxMessageContent("如有问题您可直接在微信里留言，我们将在第一时间为您服务。","#173177"));
         return map;
     }
 
