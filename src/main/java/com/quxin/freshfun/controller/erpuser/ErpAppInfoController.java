@@ -65,7 +65,9 @@ public class ErpAppInfoController {
         if (appInfoList == null) {
             return ResultUtil.fail(1004, "公司列表获取失败");
         } else if (appInfoList.size() < 1) {
-            return ResultUtil.fail(1004, "公司列表获取为空");
+            map.put("appList", null);
+            map.put("total", 0);
+            return ResultUtil.success(map);
         } else {
             for (AppInfoOutParam aiop : appInfoList) {
                 aiop.setSumActualMoney(aiop.getSumActualMoney() == null ? "0.00" : MoneyFormatUtils.getMoneyFromInteger(Integer.parseInt(aiop.getSumActualMoney())));
