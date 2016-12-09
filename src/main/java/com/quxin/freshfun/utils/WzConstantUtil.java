@@ -16,7 +16,7 @@ public class WzConstantUtil {
 
     public final static String WX_MESSAGE = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=";
 
-    public final static String ORDER_URL = "https://www.freshfun365.com/app/beforeRec?orderId=";
+    public final static String ORDER_URL = "https://www.freshfun365.com/app/orderDetail?orderId=";
 
     public final static String TEMPLATE_ID = "hHmzhyYEIPmntW_uPZMpEziZg7-bY5vASnEB9D4AZ70";
 }
