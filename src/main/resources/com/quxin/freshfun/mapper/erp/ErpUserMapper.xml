@@ -4,7 +4,7 @@
 
     <!--根据userId查询用户信息-->
     <select id="selectErpUserByUserId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.erpuser.ErpUserPOJO">
-        select user_id as userId,account as userName,is_admin as isAdmin,app_id as appId,
+        select user_id as userId,password ,account as userName,is_admin as isAdmin,app_id as appId,
         created,updated from erp_user where
         user_id = #{userId} and is_deleted=0
     </select>
