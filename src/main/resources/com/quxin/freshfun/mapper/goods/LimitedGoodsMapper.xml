@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.quxin.freshfun.dao.GoodsMapper">
-
+<mapper namespace="com.quxin.freshfun.dao.LimitedGoodsMapper">
+    <select id="selectLimitedGoodsByLimitedGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.LimitedGoodsPOJO">
+        select object_id as limitedGoodsId,content as limitedPrice,sale_num as limitedSaleNum,stock from promotion where object_id = #{limitedGoodsId}
+    </select>
 </mapper>

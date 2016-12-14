@@ -1,12 +1,10 @@
 package com.quxin.freshfun.controller.goods;
 
 import com.alibaba.fastjson.JSON;
-import com.quxin.freshfun.model.goods.GoodsBaseOut;
-import com.quxin.freshfun.model.goods.GoodsPOJO;
-import com.quxin.freshfun.model.goods.GoodsStandardKV;
-import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
+import com.quxin.freshfun.model.goods.*;
 import com.quxin.freshfun.service.goods.GoodsService;
 import com.quxin.freshfun.service.goods.GoodsSortService;
+import com.quxin.freshfun.service.goods.LimitedGoodsService;
 import com.quxin.freshfun.utils.MoneyFormatUtils;
 import com.quxin.freshfun.utils.ResultUtil;
 import org.slf4j.Logger;
@@ -38,6 +36,9 @@ public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
+
+    @Autowired
+    private LimitedGoodsService limitedGoodsService;
 
     @Autowired
     private GoodsSortService goodsSortService;
@@ -841,8 +842,24 @@ public class GoodsController {
     @ResponseBody
     @RequestMapping("/getShopPriceByGoodsId")
     public Map<String,Object> getShopPriceByGoodsId(Long goodsId){
+        if(goodsId==null||goodsId==0){
+            logger.error("根据商品id查询活动商品信息时goodsId为空");
+            return ResultUtil.fail(1004,"数据异常，请联系管理员");
+        }
         Map<String , Object> map = new HashMap<String,Object>();
-        map.put("shopPrice","55.22");
+        LimitedGoodsPOJO limitedGoods =limitedGoodsService.queryLimitedGoodsById(goodsId);
+        if(limitedGoods!=null&&limitedGoods.getLimitedPrice()!=null&&!"".equals(limitedGoods.getLimitedPrice())){
+            Map<String,	String> contentMap = (Map) JSON.parse(limitedGoods.getLimitedPrice());
+            String price = contentMap.get("discountPrice");
+            Integer shopPrice = Integer.parseInt(price);
+            map.put("shopPrice",MoneyFormatUtils.getMoneyFromInteger(shopPrice));
+        }else{
+            GoodsPOJO goods = goodsService.queryGoodsByGoodsId(goodsId);
+            if(goods!=null&&goods.getShopPrice()!=null)
+                map.put("shopPrice",MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
+            else
+                map.put("shopPrice","0.00");
+        }
         return  ResultUtil.success(map);
     }
 }

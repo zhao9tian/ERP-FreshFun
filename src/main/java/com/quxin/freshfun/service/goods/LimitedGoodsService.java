@@ -31,4 +31,10 @@ public interface LimitedGoodsService {
      */
     Boolean deletedLimitedGoods(Long limitedGoodsId);
 
+    /**
+     * 根据goodsId查询商品
+     * @param goodsId 商品id
+     * @return 活动商品信息
+     * */
+    LimitedGoodsPOJO queryLimitedGoodsById(Long goodsId);
 }
