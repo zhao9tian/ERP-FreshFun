@@ -53,6 +53,12 @@ public class LoginInterceptor implements HandlerInterceptor {
                     mapStatus.put("msg", "cookie中userId无效");
                     map.put("status",mapStatus);
                     finalResult = false;
+                }else if(!user.getPassword().equals(CookieUtil.getPWDFromCookie(httpServletRequest))){
+                    //用户密码教研部通过，标识cookie中保存的是失效的userId，返回1022重新登录
+                    mapStatus.put("code", 1022);
+                    mapStatus.put("msg", "cookie中userId失效");
+                    map.put("status",mapStatus);
+                    finalResult = false;
                 }else{
                     finalResult = true;
                 }

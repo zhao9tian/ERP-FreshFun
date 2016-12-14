@@ -833,4 +833,16 @@ public class GoodsController {
         }
         return result;
     }
+
+    /**
+     * 根据商品id获取售价
+     * @param goodsId 商品id
+     */
+    @ResponseBody
+    @RequestMapping("/getShopPriceByGoodsId")
+    public Map<String,Object> getShopPriceByGoodsId(Long goodsId){
+        Map<String , Object> map = new HashMap<String,Object>();
+        map.put("shopPrice","55.22");
+        return  ResultUtil.success(map);
+    }
 }

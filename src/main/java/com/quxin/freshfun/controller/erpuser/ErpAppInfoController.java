@@ -1,10 +1,12 @@
 package com.quxin.freshfun.controller.erpuser;
 
+import com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO;
 import com.quxin.freshfun.model.outparam.AppInfoOutParam;
 import com.quxin.freshfun.service.erpuser.ErpAppInfoService;
 import com.quxin.freshfun.service.order.OrderService;
 import com.quxin.freshfun.service.withdraw.WithdrawService;
 import com.quxin.freshfun.utils.BusinessException;
+import com.quxin.freshfun.utils.FreshFunEncoder;
 import com.quxin.freshfun.utils.MoneyFormatUtils;
 import com.quxin.freshfun.utils.ResultUtil;
 import org.slf4j.Logger;
@@ -65,7 +67,9 @@ public class ErpAppInfoController {
         if (appInfoList == null) {
             return ResultUtil.fail(1004, "公司列表获取失败");
         } else if (appInfoList.size() < 1) {
-            return ResultUtil.fail(1004, "公司列表获取为空");
+            map.put("appList", null);
+            map.put("total", 0);
+            return ResultUtil.success(map);
         } else {
             for (AppInfoOutParam aiop : appInfoList) {
                 aiop.setSumActualMoney(aiop.getSumActualMoney() == null ? "0.00" : MoneyFormatUtils.getMoneyFromInteger(Integer.parseInt(aiop.getSumActualMoney())));
@@ -92,6 +96,27 @@ public class ErpAppInfoController {
         }
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("appId",appId);
+        return ResultUtil.success(map);
+    }
+
+    /**
+     * 根据appName查询appId
+     * @param appName 公众号名称
+     */
+    @ResponseBody
+    @RequestMapping("/getAppIdByAppName")
+    public Map<String, Object> getAppIdByAppName(String appName){
+        if(appName==null||"".equals(appName)){
+            logger.error("根据appName查询appId入参有误");
+            return ResultUtil.fail(1004,"公众号名称不能为空");
+        }
+        Map<String,Object> map = new HashMap<String,Object>();
+        ErpAppInfoPOJO appInfo = erpAppInfoService.queryAppByName(appName);
+        if(appInfo!=null){
+            map.put("appId", FreshFunEncoder.idToUrl(appInfo.getAppId()));
+        }else{
+            map.put("appId", "");
+        }
         return ResultUtil.success(map);
     }
 

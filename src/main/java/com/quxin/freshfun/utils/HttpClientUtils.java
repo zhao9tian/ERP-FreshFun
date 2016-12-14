@@ -1,7 +1,10 @@
 package com.quxin.freshfun.utils;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -9,6 +12,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
@@ -16,7 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -25,6 +32,8 @@ import java.security.cert.X509Certificate;
  * Created by qingtian on 2016/11/2.
  */
 public class HttpClientUtils {
+
+    private static HttpClient httpClient = HttpClients.createDefault();
 
     private final static Logger logger = LoggerFactory.getLogger(HttpClientUtils.class);
     /**
@@ -86,5 +95,69 @@ public class HttpClientUtils {
             }
         }
         return body;
+    }
+
+    /**
+     * 发送 Post请求<br/> 直接发送JSON
+     *
+     * @param url
+     * @param
+     * @return
+     */
+    public static String jsonToPost(String url, String data) {
+        String body = null;
+        try {
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+            configureHttpClient2(httpClientBuilder);
+            httpClient = httpClientBuilder.build();
+            HttpPost httppost=new HttpPost(url);
+            StringEntity params =new StringEntity(data,"UTF-8");
+            httppost.addHeader("content-type", "application/json");
+            httppost.setEntity(params);
+            // 发送请求
+            HttpResponse httpresponse = httpClient.execute(httppost);
+            // 获取返回数据
+            HttpEntity entity = httpresponse.getEntity();
+            body = EntityUtils.toString(entity,"UTF-8");
+            EntityUtils.consume(entity);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return body;
+    }
+
+    public static void configureHttpClient2(HttpClientBuilder clientBuilder)
+    {
+        try
+        {
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            X509TrustManager tm = new X509TrustManager()
+            {
+                public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException
+                {
+
+                }
+                public void checkServerTrusted(X509Certificate[] chain,  String authType) throws CertificateException
+                {
+
+                }
+                public X509Certificate[] getAcceptedIssuers()
+                {
+                    return null;
+                }
+            };
+            ctx.init(null, new TrustManager[]{tm}, null);
+            clientBuilder.setSslcontext(ctx);
+
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

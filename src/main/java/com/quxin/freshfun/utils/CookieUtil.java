@@ -38,7 +38,7 @@ public class CookieUtil {
      * @param userId  用户id
      * @return  base64
      */
-    public static String getCookieValueByUserId(Long userId){
+    public static String getCookieValueByUserId(Long userId,String password){
         Long nowDate = null;
         try {
             nowDate = DateUtils.stringToLong(DateUtils.getDate(new Date(), "yyyy-MM-dd HH:mm:ss"), "yyyy-MM-dd HH:mm:ss")/1000;
@@ -46,7 +46,7 @@ public class CookieUtil {
             e.printStackTrace();
         }
         //System.out.println("userId:"+userId.toString()+ "*** nowDate:"+nowDate.toString()+ "*** cookieMaxAge:"+ CookieUtil.getCookieMaxAge().toString());
-        String cookieValue = userId.toString()+"-"+nowDate.toString()+"-"+ getCookieMaxAge().toString();
+        String cookieValue = userId.toString()+"-"+password+"-"+nowDate.toString();
         String base64OfValue = getBase64(cookieValue);
         return base64OfValue;
     }
@@ -65,14 +65,23 @@ public class CookieUtil {
         return  userId;
     }
 
+    public static String getPWDFromCookie(HttpServletRequest request){
+        if(getCookieByName(request,"crmUserId")==null||"".equals(getCookieByName(request,"crmUserId")))
+            return null;
+        String valueString = getFromBase64(getCookieByName(request,"crmUserId").getValue());
+        String[] strArray = valueString.split("-");
+        String pwd = strArray[1];//用户密码
+        return  pwd;
+    }
+
     public static boolean checkAuth(HttpServletRequest request){
         if(getCookieByName(request,"crmUserId")==null||"".equals(getCookieByName(request,"crmUserId")))
             return false;
         String valueString = getFromBase64(getCookieByName(request,"crmUserId").getValue());
         String[] strArray = valueString.split("-");
         Long userId = Long.parseLong(strArray[0]);//用户id
-        Long createDate = Long.parseLong(strArray[1]);//创建时间
-        Long cookieAge = Long.parseLong(strArray[2]);//cookie有效期
+        Long createDate = Long.parseLong(strArray[2]);//创建时间
+        Long cookieAge = Long.parseLong(getCookieMaxAge().toString());//cookie有效期
         Long curTime = System.currentTimeMillis()/1000;
         if(userId==null||"".equals(userId)){  //错误cookie
             return  false;

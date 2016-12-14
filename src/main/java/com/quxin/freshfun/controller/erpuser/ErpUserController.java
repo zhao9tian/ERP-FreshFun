@@ -131,7 +131,7 @@ public class ErpUserController {
                 if (remember == null) //如果没有保存密码标记，默认为浏览器关闭
                     remember = 0;
                 //创建cookie对象
-                Cookie cookie = new Cookie("crmUserId", CookieUtil.getCookieValueByUserId(erpUser.getUserId()));
+                Cookie cookie = new Cookie("crmUserId", CookieUtil.getCookieValueByUserId(erpUser.getUserId(),erpUser.getPassword()));
                 if (remember == 1)      //remember=1，表示记住密码，两周自动登录
                     cookie.setMaxAge(CookieUtil.getCookieMaxAge());
                 else    //不记住密码，cookie的有效期直到浏览器关闭
