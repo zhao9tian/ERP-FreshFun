@@ -9,4 +9,10 @@ public interface RefundMapper {
 	 * @return
 	 */
 	RefundPOJO selectRefundByOrderId(Long orderId);
+
+	/**
+	 * 修改退款信息
+	 * @return
+	 */
+	int updateRefundInfo(RefundPOJO refundPOJO);
 }

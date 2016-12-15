@@ -18,7 +18,7 @@ public class OrderQueryParam {
     /**
      * 用户编号
      */
-    private Long userId;
+    private String userId;
     /**
      * 公众号集合
      */
@@ -26,7 +26,7 @@ public class OrderQueryParam {
     /**
      * 订单号
      */
-    private Long orderId;
+    private String orderId;
     /**
      * 商品名
      */
@@ -72,11 +72,11 @@ public class OrderQueryParam {
      */
     private Integer pageSize;
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -160,11 +160,11 @@ public class OrderQueryParam {
         this.appId = appId;
     }
 
-    public Long getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 

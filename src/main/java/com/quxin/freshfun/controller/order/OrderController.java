@@ -1,10 +1,7 @@
 package com.quxin.freshfun.controller.order;
 
 import com.quxin.freshfun.model.erpuser.ErpUserPOJO;
-import com.quxin.freshfun.model.order.OrderDetailsPOJO;
-import com.quxin.freshfun.model.order.OrderQueryParam;
-import com.quxin.freshfun.model.order.OrderSaleInfo;
-import com.quxin.freshfun.model.order.RefundOut;
+import com.quxin.freshfun.model.order.*;
 import com.quxin.freshfun.service.erpuser.ErpUserService;
 import com.quxin.freshfun.service.order.OrderService;
 import com.quxin.freshfun.utils.*;
@@ -52,9 +49,26 @@ public class OrderController {
         if (orderParam == null || orderParam.getPage() == null || orderParam.getPage() <= 0 || orderParam.getPageSize() == null) {
             return ResultUtil.fail(1004, "传入参数有误");
         }
+        //校验参数
+        checkParam(orderParam);
         //设置字符编码
         setQueryCoding(orderParam);
         return ResultUtil.success(orderService.selectBackstageOrders(orderParam));
+    }
+
+    /**
+     * 校验查询条件参数
+     * @param orderParam 参数类
+     */
+    private void checkParam(OrderQueryParam orderParam) throws BusinessException {
+        try {
+            if(!StringUtils.isEmpty(orderParam.getUserId()))
+                Long.parseLong(orderParam.getUserId());
+            if(!StringUtils.isEmpty(orderParam.getOrderId()))
+                Long.parseLong(orderParam.getOrderId());
+        }catch (NumberFormatException e){
+            throw new BusinessException("输入条件参数有误");
+        }
     }
 
     /**
@@ -199,18 +213,20 @@ public class OrderController {
      */
     @RequestMapping("/updateRefundInfo")
     @ResponseBody
-    public Map<String, Object> updateRefundInfo(Long orderId, Integer action) throws BusinessException {
+    public Map<String, Object> updateRefundInfo(RefundParam refundParam) throws BusinessException {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> resultMap = new HashMap<>();
-        if (orderId == null || action == null) {
+        if (refundParam == null || refundParam.getAction() == null) {
             map.put("code", 1004);
             map.put("msg", "传入待参数不正确");
             resultMap.put("status", map);
             return resultMap;
         }
-        switch (action) {
+        //设置编码
+        setRefundEncoding(refundParam);
+        switch (refundParam.getAction()) {
             case 0:
-                Integer state = orderService.rebutRefunds(orderId);
+                Integer state = orderService.rebutRefunds(refundParam.getOrderId());
                 if (state == 0) {
                     map.put("code", 1004);
                     map.put("msg", "申请退款失败");
@@ -223,7 +239,7 @@ public class OrderController {
                 resultMap.put("data", state);
                 break;
             case 1:
-                String refundResult = orderService.orderRefunds(orderId);
+                String refundResult = orderService.orderRefunds(refundParam);
                 if (!"SUCCESS".equals(refundResult)) {
                     map.put("code", 1004);
                     map.put("msg", refundResult);
@@ -237,6 +253,16 @@ public class OrderController {
                 break;
         }
         return resultMap;
+    }
+
+    /**
+     * 设置退款备注编码
+     * @param refundParam 参数
+     */
+    private void setRefundEncoding(RefundParam refundParam) {
+        if(!StringUtils.isEmpty(refundParam.getRefundCom())){
+            refundParam.setRefundCom(EncodingFormat(refundParam.getRefundCom()));
+        }
     }
 
     /**
