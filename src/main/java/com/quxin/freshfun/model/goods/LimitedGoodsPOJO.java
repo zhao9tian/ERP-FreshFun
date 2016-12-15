@@ -9,7 +9,7 @@ public class LimitedGoodsPOJO {
     /**
      * 限量购商品ID
      */
-    private Integer limitedGoodsId ;
+    private Long limitedGoodsId ;
     /**
      * 限量购价格
      */
@@ -36,11 +36,11 @@ public class LimitedGoodsPOJO {
      */
     private Long updated ;
 
-    public Integer getLimitedGoodsId() {
+    public Long getLimitedGoodsId() {
         return limitedGoodsId;
     }
 
-    public void setLimitedGoodsId(Integer limitedGoodsId) {
+    public void setLimitedGoodsId(Long limitedGoodsId) {
         this.limitedGoodsId = limitedGoodsId;
     }
 
