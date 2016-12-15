@@ -848,18 +848,22 @@ public class GoodsController {
         }
         Map<String , Object> map = new HashMap<String,Object>();
         LimitedGoodsPOJO limitedGoods =limitedGoodsService.queryLimitedGoodsById(goodsId);
+        GoodsPOJO goods = goodsService.queryGoodsByGoodsId(goodsId);
         if(limitedGoods!=null&&limitedGoods.getLimitedPrice()!=null&&!"".equals(limitedGoods.getLimitedPrice())){
             Map<String,	String> contentMap = (Map) JSON.parse(limitedGoods.getLimitedPrice());
             String price = contentMap.get("discountPrice");
             Integer shopPrice = Integer.parseInt(price);
-            map.put("shopPrice",MoneyFormatUtils.getMoneyFromInteger(shopPrice));
+            map.put("shopMoney",MoneyFormatUtils.getMoneyFromInteger(shopPrice));
         }else{
-            GoodsPOJO goods = goodsService.queryGoodsByGoodsId(goodsId);
             if(goods!=null&&goods.getShopPrice()!=null)
-                map.put("shopPrice",MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
+                map.put("shopMoney",MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
             else
-                map.put("shopPrice","0.00");
+                map.put("shopMoney","0.00");
         }
+        map.put("goodsImg",goods.getGoodsImg());
+        map.put("goodsName",goods.getTitle());
+        map.put("goodsDesc",goods.getSubtitle());
+        map.put("marketMoney",MoneyFormatUtils.getMoneyFromInteger(goods.getOriginPrice()));
         return  ResultUtil.success(map);
     }
 }
