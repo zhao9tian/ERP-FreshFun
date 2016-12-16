@@ -23,8 +23,34 @@ public class Test {
     public static void main(String[] args) {
 
 
-        System.out.println(ShipperNameUtils.getShipperNameByCode("COE"));
-        System.out.println(ShipperNameUtils.getShipperNameByCode("YTO"));
+//        Integer i = 1 ;
+        long a = 1000l;
+        long b = 1000l;
+
+        System.out.println(a == b);
+
+//        System.out.println(i);
+//        Integer j = 200 ;
+//        System.out.println(i == j);
+
+//        String a = "12";
+//        String b = "3";
+//        String c = "4";
+
+//        Integer a = new Integer(10);
+//        Integer b = new Integer(10);
+//        System.out.println(a.getClass());
+//        System.out.println(b.getClass());
+//        System.out.println(a == b);
+//        System.out.println(a.equals(b));
+
+//        System.out.println(a);
+//        System.out.println(b);
+
+
+
+//        System.out.println(ShipperNameUtils.getShipperNameByCode("COE"));
+//        System.out.println(ShipperNameUtils.getShipperNameByCode("YTO"));
 
 
     }

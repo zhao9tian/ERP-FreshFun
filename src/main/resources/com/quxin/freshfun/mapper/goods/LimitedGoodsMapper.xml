@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quxin.freshfun.dao.LimitedGoodsMapper">
-    <select id="selectLimitedGoodsByLimitedGoodsId" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.goods.LimitedGoodsPOJO">
-        select object_id as limitedGoodsId,content as limitedPrice,sale_num as limitedSaleNum,stock from promotion where object_id = #{limitedGoodsId}
+
+    <!--查询单个限量购商品 -->
+    <select id="selectLimitedGoodsByLimitedGoodsId" parameterType="java.lang.Long"
+            resultType="com.quxin.freshfun.model.goods.LimitedGoodsPOJO">
+        select object_id as limitedGoodsId,content as limitedPrice,sale_num as limitedSaleNum,stock as limitedStock from promotion
+        where object_id = #{limitedGoodsId} and is_deleted = 0 and object_type = 3
     </select>
+
+    <!--插入限量购-->
+    <insert id="insertLimitedGoods" parameterType="com.quxin.freshfun.model.goods.LimitedGoodsPOJO">
+        insert into promotion (object_id , object_type , content , sale_num , stock ,created , updated )
+        values(#{limitedGoodsId} , 3 , #{limitedPrice} , 0 , #{limitedStock} ,#{created}, #{updated} )
+    </insert>
+
+    <!--编辑限量购商品-->
+    <update id="updateLimitedGoods" parameterType="com.quxin.freshfun.model.goods.LimitedGoodsPOJO">
+        update promotion
+        <set>
+            <if test="limitedPrice != null">
+                content = #{limitedPrice},
+            </if>
+            <if test="limitedStock != null">
+                stock = #{limitedStock},
+            </if>
+            object_id = #{limitedGoodsId}
+        </set>
+        where object_id = #{limitedGoodsId} and is_deleted = 0 and object_type = 3
+    </update>
+
+    <!--删除限量购商品-->
+    <update id="deletedLimitedGoods" parameterType="java.lang.Long">
+        update promotion
+        set is_deleted = 1
+        where object_id = #{limitedGoodsId} and is_deleted = 0 and object_type = 3
+    </update>
+
+    <!--查询限量购商品列表-->
+    <select id="selectLimitedGoodsList" parameterType="java.util.List"
+            resultType="com.quxin.freshfun.model.goods.LimitedGoodsPOJO">
+        select object_id as limitedGoodsId , content as limitedPrice , title as goodsTitle ,
+        p.sale_num as limitedSaleNum , p.stock as limitedStock
+        from goods_base g, promotion p
+        where g.id = p.object_id and p.object_type = 3 and p.is_deleted = 0 and p.object_id in
+        <foreach collection="limitedGoodsIds" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>

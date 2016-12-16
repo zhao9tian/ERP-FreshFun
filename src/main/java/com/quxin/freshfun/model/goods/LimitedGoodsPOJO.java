@@ -11,7 +11,7 @@ public class LimitedGoodsPOJO {
      */
     private Long limitedGoodsId ;
     /**
-     * 限量购价格
+     * 限量购价格 {"discountPrice":"2900"}
      */
     private String limitedPrice ;
 
@@ -35,6 +35,16 @@ public class LimitedGoodsPOJO {
      * 修改时间
      */
     private Long updated ;
+
+    private String goodsTitle ;
+
+    public String getGoodsTitle() {
+        return goodsTitle;
+    }
+
+    public void setGoodsTitle(String goodsTitle) {
+        this.goodsTitle = goodsTitle;
+    }
 
     public Long getLimitedGoodsId() {
         return limitedGoodsId;

@@ -3,6 +3,7 @@ package com.quxin.freshfun.test;
 import com.google.common.collect.Maps;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.service.goods.GoodsService;
+import com.quxin.freshfun.utils.DateUtils;
 import com.quxin.freshfun.utils.MoneyFormatUtils;
 import com.quxin.freshfun.utils.Stream2Bean;
 import org.apache.poi.hssf.usermodel.*;
@@ -47,7 +48,7 @@ public class ExportExcelTest extends TestBase {
     @org.junit.Test
     public void queryAllGoods() throws Exception {
         Map<String, Object> qc = Maps.newHashMap();
-        qc.put("pageSize", 400);
+        qc.put("pageSize", 500);
         List<GoodsPOJO> goods = goodsService.queryAllGoods(qc);
         List<GoodsPOJO> goodslist = new ArrayList<>();
         for (GoodsPOJO g : goods) {
@@ -73,36 +74,49 @@ public class ExportExcelTest extends TestBase {
         HSSFCell cell = row.createCell( 0);
         cell.setCellValue("所属类目");
         cell.setCellStyle(style);
-
         cell = row.createCell(1);
-        cell.setCellValue("商品Id");
+        cell.setCellValue("三级类目");
         cell.setCellStyle(style);
         cell = row.createCell(2);
-        cell.setCellValue("品名");
+        cell.setCellValue("四级类目");
         cell.setCellStyle(style);
-        cell = row.createCell(3);
+        int j = 2 ;
+
+        cell = row.createCell(j + 1);
+        cell.setCellValue("商品Id");
+        cell.setCellStyle(style);
+        cell = row.createCell(j + 2);
+        cell.setCellValue("创建时间");
+        cell.setCellStyle(style);
+        cell = row.createCell(j + 3);
         cell.setCellValue("标题");
         cell.setCellStyle(style);
-        cell = row.createCell(4);
+        cell = row.createCell(j + 4);
         cell.setCellValue("副标题");
         cell.setCellStyle(style);
-        cell = row.createCell(5);
+        cell = row.createCell(j + 5);
         cell.setCellValue("小编说");
         cell.setCellStyle(style);
-        cell = row.createCell(6);
+        cell = row.createCell(j + 6);
         cell.setCellValue("成本价");
         cell.setCellStyle(style);
-        cell = row.createCell(7);
+        cell = row.createCell(j + 7);
         cell.setCellValue("平台原价");
         cell.setCellStyle(style);
-        cell = row.createCell(8);
+        cell = row.createCell(j + 8);
         cell.setCellValue("平台售价");
         cell.setCellStyle(style);
-        cell = row.createCell(9);
+        cell = row.createCell(j + 9);
         cell.setCellValue("毛利率");
         cell.setCellStyle(style);
-        cell = row.createCell(10);
-        cell.setCellValue("商城链接");
+        cell = row.createCell(j + 10);
+        cell.setCellValue("销量");
+        cell.setCellStyle(style);
+        cell = row.createCell(j + 11);
+        cell.setCellValue("库存");
+        cell.setCellStyle(style);
+        cell = row.createCell(j + 12);
+        cell.setCellValue("上下架状态");
         cell.setCellStyle(style);
 
         // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
@@ -112,16 +126,25 @@ public class ExportExcelTest extends TestBase {
             GoodsPOJO goods = list.get(i);
             // 第四步，创建单元格，并设置值
             row.createCell(0).setCellValue(getCatogary(goods.getCategory2()));
-            row.createCell(1).setCellValue(goods.getGoodsId());
-            row.createCell(2).setCellValue(goods.getGoodsStandardPOJO().getName());
-            row.createCell(3).setCellValue(goods.getTitle());
-            row.createCell(4).setCellValue(goods.getSubtitle());
-            row.createCell(5).setCellValue(goods.getGoodsDes());
-            row.createCell(6).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsCost()));
-            row.createCell(7).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getOriginPrice()));
-            row.createCell(8).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
-            row.createCell(9).setCellValue(((double)(goods.getShopPrice()-goods.getGoodsCost()))/(double)goods.getShopPrice());
-            row.createCell(10).setCellValue("https://www.freshfun365.com/api/app/FreshFunApp/goodsInfo.html?goodsId="+goods.getGoodsId());
+            row.createCell(1).setCellValue(goods.getCategory3());
+            row.createCell(2).setCellValue(goods.getCategory4());
+            row.createCell(3).setCellValue(goods.getGoodsId());
+            row.createCell(4).setCellValue(DateUtils.longToString(goods.getCreated(),"yyyy-MM-dd HH:mm:ss"));
+            row.createCell(5).setCellValue(goods.getTitle());
+            row.createCell(6).setCellValue(goods.getSubtitle());
+            row.createCell(7).setCellValue(goods.getGoodsDes());
+            row.createCell(8).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getGoodsCost()));
+            row.createCell(9).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getOriginPrice()));
+            row.createCell(10).setCellValue(MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
+            row.createCell(11).setCellValue(((double)(goods.getShopPrice()-goods.getGoodsCost()))/(double)goods.getShopPrice());
+//            row.createCell(10).setCellValue("https://www.freshfun365.com/api/app/FreshFunApp/goodsInfo.html?goodsId="+goods.getGoodsId());
+            row.createCell(12).setCellValue(goods.getSaleNum());
+            row.createCell(13).setCellValue(goods.getStockNum());
+            if(goods.getIsOnSale() == 1){
+                row.createCell(14).setCellValue("上架");
+            }else{
+                row.createCell(14).setCellValue("下架");
+            }
         }
         // 第六步，将文件存到指定位置
         try {
@@ -167,9 +190,9 @@ public class ExportExcelTest extends TestBase {
 
 
     public static void main(String[] args) throws FileNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream("/users/qucheng/desktop/order_logistics.xlsx");
-        System.out.println(Stream2Bean.getOrdersByInputStream(fileInputStream));
-
+//        FileInputStream fileInputStream = new FileInputStream("/users/qucheng/desktop/order_logistics.xlsx");
+//        System.out.println(Stream2Bean.getOrdersByInputStream(fileInputStream));
+//        e
 
     }
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Date;
 
 /**
  * 短信发送
@@ -45,35 +46,37 @@ public class MessageUtils {
 			//type为固定值pt  extno为扩展码，必须为数字 可为空
 			sb.append("&type=pt&extno=");
 			// 创建url对象
-			URL url = new URL(sb.toString());
+			HttpURLConnection connection = null;
+			try{
+				URL url = new URL(sb.toString());
 
-			// 打开url连接
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				// 打开url连接
+				connection = (HttpURLConnection) url.openConnection();
+				connection.setConnectTimeout(1000);
+				connection.setReadTimeout(1000);
+				// 设置url请求方式 ‘get’ 或者 ‘post’
+				connection.setRequestMethod("POST");
 
-			// 设置url请求方式 ‘get’ 或者 ‘post’
-			connection.setRequestMethod("POST");
+				// 发送
+				url.openStream();
+				System.out.println("发短信了:"+new Date());
+			}catch (Exception e){
+				logger.error(content+"短信发送失败");
+			}finally {
+				assert connection != null;
+				connection.disconnect();
+			}
 
-			// 发送
-			url.openStream();
 		}else{
 			logger.error("发送短信失败,请检查手机号和内容!");
 		}
 
 	}
-	
-
 
 
 
 	public static void main(String[] args) throws IOException {
-		messageAtDelivery("18721394619","您在悦选美食购买的甜蜜整颗心的星空糖已经发货了。\n" +
-                "发货单号是圆通速递500407865990。" );
-//		messageAtDelivery("18721394619","nihao2");
-//		messageAtDelivery("18721394619","nihao3");
-//		messageAtDelivery("18721394619","nihao4");
-//		messageAtDelivery("18721394619","nihao5");
-//		messageAtDelivery("18721394619","nihao6");
-//		messageAtDelivery("18721394619","nihao7");
-//		messageAtDelivery("18721394619","nihao8");
+		messageAtDelivery("13120976976","您购买的甜蜜整颗心的星空糖已经发货啦。\n" +
+                "发货单号是圆通速递1234567890" );
 	}
 }

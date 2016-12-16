@@ -2,6 +2,7 @@ package com.quxin.freshfun.dao;
 
 
 import com.quxin.freshfun.model.goods.LimitedGoodsPOJO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -32,15 +33,16 @@ public interface LimitedGoodsMapper {
     Integer deletedLimitedGoods(Long limitedGoodsId);
 
     /**
-     * 查询限量购列表
-     * @return 限量购商品列表
-     */
-    List<LimitedGoodsPOJO> selectLimitedGoods();
-
-    /**
      * 根据限量购Id查询限量购商品
      * @param limitedGoodsId 限量购商品id
      * @return 限量购商品信息
      */
     LimitedGoodsPOJO selectLimitedGoodsByLimitedGoodsId(Long limitedGoodsId);
+
+    /**
+     * 查询限量购列表
+     * @param ids 排序限量购Ids
+     * @return 限量购商品
+     */
+    List<LimitedGoodsPOJO> selectLimitedGoodsList(@Param("limitedGoodsIds") List<Long> ids);
 }
