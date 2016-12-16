@@ -292,5 +292,6 @@ public class ErpUserController {
         adminMenus.add("/selectionOrder");
         adminMenus.add("/officialAccounts");
         adminMenus.add("/withdrawCtrl");
+        adminMenus.add("/limitedNum");
     }
 }
