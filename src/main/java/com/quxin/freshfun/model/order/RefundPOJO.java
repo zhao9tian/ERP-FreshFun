@@ -28,6 +28,18 @@ public class RefundPOJO {
      * 退款说明
      */
     private String returnDes;
+    /**
+     * 退款备注
+     */
+    private String remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
     private Long gmtCreate;
 

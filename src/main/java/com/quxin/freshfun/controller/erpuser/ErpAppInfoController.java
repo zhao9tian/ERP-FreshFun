@@ -106,6 +106,11 @@ public class ErpAppInfoController {
     @ResponseBody
     @RequestMapping("/getAppIdByAppName")
     public Map<String, Object> getAppIdByAppName(String appName){
+        try {
+            appName = URLDecoder.decode(appName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         if(appName==null||"".equals(appName)){
             logger.error("根据appName查询appId入参有误");
             return ResultUtil.fail(1004,"公众号名称不能为空");
@@ -115,7 +120,8 @@ public class ErpAppInfoController {
         if(appInfo!=null){
             map.put("appId", FreshFunEncoder.idToUrl(appInfo.getAppId()));
         }else{
-            map.put("appId", "");
+            logger.error("根据appName:"+appName+"查询,为空");
+            return ResultUtil.fail(1003,"公众号不存在");
         }
         return ResultUtil.success(map);
     }

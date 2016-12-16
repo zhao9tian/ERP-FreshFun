@@ -71,10 +71,10 @@
     <if test="orderStatus == 70">
       and order_status in (70,100)
     </if>
-    <if test="userId != null">
+    <if test='userId != null and userId != ""'>
       and user_id = #{userId}
     </if>
-    <if test="orderId != null">
+    <if test='orderId != null and orderId != ""'>
       and id = #{orderId}
     </if>
     <if test="beginTime != null and endTime != null">
@@ -121,10 +121,10 @@
     <if test="orderStatus == 70">
       and order_status in (70,100)
     </if>
-    <if test="userId != null">
+    <if test='userId != null and userId != ""'>
       and user_id = #{userId}
     </if>
-    <if test="orderId != null">
+    <if test='orderId != null and orderId != ""'>
       and id = #{orderId}
     </if>
     <if test="beginTime != null and endTime != null">

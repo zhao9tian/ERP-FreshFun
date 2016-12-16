@@ -80,7 +80,8 @@ public class OrderImpl implements OrderService {
         //根据条件查询订单信息
         List<OrderDetailsPOJO> orderDetails = queryOrder(orderParam);
         //查询总页码
-        Integer totalPage = orderDetailsMapper.selectBackstageOrdersCount(orderParam);
+        Integer totalPage = getTotalPage(orderParam);
+
         //设置用户信息
         orderDetails = getOrderDetails(orderDetails);
         //设置金额格式
@@ -94,6 +95,16 @@ public class OrderImpl implements OrderService {
         map.put("pageSize",orderParam.getPageSize());
         map.put("list",orderDetails == null ? new ArrayList<>() : orderDetails);
         return map;
+    }
+
+    /**
+     * 获取数据总页码数
+     * @param orderParam 条件参数
+     * @return
+     */
+    private int getTotalPage(OrderQueryParam orderParam) {
+        if (judgeQueryCondition(orderParam)) return 0;
+        return orderDetailsMapper.selectBackstageOrdersCount(orderParam);
     }
 
     /**
@@ -112,7 +123,23 @@ public class OrderImpl implements OrderService {
         if(!StringUtils.isEmpty(orderParam.getNickName()))
             orderParam.setUserIdList(userBaseMapper.selectUserIdByNickName(orderParam.getNickName()));
 
+        if (judgeQueryCondition(orderParam)) return null;
+
         return orderDetailsMapper.selectBackstageOrders(orderParam);
+    }
+
+    /**
+     * 判断查询条件
+     * @param orderParam 条件参数
+     * @return
+     */
+    private boolean judgeQueryCondition(OrderQueryParam orderParam) {
+        if((!StringUtils.isEmpty(orderParam.getGoodsName()) || !StringUtils.isEmpty(orderParam.getGoodsTitle())) && orderParam.getGoodsIdList().size()<=0 ||
+                !StringUtils.isEmpty(orderParam.getAppId()) && orderParam.getAppIdList().size() <= 0 ||
+                !StringUtils.isEmpty(orderParam.getUserId()) && orderParam.getUserIdList().size() <= 0){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -447,6 +474,7 @@ public class OrderImpl implements OrderService {
         RefundOut refundOut = null;
         if(refundPOJO != null) {
             refundOut = new RefundOut();
+            refundOut.setRefundId(refundPOJO.getId());
             refundOut.setResult(refundPOJO.getServiceType());
             refundOut.setMoney(MoneyFormatUtils.getMoneyFromInteger(refundPOJO.getReturnMoney()));
             refundOut.setReason(refundPOJO.getReturnReason());
@@ -514,26 +542,83 @@ public class OrderImpl implements OrderService {
      * 订单退款
      */
     @Override
-    public String orderRefunds(Long orderId) throws BusinessException {
-        if(orderId == null)
-            throw new BusinessException("退款编号不能为空");
-
+    public String orderRefunds(RefundParam refundParam) throws BusinessException {
+        //校验参数
+        if(!checkParam(refundParam)){
+            throw new BusinessException("退款参数错误");
+        }
         String refundResult = null;
         //查询订单信息
-        OrderDetailsPOJO orderDetails = orderDetailsMapper.selectOrderTransactionIdInfo(orderId);
+        OrderDetailsPOJO orderDetails = orderDetailsMapper.selectOrderTransactionIdInfo(refundParam.getOrderId());
         if(orderDetails != null) {
+            //退款金额
+            Double refundMoney = Double.parseDouble(refundParam.getActualRefund()) * 100;
+            Integer refundPrice = refundMoney.intValue();
+            //处理退款信息
+            dealRefund(refundParam,refundPrice,orderDetails);
             KeyStore keyStore = getKeyStore(orderDetails.getPaymentMethod());
             //发送请求
             switch (orderDetails.getPaymentMethod()) {
                 case 1:
-                    refundResult = orderDisposal(orderDetails, keyStore, WzConstantUtil.APP_ID, WzConstantUtil.PARTNER, WzConstantUtil.PARTNER_KEY);
+                    refundResult = orderDisposal(orderDetails,refundPrice.toString(), keyStore, WzConstantUtil.APP_ID, WzConstantUtil.PARTNER, WzConstantUtil.PARTNER_KEY);
                     break;
                 case 2:
-                    refundResult = orderDisposal(orderDetails, keyStore, ConstantUtil.APP_ID, ConstantUtil.PARTNER, ConstantUtil.PARTNER_KEY);
+                    refundResult = orderDisposal(orderDetails,refundPrice.toString(), keyStore, ConstantUtil.APP_ID, ConstantUtil.PARTNER, ConstantUtil.PARTNER_KEY);
                     break;
             }
         }
         return refundResult;
+    }
+
+    /**
+     * 校验退款参数
+     * @param refundParam 退款参数
+     */
+    private boolean checkParam(RefundParam refundParam) throws BusinessException {
+        if(refundParam == null || refundParam.getOrderId() == null || refundParam.getRefundId() == null || refundParam.getActualRefund() == null){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 处理退款信息
+     * @param refundParam 退款参数
+     */
+    private boolean dealRefund(RefundParam refundParam,Integer refundPrice,OrderDetailsPOJO order) throws BusinessException {
+        boolean refundResult = false;
+        try {
+            if (refundPrice > order.getActualPrice()){
+                throw new BusinessException("退款金额大于支付金额");
+            }
+            RefundPOJO refund = new RefundPOJO();
+            refund.setId(refundParam.getRefundId());
+            refund.setReturnMoney(refundPrice);
+            refund.setGmtModified(DateUtils.getCurrentDate());
+            refund.setRemark(refundParam.getRefundCom());
+            //修改退款信息
+            if(modifyRefundInfo(refund))
+                refundResult = true;
+        }catch (NumberFormatException e){
+            throw new BusinessException("退款金额格式错误");
+        }catch (BusinessException e){
+            throw new BusinessException("修改退款失败");
+        }
+        return refundResult;
+    }
+
+    /**
+     * 修改退款信息
+     * @param refund 退款参数
+     */
+    private boolean modifyRefundInfo(RefundPOJO refund) throws BusinessException {
+        boolean bool = true;
+        int state = refundMapper.updateRefundInfo(refund);
+        if(state <= 0){
+            bool = false;
+            throw new BusinessException("修改退款失败");
+        }
+        return bool;
     }
 
     /**
@@ -604,20 +689,24 @@ public class OrderImpl implements OrderService {
      * 处理订单,发送请求
      * @param orderDetails
      */
-    private String orderDisposal(OrderDetailsPOJO orderDetails,KeyStore keyStore,String appId,String partner,String partnerKey) {
+    private String orderDisposal(OrderDetailsPOJO orderDetails,String refundMoney,KeyStore keyStore,String appId,String partner,String partnerKey) {
         if(StringUtils.isEmpty(orderDetails.getTransactionId()))
             return null;
         //处理数据工具类
         RefundHandle refundHandle = new RefundHandle();
         String noncestr = WxUtlis.getNonceStr();
+        //订单号
+        StringBuilder outTradeNo = new StringBuilder();
+        outTradeNo.append(orderDetails.getOrderId().toString());
+        outTradeNo.append(String.valueOf(System.currentTimeMillis()));
 
         refundHandle.setParameters("appid", appId);
         refundHandle.setParameters("mch_id", partner);
         refundHandle.setParameters("nonce_str",noncestr);
         refundHandle.setParameters("transaction_id",orderDetails.getTransactionId());
-        refundHandle.setParameters("out_refund_no",orderDetails.getOrderId().toString());
+        refundHandle.setParameters("out_refund_no",outTradeNo.toString());
         refundHandle.setParameters("total_fee",orderDetails.getActualPrice().toString());
-        refundHandle.setParameters("refund_fee",orderDetails.getActualPrice().toString());
+        refundHandle.setParameters("refund_fee",refundMoney);
         refundHandle.setParameters("op_user_id",partner);
         //签名
         String sign = refundHandle.createMD5Sign(partnerKey);

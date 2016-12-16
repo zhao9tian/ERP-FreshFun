@@ -6,6 +6,10 @@ package com.quxin.freshfun.model.order;
  */
 public class RefundOut {
     /**
+     * 退款编号
+     */
+    private Integer refundId;
+    /**
      * 期望结果
      */
     private String result;
@@ -22,6 +26,13 @@ public class RefundOut {
      */
     private String remark;
 
+    public Integer getRefundId() {
+        return refundId;
+    }
+
+    public void setRefundId(Integer refundId) {
+        this.refundId = refundId;
+    }
 
     public String getResult() {
         return result;
