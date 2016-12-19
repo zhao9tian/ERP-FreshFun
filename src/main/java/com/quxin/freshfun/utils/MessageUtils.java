@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Date;
 
 /**
  * 短信发送
@@ -59,7 +58,6 @@ public class MessageUtils {
 
 				// 发送
 				url.openStream();
-				System.out.println("发短信了:"+new Date());
 			}catch (Exception e){
 				logger.error(content+"短信发送失败");
 			}finally {

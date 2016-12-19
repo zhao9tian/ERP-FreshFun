@@ -3,6 +3,7 @@ package com.quxin.freshfun.dao;
 import com.quxin.freshfun.model.goods.GoodsPOJO;
 import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
 import com.quxin.freshfun.model.order.OrderQueryParam;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -106,14 +107,29 @@ public interface GoodsMapper {
 
     /**
      * 查询图片信息
-     * @return
+     * @return 图片信息
      */
     List<GoodsPOJO> selectGoodsImgs();
 
     /**
      * 根据商品信息查询商品编号
-     * @param orderQueryParam
-     * @return
+     * @param orderQueryParam  商品信息
+     * @return 商品id
      */
     List<Long> selectGoodsIdByGoodsName(OrderQueryParam orderQueryParam);
+
+    /**
+     * 修改商品库存
+     * @param limitedGoodsId 限量商品id
+     * @param limitedStock 限量库存
+     * @return 修改记录数
+     */
+    Integer updateGoodsStock(@Param("goodsId") Long limitedGoodsId, @Param("limitedStock") Integer limitedStock);
+
+    /**
+     * 根据ids批量查询商品
+     * @param ids ids
+     * @return 返回商品
+     */
+    List<GoodsPOJO> selectGoodsBaseByGoodsIds(@Param("ids") List<Long> ids);
 }

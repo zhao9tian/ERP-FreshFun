@@ -90,4 +90,18 @@ public interface GoodsService {
      */
     GoodsPOJO queryGoodsBaseByGoodsId(Long goodsId);
 
+    /**
+     * 减库存
+     * @param limitedStock 限量库存  正数就是减库存 ，负数就是加库存
+     * @param limitedGoodsId id
+     * @return 是否成功
+     */
+    Boolean updateStock(Integer limitedStock, Long limitedGoodsId);
+
+    /**
+     * 根据id查询商品基本属性
+     * @param ids ids
+     * @return 基本信息
+     */
+    List<GoodsPOJO> queryGoodsBasesByGoodsIds(List<Long> ids);
 }

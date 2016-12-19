@@ -10,6 +10,7 @@ import com.quxin.freshfun.service.goods.GoodsThemeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -235,6 +236,29 @@ public class GoodsServiceImpl implements GoodsService {
             logger.error("商品Id不能为空");
             return null;
         }
+    }
+
+    @Override
+    public Boolean updateStock(Integer limitedStock, Long limitedGoodsId) {
+        try{
+            if(goodsMapper.updateGoodsStock(limitedGoodsId , limitedStock) == 1){
+                return true ;
+            }
+        }catch (DataIntegrityViolationException e){
+            logger.error("限量购库存大于原商品库存");
+            return false ;
+        }
+        return false;
+    }
+
+    @Override
+    public List<GoodsPOJO> queryGoodsBasesByGoodsIds(List<Long> ids) {
+        if(ids != null  && ids.size() > 0){
+           return goodsMapper.selectGoodsBaseByGoodsIds(ids);
+        }else{
+            logger.error("根据ids批量查询商品基本信息id为空");
+        }
+        return null;
     }
 
 

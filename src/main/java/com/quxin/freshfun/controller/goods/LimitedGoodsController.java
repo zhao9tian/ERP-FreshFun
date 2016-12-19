@@ -52,8 +52,10 @@ public class LimitedGoodsController {
                 limitedGoods.put("goodsId" , limitedGoodsPOJO.getLimitedGoodsId());
                 limitedGoods.put("title",limitedGoodsPOJO.getGoodsTitle());
                 limitedGoods.put("limitStock",limitedGoodsPOJO.getLimitedStock());
-                limitedGoods.put("limitSaleNum",limitedGoodsPOJO.getLimitedSaleNum());
-                limitedGoods.put("limitLeave",limitedGoodsPOJO.getLimitedStock() - limitedGoodsPOJO.getLimitedSaleNum());
+                limitedGoods.put("limitSaleNum",limitedGoodsPOJO.getLimitedStock() - limitedGoodsPOJO.getLimitedRealStock());
+                limitedGoods.put("limitLeave", limitedGoodsPOJO.getLimitedRealStock());
+                limitedGoods.put("shopPrice",MoneyFormatUtils.getMoneyFromInteger(limitedGoodsPOJO.getShopPrice()));
+                limitedGoods.put("goodsStock", limitedGoodsPOJO.getGoodsLeaveStock());
                 String limitedPrice = limitedGoodsPOJO.getLimitedPrice();
                 Integer limitedPriceDB = null;
                 if(limitedPrice != null){
@@ -81,13 +83,18 @@ public class LimitedGoodsController {
         if (goodsId != null && goodsId != 0) {
             GoodsPOJO goods = goodsService.queryGoodsBaseByGoodsId(goodsId);
             if (goods != null) {
-                Map<String, Object> data = Maps.newHashMap();
-                data.put("title", goods.getTitle());
-                data.put("stock", goods.getStockNum());
-                data.put("shopPrice", MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
-                result = ResultUtil.success(data);
+                if(goods.getIsOnSale() == 1){//上架
+                    Map<String, Object> data = Maps.newHashMap();
+                    data.put("title", goods.getTitle());
+                    data.put("stock", goods.getStockNum()-goods.getSaleNum());//剩余库存 = 库存-销量
+                    data.put("shopPrice", MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
+                    data.put("limitSaleNum", 0);//新增默认给0
+                    result = ResultUtil.success(data);
+                }else{//下架
+                    result = ResultUtil.fail(1004 , "该商品已经下架");
+                }
             } else {
-                result = ResultUtil.fail(1004, "查询商品基本信息失败");
+                result = ResultUtil.fail(1004, "id为:"+goodsId+"的商品不存在");
             }
         } else {
             result = ResultUtil.fail(1004, "商品Id为空");
@@ -119,8 +126,8 @@ public class LimitedGoodsController {
 
                         if (goodsId != null && limitStock != null && limitPrice != null) {
                             Map<String, Object> price = Maps.newHashMap();
-                            Integer limitpriceDB = Math.round(Float.parseFloat(limitPrice) * 100);
-                            price.put("discountPrice", limitpriceDB);
+                            Integer limitPriceDB = Math.round(Float.parseFloat(limitPrice) * 100);
+                            price.put("discountPrice", limitPriceDB);
                             LimitedGoodsPOJO limitedGoodsPOJO = new LimitedGoodsPOJO();
                             limitedGoodsPOJO.setLimitedGoodsId(goodsId);
                             limitedGoodsPOJO.setLimitedStock(limitStock);

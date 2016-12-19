@@ -16,12 +16,12 @@ public class LimitedGoodsPOJO {
     private String limitedPrice ;
 
     /**
-     * 限量购销量
+     * 限量购实时库存
      */
-    private Integer limitedSaleNum ;
+    private Integer limitedRealStock;
 
     /**
-     * 限时购库存
+     * 限时购总库存
      */
     private Integer limitedStock;
 
@@ -36,7 +36,39 @@ public class LimitedGoodsPOJO {
      */
     private Long updated ;
 
+    //**********************************附加商品属性*****************************************
+
+    /**
+     * 商品title
+     */
     private String goodsTitle ;
+
+    /**
+     * 售价
+     */
+    private Integer shopPrice;
+
+    /**
+     * 销量
+     */
+    private Integer goodsLeaveStock;
+
+    public Integer getShopPrice() {
+        return shopPrice;
+    }
+
+    public void setShopPrice(Integer shopPrice) {
+        this.shopPrice = shopPrice;
+    }
+
+
+    public Integer getGoodsLeaveStock() {
+        return goodsLeaveStock;
+    }
+
+    public void setGoodsLeaveStock(Integer goodsLeaveStock) {
+        this.goodsLeaveStock = goodsLeaveStock;
+    }
 
     public String getGoodsTitle() {
         return goodsTitle;
@@ -62,12 +94,12 @@ public class LimitedGoodsPOJO {
         this.limitedPrice = limitedPrice;
     }
 
-    public Integer getLimitedSaleNum() {
-        return limitedSaleNum;
+    public Integer getLimitedRealStock() {
+        return limitedRealStock;
     }
 
-    public void setLimitedSaleNum(Integer limitedSaleNum) {
-        this.limitedSaleNum = limitedSaleNum;
+    public void setLimitedRealStock(Integer limitedRealStock) {
+        this.limitedRealStock = limitedRealStock;
     }
 
     public Integer getLimitedStock() {
