@@ -115,7 +115,7 @@ public class LimitedGoodsController {
         Map<String, Object> result;
         if (limitedSortGoods != null && limitedSortGoods.size() > 0) {
             List<Map<String, Object>> limitedSort = limitedSortGoods.get("sortlimitGoods");
-            if (limitedSort != null && limitedSort.size() > 0) {
+            if (limitedSort != null) {
                 List<LimitedGoodsPOJO> limitedGoodsPOJOs = new ArrayList<>();
                 for (Map<String, Object> limitedGoods : limitedSort) {
                     Long goodsId;

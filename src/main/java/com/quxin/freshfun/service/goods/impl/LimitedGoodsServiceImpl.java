@@ -38,7 +38,7 @@ public class LimitedGoodsServiceImpl implements LimitedGoodsService {
 
     @Override
     public Boolean addBatchLimitedGoods(List<LimitedGoodsPOJO> limitedGoodsPOJOs) {
-        if (limitedGoodsPOJOs != null && limitedGoodsPOJOs.size() > 0) {
+        if (limitedGoodsPOJOs != null) {
             Set<Long> set = new HashSet<>();
             for(LimitedGoodsPOJO limitedGoodsPOJO : limitedGoodsPOJOs){
                 set.add(limitedGoodsPOJO.getLimitedGoodsId());
