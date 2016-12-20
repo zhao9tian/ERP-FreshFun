@@ -40,7 +40,7 @@ public class LimitedGoodsServiceImpl implements LimitedGoodsService {
     public Boolean addBatchLimitedGoods(List<LimitedGoodsPOJO> limitedGoodsPOJOs) {
         if (limitedGoodsPOJOs != null) {
             Set<Long> set = new HashSet<>();
-            for(LimitedGoodsPOJO limitedGoodsPOJO : limitedGoodsPOJOs){
+            for (LimitedGoodsPOJO limitedGoodsPOJO : limitedGoodsPOJOs) {
                 set.add(limitedGoodsPOJO.getLimitedGoodsId());
             }
             if (limitedGoodsPOJOs.size() != set.size()) {
@@ -60,22 +60,22 @@ public class LimitedGoodsServiceImpl implements LimitedGoodsService {
                         //根据Id判断是否修改或新增
                         LimitedGoodsPOJO limitedGoods = queryLimitedGoodsById(limitedGoodsPOJO.getLimitedGoodsId());
                         //校验商品新填的库存是否大于已有库存
-                        Integer oldStock = goodsPOJO.getStockNum()-goodsPOJO.getSaleNum();
-                        if ( limitedGoods!= null) {
-                            if(limitedGoodsPOJO.getLimitedStock() > oldStock + limitedGoods.getLimitedStock()){
+                        Integer oldStock = goodsPOJO.getStockNum();
+                        if (limitedGoods != null) {
+                            if (limitedGoodsPOJO.getLimitedStock() > oldStock + limitedGoods.getLimitedStock()) {
                                 logger.error("限量购库存大于商品原有库存");
-                                return false ;
-                            }else{
+                                return false;
+                            } else {
                                 if (!modifyLimitedGoods(limitedGoodsPOJO)) {
                                     logger.error("编辑限量购失败:" + JSON.toJSONString(limitedGoodsPOJO));
                                 }
                                 limitedGoodsIds.add(limitedGoodsPOJO.getLimitedGoodsId());
                             }
                         } else {
-                            if(limitedGoodsPOJO.getLimitedStock() > oldStock){
+                            if (limitedGoodsPOJO.getLimitedStock() > oldStock) {
                                 logger.error("限量购库存大于商品原有库存");
-                                return false ;
-                            }else{
+                                return false;
+                            } else {
                                 if (!addLimitedGoods(limitedGoodsPOJO)) {
                                     logger.error("新增限量购失败:" + JSON.toJSONString(limitedGoodsPOJO));
                                 }
@@ -175,20 +175,20 @@ public class LimitedGoodsServiceImpl implements LimitedGoodsService {
             //查询排序商品的限量购属性
             limitedGoodsPOJOs = limitedGoodsMapper.selectLimitedGoodsList(ids);
             //匹配基本属性和限量购属性--取交集
-            if(limitedGoodsPOJOs != null && limitedGoodsPOJOs.size()>0 && goodsPOJOs != null && goodsPOJOs.size() > 0){
-                for(GoodsPOJO goodsPOJO : goodsPOJOs){
-                    for(LimitedGoodsPOJO limitedGoodsPOJO : limitedGoodsPOJOs){
-                        if(goodsPOJO.getGoodsId().equals(limitedGoodsPOJO.getLimitedGoodsId())){
+            if (limitedGoodsPOJOs != null && limitedGoodsPOJOs.size() > 0 && goodsPOJOs != null && goodsPOJOs.size() > 0) {
+                for (GoodsPOJO goodsPOJO : goodsPOJOs) {
+                    for (LimitedGoodsPOJO limitedGoodsPOJO : limitedGoodsPOJOs) {
+                        if (goodsPOJO.getGoodsId().equals(limitedGoodsPOJO.getLimitedGoodsId())) {
                             limitedGoodsPOJO.setGoodsTitle(goodsPOJO.getTitle());
                             //计算库存上限
-                            limitedGoodsPOJO.setGoodsLeaveStock(goodsPOJO.getStockNum()- goodsPOJO.getSaleNum()+limitedGoodsPOJO.getLimitedRealStock());
+                            limitedGoodsPOJO.setGoodsLeaveStock(goodsPOJO.getStockNum() + limitedGoodsPOJO.getLimitedRealStock());
                             limitedGoodsPOJO.setShopPrice(goodsPOJO.getShopPrice());
                         }
                     }
                 }
-                if(limitedGoodsPOJOs.size() > 0){
+                if (limitedGoodsPOJOs.size() > 0) {
                     limitedGoodsPOJOs = GoodsSortUtils.getSortedObject(limitedGoodsPOJOs, ids);
-                }else{
+                } else {
                     logger.error("无有效的限量购排序商品");
                 }
             }
@@ -206,7 +206,14 @@ public class LimitedGoodsServiceImpl implements LimitedGoodsService {
                 if (limitedGoodsMapper.deletedLimitedGoods(limitedGoodsId) == 1) {
                     //删除成功返还库存"-"
                     if (goodsService.updateStock(-limitedGoodsPOJO.getLimitedRealStock(), limitedGoodsId)) {
-                        return true;
+                        //返还销量
+                        Integer i = limitedGoodsMapper.returnSaleNum(
+                                limitedGoodsPOJO.getLimitedStock() - limitedGoodsPOJO.getLimitedRealStock(), limitedGoodsId);
+                        if (i == 1) {
+                            return true;
+                        } else {
+                            logger.error("删除限量购商品返还销量失败");
+                        }
                     } else {
                         logger.error("删除限量购商品返还库存失败");
                     }

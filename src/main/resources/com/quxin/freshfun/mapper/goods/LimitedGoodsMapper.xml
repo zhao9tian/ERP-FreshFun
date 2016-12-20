@@ -51,4 +51,9 @@
         </foreach>
     </select>
 
+    <!--返还库存-->
+    <update id="returnSaleNum">
+        update goods_base set sale_num = sale_num + #{returnSaleNum} where id = #{goodsId} and is_deleted = 0
+    </update>
+
 </mapper>

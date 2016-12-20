@@ -45,4 +45,11 @@ public interface LimitedGoodsMapper {
      * @return 限量购商品
      */
     List<LimitedGoodsPOJO> selectLimitedGoodsList(@Param("limitedGoodsIds") List<Long> ids);
+
+    /**
+     * 销量返还给商品
+     * @param i 销量
+     * @return 修改结果
+     */
+    Integer returnSaleNum(@Param("returnSaleNum") int i , @Param("goodsId") Long goodsId);
 }

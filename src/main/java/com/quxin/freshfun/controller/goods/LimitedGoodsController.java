@@ -81,12 +81,18 @@ public class LimitedGoodsController {
     public Map<String, Object> getGoodsBaseByGoodsId(Long goodsId) {
         Map<String, Object> result;
         if (goodsId != null && goodsId != 0) {
+            LimitedGoodsPOJO limitedGoodsPOJO = limitedGoodsService.queryLimitedGoodsById(goodsId);
+
             GoodsPOJO goods = goodsService.queryGoodsBaseByGoodsId(goodsId);
             if (goods != null) {
                 if(goods.getIsOnSale() == 1){//上架
                     Map<String, Object> data = Maps.newHashMap();
                     data.put("title", goods.getTitle());
-                    data.put("stock", goods.getStockNum()-goods.getSaleNum());//剩余库存 = 库存-销量
+                    if(limitedGoodsPOJO == null){//不为限量购
+                        data.put("stock", goods.getStockNum());//库存
+                    }else{
+                        data.put("stock", goods.getStockNum() + limitedGoodsPOJO.getLimitedRealStock());//库存
+                    }
                     data.put("shopPrice", MoneyFormatUtils.getMoneyFromInteger(goods.getShopPrice()));
                     data.put("limitSaleNum", 0);//新增默认给0
                     result = ResultUtil.success(data);
