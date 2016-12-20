@@ -506,8 +506,8 @@ public class OrderImpl implements OrderService {
             refundOut.setResult(refundPOJO.getServiceType());
             refundOut.setMoney(MoneyFormatUtils.getMoneyFromInteger(refundPOJO.getReturnMoney()));
             refundOut.setReason(refundPOJO.getReturnReason());
-            refundOut.setRefundContent(refundPOJO.getReturnDes());
-            refundOut.setRemark(refundPOJO.getRemark());
+            refundOut.setRefundContent(refundPOJO.getRemark());
+            refundOut.setRemark(refundPOJO.getReturnDes());
             refundOut.setState(refundPOJO.getState());
             refundOut.setActualRefundMoney(MoneyFormatUtils.getMoneyFromInteger(refundPOJO.getActualRefundMoney()));
         }
