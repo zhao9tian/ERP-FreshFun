@@ -43,6 +43,7 @@
     <result column="province_code" jdbcType="INTEGER" property="provCode"/>
     <result column="city_code" jdbcType="INTEGER" property="cityCode"/>
     <result column="district_code" jdbcType="INTEGER" property="distCode"/>
+    <result column="fans_app_id" jdbcType="BIGINT" property="fansAppId"/>
     <result column="app_id" jdbcType="BIGINT" property="appId"/>
     <association property="goods" column="goods_id" select="com.quxin.freshfun.dao.GoodsMapper.selectGoodsById"></association>
   </resultMap>
@@ -59,7 +60,7 @@
 
   <!--查询所有订单-->
   <select id="selectBackstageOrders" parameterType="com.quxin.freshfun.model.order.OrderQueryParam" resultMap="BaseResultMap">
-    select `id` as `order_id`,`actual_price`,`user_id`,`pay_time`,`count`,`order_status`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code`,`app_id`
+    select `id` as `order_id`,`actual_price`,`user_id`,`pay_time`,`count`,`order_status`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code`,`fans_app_id`,`app_id`
       from order_details
       where is_deleted = 0
     <if test="appId != null">

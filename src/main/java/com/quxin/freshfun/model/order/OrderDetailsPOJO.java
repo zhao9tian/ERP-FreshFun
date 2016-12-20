@@ -25,6 +25,10 @@ public class OrderDetailsPOJO {
      */
     private Long appId;
     /**
+     * 粉丝标识
+     */
+    private Long fansAppId;
+    /**
      * 商户编号
      */
     private Long agentId;
@@ -120,6 +124,14 @@ public class OrderDetailsPOJO {
      * 订单用户昵称
      */
     private String nickName;
+
+    public Long getFansAppId() {
+        return fansAppId;
+    }
+
+    public void setFansAppId(Long fansAppId) {
+        this.fansAppId = fansAppId;
+    }
 
     public String getFansSource() {
         return fansSource;

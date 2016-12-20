@@ -25,6 +25,10 @@ public class RefundPOJO {
      */
     private Integer returnMoney;
     /**
+     * 实际退款金额
+     */
+    private Integer actualRefundMoney;
+    /**
      * 退款说明
      */
     private String returnDes;
@@ -32,6 +36,26 @@ public class RefundPOJO {
      * 退款备注
      */
     private String remark;
+    /**
+     * 退款状态
+     */
+    private int state;
+
+    public Integer getActualRefundMoney() {
+        return actualRefundMoney;
+    }
+
+    public void setActualRefundMoney(Integer actualRefundMoney) {
+        this.actualRefundMoney = actualRefundMoney;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     public String getRemark() {
         return remark;

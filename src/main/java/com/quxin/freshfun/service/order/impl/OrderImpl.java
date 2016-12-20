@@ -186,7 +186,22 @@ public class OrderImpl implements OrderService {
                 setUserPrivacy(order);
                 //设置用户昵称
                 setUserNickname(order);
+                //设置粉丝归属
+                setFansAscription(order);
             }
+        }
+    }
+
+    /**
+     * 设置粉丝归属
+     * @param order
+     */
+    private void setFansAscription(OrderDetailsPOJO order) {
+        if (order != null){
+            if(order.getAppId().equals(order.getFansAppId()))
+                order.setFansSource("我的");
+            else
+                order.setFansSource("其他");
         }
     }
 
@@ -216,8 +231,21 @@ public class OrderImpl implements OrderService {
             setUserNickname(order);
             //设置订单来源
             setOrderSource(order);
+            //设置粉丝来源
+            setFansSource(order);
         }
         return orderDetails;
+    }
+
+    /**
+     * 设置粉丝来源
+     * @param order
+     */
+    private void setFansSource(OrderDetailsPOJO order) {
+        if(order.getFansAppId() != null) {
+            order.setFansSource(userBaseMapper.selectAppNameByAppId(order.getFansAppId()));
+            order.setFansAppId(null);
+        }
     }
 
     /**
@@ -478,7 +506,10 @@ public class OrderImpl implements OrderService {
             refundOut.setResult(refundPOJO.getServiceType());
             refundOut.setMoney(MoneyFormatUtils.getMoneyFromInteger(refundPOJO.getReturnMoney()));
             refundOut.setReason(refundPOJO.getReturnReason());
-            refundOut.setRemark(refundPOJO.getReturnDes());
+            refundOut.setRefundContent(refundPOJO.getReturnDes());
+            refundOut.setRemark(refundPOJO.getRemark());
+            refundOut.setState(refundPOJO.getState());
+            refundOut.setActualRefundMoney(MoneyFormatUtils.getMoneyFromInteger(refundPOJO.getActualRefundMoney()));
         }
         return refundOut;
     }
@@ -596,6 +627,7 @@ public class OrderImpl implements OrderService {
             refund.setReturnMoney(refundPrice);
             refund.setGmtModified(DateUtils.getCurrentDate());
             refund.setRemark(refundParam.getRefundCom());
+            refund.setState(1);
             //修改退款信息
             if(modifyRefundInfo(refund))
                 refundResult = true;
@@ -623,26 +655,49 @@ public class OrderImpl implements OrderService {
 
     /**
      * 驳回订单状态
-     * @param orderId
+     * @param refundParam 参数
      * @return
      */
     @Override
-    public Integer rebutRefunds(Long orderId) throws BusinessException {
-        if (orderId == null)
-            throw new BusinessException("驳回退款订单号为null");
-        String orderState = orderDetailsMapper.selectOrderRefundState(orderId);
+    public Integer rebutRefunds(RefundParam refundParam) throws BusinessException {
+        //校验参数
+        if(!checkParam(refundParam)){
+            throw new BusinessException("退款参数错误");
+        }
+        String orderState = orderDetailsMapper.selectOrderRefundState(refundParam.getOrderId());
         Integer state = 0;
         if(!StringUtils.isEmpty(orderState)){
             //修改订单状态
-            Long currentDate = System.currentTimeMillis()/1000;
-            Map<String,Object> map = new HashMap<>();
-            map.put("orderStatus",orderState);
-            map.put("updateDate",currentDate);
-            map.put("orderId",orderId);
-            state = orderDetailsMapper.updateOrderState(map);
-            if(state <= 0)
-                throw new BusinessException("驳回退款申请失败");
+            state = modifyOrderState(refundParam, orderState);
+            //修改退款信息
+            modifyRebutRefunds(refundParam);
         }
+        return state;
+    }
+
+    /**
+     * 修改驳回退款信息
+     * @param refundParam 参数
+     */
+    private void modifyRebutRefunds(RefundParam refundParam) throws BusinessException {
+        RefundPOJO refund = new RefundPOJO();
+        refund.setGmtModified(DateUtils.getCurrentDate());
+        refund.setState(2);
+        refund.setRemark(refundParam.getRefundCom());
+        refund.setId(refundParam.getRefundId());
+        //修改退款信息
+        modifyRefundInfo(refund);
+    }
+
+    private Integer modifyOrderState(RefundParam refundParam, String orderState) throws BusinessException {
+        Long currentDate = System.currentTimeMillis()/1000;
+        Integer state;Map<String,Object> map = new HashMap<>();
+        map.put("orderStatus",orderState);
+        map.put("updateDate",currentDate);
+        map.put("orderId",refundParam.getOrderId());
+        state = orderDetailsMapper.updateOrderState(map);
+        if(state <= 0)
+            throw new BusinessException("驳回退款申请失败");
         return state;
     }
 

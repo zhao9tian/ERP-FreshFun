@@ -226,7 +226,7 @@ public class OrderController {
         setRefundEncoding(refundParam);
         switch (refundParam.getAction()) {
             case 0:
-                Integer state = orderService.rebutRefunds(refundParam.getOrderId());
+                Integer state = orderService.rebutRefunds(refundParam);
                 if (state == 0) {
                     map.put("code", 1004);
                     map.put("msg", "申请退款失败");

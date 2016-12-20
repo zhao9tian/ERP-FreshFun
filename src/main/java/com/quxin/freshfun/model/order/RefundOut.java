@@ -22,9 +22,45 @@ public class RefundOut {
      */
     private String money;
     /**
+     * 实际退款金额
+     */
+    private String actualRefundMoney;
+    /**
      * 退款说明
      */
+    private String refundContent;
+    /**
+     * 退款备注
+     */
     private String remark;
+    /**
+     * 退款状态
+     */
+    private Integer state;
+
+    public String getActualRefundMoney() {
+        return actualRefundMoney;
+    }
+
+    public void setActualRefundMoney(String actualRefundMoney) {
+        this.actualRefundMoney = actualRefundMoney;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public String getRefundContent() {
+        return refundContent;
+    }
+
+    public void setRefundContent(String refundContent) {
+        this.refundContent = refundContent;
+    }
 
     public Integer getRefundId() {
         return refundId;

@@ -16,14 +16,20 @@
         select  `id`,`service_type` as `serviceType`,
                 `return_reason` as `returnReason`,
                 `return_money` as `returnMoney`,
-                `return_des` as `returnDes`
+                `return_des` as `returnDes`,
+                `remark`,`state`,
+                `actual_refund_money` as `actualRefundMoney`
         from refund
         where id = (select max(id) from refund where order_details_id = #{orderId} and is_delete = 0)
 
     </select>
     <!--修改退款信息-->
     <update id="updateRefundInfo" parameterType="com.quxin.freshfun.model.order.RefundPOJO">
-        update `refund` set return_money = #{returnMoney},gmt_modified=#{gmtModified},remark=#{remark},state=1
+        update `refund` set
+        <if test='returnMoney != null and returnMoney != 0'>
+            actual_refund_money = #{returnMoney},
+        </if>
+        gmt_modified=#{gmtModified},remark=#{remark},state=#{state}
         where id = #{id}
     </update>
 </mapper>

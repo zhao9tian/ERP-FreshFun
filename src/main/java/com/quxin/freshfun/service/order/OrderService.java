@@ -84,7 +84,7 @@ public interface OrderService {
      * 驳回退款
      * @return
      */
-    Integer rebutRefunds(Long orderId) throws BusinessException;
+    Integer rebutRefunds(RefundParam refundParam) throws BusinessException;
 
     /**
      * 后去订单数量
