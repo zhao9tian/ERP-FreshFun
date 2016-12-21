@@ -60,7 +60,7 @@ public class LimitedGoodsController {
                 Integer limitedPriceDB = null;
                 if(limitedPrice != null){
                     Map<String , Object> discountPrice = JSON.parseObject(limitedPrice);
-                    limitedPriceDB = (Integer) discountPrice.get("discountPrice");
+                    limitedPriceDB = Integer.parseInt((String) discountPrice.get("discountPrice"));
                 }
                 limitedGoods.put("limitPrice" , MoneyFormatUtils.getMoneyFromInteger(limitedPriceDB));
                 limitedGoodsOut.add(limitedGoods);
@@ -133,7 +133,7 @@ public class LimitedGoodsController {
                         if (goodsId != null && limitStock != null && limitPrice != null) {
                             Map<String, Object> price = Maps.newHashMap();
                             Integer limitPriceDB = Math.round(Float.parseFloat(limitPrice) * 100);
-                            price.put("discountPrice", limitPriceDB);
+                            price.put("discountPrice", limitPriceDB.toString());
                             LimitedGoodsPOJO limitedGoodsPOJO = new LimitedGoodsPOJO();
                             limitedGoodsPOJO.setLimitedGoodsId(goodsId);
                             limitedGoodsPOJO.setLimitedStock(limitStock);
