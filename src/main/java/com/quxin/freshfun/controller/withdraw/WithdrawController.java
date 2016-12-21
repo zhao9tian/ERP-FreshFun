@@ -328,6 +328,9 @@ public class WithdrawController {
             return ResultUtil.fail(1004,"列表查询失败");
         }
         List<WithdrawOutParam> list = withdrawService.queryWithdraws(curPage,pageSize,status);
+        for(WithdrawOutParam withdraw : list){
+            withdraw.setWithdrawMoney(MoneyFormatUtils.getMoneyFromInteger(Integer.parseInt(withdraw.getWithdrawMoney())));
+        }
         Integer total = withdrawService.queryWithdrawCount(status);
         map.put("withdrawList",list);
         map.put("total",total);
