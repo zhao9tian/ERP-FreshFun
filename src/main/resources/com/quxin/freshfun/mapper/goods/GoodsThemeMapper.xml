@@ -12,7 +12,7 @@
 	<select id="selectThemeList" resultType="com.quxin.freshfun.model.goods.ThemePOJO">
 		select id as themeId , theme_name as themeName , theme_des as themeDes , img as themeImg , is_forbidden as isForbidden ,
 		goods_id_list as goodsIdList , created , updated
-		from goods_theme where is_deleted = 0
+		from goods_theme where is_deleted = 0 order by id desc
 	</select>
 	<!--根据专题名称查询专题数量 -->
 	<select id="selectCountByThemeName" parameterType="java.lang.String" resultType="java.lang.Integer">
