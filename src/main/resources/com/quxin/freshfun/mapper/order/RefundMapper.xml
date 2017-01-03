@@ -29,7 +29,11 @@
         <if test='returnMoney != null and returnMoney != 0'>
             actual_refund_money = #{returnMoney},
         </if>
-        gmt_modified=#{gmtModified},remark=#{remark},state=#{state}
+            gmt_modified=#{gmtModified},
+        <if test="remark != null">
+            remark=#{remark},
+        </if>
+        state=#{state}
         where id = #{id}
     </update>
 </mapper>
