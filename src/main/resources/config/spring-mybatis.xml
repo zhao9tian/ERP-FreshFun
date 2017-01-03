@@ -19,6 +19,7 @@
             <property name="maxActive" value="2" />
 	        <property name="initialSize" value="1" />
 	        <property name="maxIdle" value="2" />
+            <property name="connectionInitSqls" value="set names utf8mb4;"/>
 	        <property name="minIdle" value="1" />
 	        <!-- 等待连接超时时间，30秒 -->
 	        <property name="maxWait" value="30000" />

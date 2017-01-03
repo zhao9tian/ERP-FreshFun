@@ -64,8 +64,8 @@
       from order_details
       where is_deleted = 0
     <if test="appId != null">
-      and app_id = #{appId}
-      or fans_app_id = #{appId}
+      and (app_id = #{appId}
+      or fans_app_id = #{appId})
     </if>
     <if test="orderStatus != null and orderStatus != 0 and orderStatus != 70">
       and order_status = #{orderStatus}
@@ -165,7 +165,8 @@
   <select id="selectOrderNum" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(*) from order_details where order_status = #{orderStatus}
     <if test="appId != null">
-      and app_id = #{appId}
+      and (app_id = #{appId}
+      or fans_app_id = #{appId})
     </if>
       and is_deleted = 0
   </select>

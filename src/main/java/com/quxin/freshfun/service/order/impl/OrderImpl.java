@@ -135,8 +135,8 @@ public class OrderImpl implements OrderService {
      */
     private boolean judgeQueryCondition(OrderQueryParam orderParam) {
         if((!StringUtils.isEmpty(orderParam.getGoodsName()) || !StringUtils.isEmpty(orderParam.getGoodsTitle())) && orderParam.getGoodsIdList().size()<=0 ||
-                !StringUtils.isEmpty(orderParam.getAppId()) && orderParam.getAppIdList().size() <= 0 ||
-                !StringUtils.isEmpty(orderParam.getUserId()) && orderParam.getUserIdList().size() <= 0){
+                !StringUtils.isEmpty(orderParam.getAppName()) && orderParam.getAppIdList().size() <= 0 ||
+                !StringUtils.isEmpty(orderParam.getNickName()) && orderParam.getUserIdList().size() <= 0){
             return true;
         }
         return false;
@@ -354,8 +354,8 @@ public class OrderImpl implements OrderService {
         map.put("deliveryNum",order.getDeliveryNum());
         map.put("deliveryName",order.getDeliveryName());
         map.put("deliveryTime",currentDate);
-        Double goodsCost = Double.parseDouble(order.getActualMoney())*100;
-        map.put("goodsCost",goodsCost.intValue());
+        int goodsCost = Math.round(Float.parseFloat(order.getActualMoney())*100);
+        map.put("goodsCost",goodsCost);
         Integer result = orderDetailsMapper.deliverOrder(map);
         if(result == 1){
             //发送短信
