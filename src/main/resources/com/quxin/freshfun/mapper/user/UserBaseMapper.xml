@@ -14,7 +14,7 @@
         user_id = #{userId} and is_deleted=0
     </select>
     <select id="selectUserIdByNickName" parameterType="java.lang.String" resultMap="idResultMap">
-        select id from user_base where user_name like CONCAT(#{userName},'%')
+        select `id` from user_base where user_name like CONVERT(CONCAT(#{userName},'%') USING utf8) COLLATE utf8_unicode_ci
     </select>
     <!--根据公众号名称查询公众号编号-->
     <select id="selectAppIdByAppName" parameterType="java.lang.String" resultMap="idResultMap">
