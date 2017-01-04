@@ -185,6 +185,22 @@
     select count(id) from order_details where is_deleted = 0 and order_status = #{orderStatus}
   </select>
 
+  <!--根据appId批量查询下单数-->
+  <select id="selectCountByAppId" parameterType="java.util.Arrays" resultMap="BaseResultMap">
+    select app_id , fans_app_id,actual_price from order_details where is_deleted = 0 and (order_status<![CDATA[>]]>30 or
+    order_status=30) and
+    (app_id in
+    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    ) OR (
+    app_id = 888888 and fans_app_id in
+    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    )
+  </select>
+
   <!--订单发货-->
   <update id="deliverOrder" parameterType="java.util.Map">
     update order_details set delivery_num=#{deliveryNum},order_status=50,delivery_name=#{deliveryName},delivery_time=#{deliveryTime},goods_cost=#{goodsCost} where id = #{orderId}

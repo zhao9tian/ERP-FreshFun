@@ -97,6 +97,11 @@ public class OrderImpl implements OrderService {
         return map;
     }
 
+    @Override
+    public List<OrderDetailsPOJO> selectCountByAppId(Long[] ids) {
+        return orderDetailsMapper.selectCountByAppId(ids);
+    }
+
     /**
      * 获取数据总页码数
      * @param orderParam 条件参数

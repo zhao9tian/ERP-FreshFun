@@ -17,6 +17,8 @@ public interface OrderService {
      */
     Map<String,Object> selectBackstageOrders(OrderQueryParam orderParam) throws BusinessException;
 
+    List<OrderDetailsPOJO> selectCountByAppId(Long[] ids);
+
     /**
      * 根据平台查询所有订单
      * @param orderQueryParam

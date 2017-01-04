@@ -40,7 +40,6 @@ public class ErpAppInfoController {
 
     /**
      * 公众号管理查询
-     *
      * @param appName  模糊匹配的公众号名称
      * @param curPage  当前页
      * @param pageSize 页面数据量

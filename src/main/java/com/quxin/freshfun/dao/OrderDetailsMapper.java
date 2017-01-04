@@ -31,6 +31,13 @@ public interface OrderDetailsMapper {
     Integer selectOrderNum(@Param("orderStatus") Integer orderState,@Param("appId") Long appId);
 
     /**
+     * 根据appId批量查询下单数
+     * @param ids appIds
+     * @return 查询结果
+     */
+    List<OrderDetailsPOJO> selectCountByAppId(Long[] ids);
+
+    /**
      * 根据订单状态查询订单列表
      * @return
      */
