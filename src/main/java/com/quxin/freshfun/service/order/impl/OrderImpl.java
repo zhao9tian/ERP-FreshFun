@@ -140,8 +140,8 @@ public class OrderImpl implements OrderService {
      */
     private boolean judgeQueryCondition(OrderQueryParam orderParam) {
         if((!StringUtils.isEmpty(orderParam.getGoodsName()) || !StringUtils.isEmpty(orderParam.getGoodsTitle())) && orderParam.getGoodsIdList().size()<=0 ||
-                !StringUtils.isEmpty(orderParam.getAppId()) && orderParam.getAppIdList().size() <= 0 ||
-                !StringUtils.isEmpty(orderParam.getUserId()) && orderParam.getUserIdList().size() <= 0){
+                !StringUtils.isEmpty(orderParam.getAppName()) && orderParam.getAppIdList().size() <= 0 ||
+                !StringUtils.isEmpty(orderParam.getNickName()) && orderParam.getUserIdList().size() <= 0){
             return true;
         }
         return false;
@@ -174,7 +174,7 @@ public class OrderImpl implements OrderService {
             throw new BusinessException("查询所有订单条件不能为空");
         List<OrderDetailsPOJO> orderDetails = orderDetailsMapper.selectBackstageOrders(orderQueryParam);
         //设置用户信息
-        setOrderUserInfo(orderDetails);
+        setOrderUserInfo(orderDetails,orderQueryParam);
         return orderDetails;
     }
 
@@ -182,7 +182,7 @@ public class OrderImpl implements OrderService {
      * 设置订单用户信息
      * @param orderDetails
      */
-    private void setOrderUserInfo(List<OrderDetailsPOJO> orderDetails) {
+    private void setOrderUserInfo(List<OrderDetailsPOJO> orderDetails,OrderQueryParam orderQueryParam) {
         if(orderDetails != null){
             for (OrderDetailsPOJO order : orderDetails) {
                 //设置用户地址信息
@@ -192,7 +192,7 @@ public class OrderImpl implements OrderService {
                 //设置用户昵称
                 setUserNickname(order);
                 //设置粉丝归属
-                setFansAscription(order);
+                setFansAscription(order,orderQueryParam);
             }
         }
     }
@@ -201,9 +201,9 @@ public class OrderImpl implements OrderService {
      * 设置粉丝归属
      * @param order
      */
-    private void setFansAscription(OrderDetailsPOJO order) {
+    private void setFansAscription(OrderDetailsPOJO order,OrderQueryParam orderQueryParam) {
         if (order != null){
-            if(order.getAppId().equals(order.getFansAppId()))
+            if(order.getAppId().equals(orderQueryParam.getAppId()))
                 order.setFansSource("我的");
             else
                 order.setFansSource("其他");
@@ -359,8 +359,8 @@ public class OrderImpl implements OrderService {
         map.put("deliveryNum",order.getDeliveryNum());
         map.put("deliveryName",order.getDeliveryName());
         map.put("deliveryTime",currentDate);
-        Double goodsCost = Double.parseDouble(order.getActualMoney())*100;
-        map.put("goodsCost",goodsCost.intValue());
+        int goodsCost = Math.round(Float.parseFloat(order.getActualMoney())*100);
+        map.put("goodsCost",goodsCost);
         Integer result = orderDetailsMapper.deliverOrder(map);
         if(result == 1){
             //发送短信
@@ -586,6 +586,8 @@ public class OrderImpl implements OrderService {
         String refundResult = null;
         //查询订单信息
         OrderDetailsPOJO orderDetails = orderDetailsMapper.selectOrderTransactionIdInfo(refundParam.getOrderId());
+        //查询父级订单信息
+        OrdersPOJO parentOrder = orderDetailsMapper.selectParentPayPrice(orderDetails.getOrderId());
         if(orderDetails != null) {
             //退款金额
             Double refundMoney = Double.parseDouble(refundParam.getActualRefund()) * 100;
@@ -596,10 +598,10 @@ public class OrderImpl implements OrderService {
             //发送请求
             switch (orderDetails.getPaymentMethod()) {
                 case 1:
-                    refundResult = orderDisposal(orderDetails,refundPrice.toString(), keyStore, WzConstantUtil.APP_ID, WzConstantUtil.PARTNER, WzConstantUtil.PARTNER_KEY);
+                    refundResult = orderDisposal(orderDetails,parentOrder,refundPrice.toString(), keyStore, WzConstantUtil.APP_ID, WzConstantUtil.PARTNER, WzConstantUtil.PARTNER_KEY);
                     break;
                 case 2:
-                    refundResult = orderDisposal(orderDetails,refundPrice.toString(), keyStore, ConstantUtil.APP_ID, ConstantUtil.PARTNER, ConstantUtil.PARTNER_KEY);
+                    refundResult = orderDisposal(orderDetails,parentOrder,refundPrice.toString(), keyStore, ConstantUtil.APP_ID, ConstantUtil.PARTNER, ConstantUtil.PARTNER_KEY);
                     break;
             }
         }
@@ -653,7 +655,8 @@ public class OrderImpl implements OrderService {
         int state = refundMapper.updateRefundInfo(refund);
         if(state <= 0){
             bool = false;
-            throw new BusinessException("修改退款失败");
+            //throw new BusinessException("修改退款失败");
+            logger.error("修改退款失败");
         }
         return bool;
     }
@@ -749,7 +752,7 @@ public class OrderImpl implements OrderService {
      * 处理订单,发送请求
      * @param orderDetails
      */
-    private String orderDisposal(OrderDetailsPOJO orderDetails,String refundMoney,KeyStore keyStore,String appId,String partner,String partnerKey) {
+    private String orderDisposal(OrderDetailsPOJO orderDetails,OrdersPOJO parentOrder,String refundMoney,KeyStore keyStore,String appId,String partner,String partnerKey) {
         if(StringUtils.isEmpty(orderDetails.getTransactionId()))
             return null;
         //处理数据工具类
@@ -765,7 +768,7 @@ public class OrderImpl implements OrderService {
         refundHandle.setParameters("nonce_str",noncestr);
         refundHandle.setParameters("transaction_id",orderDetails.getTransactionId());
         refundHandle.setParameters("out_refund_no",outTradeNo.toString());
-        refundHandle.setParameters("total_fee",orderDetails.getActualPrice().toString());
+        refundHandle.setParameters("total_fee",parentOrder.getActualPrice().toString());
         refundHandle.setParameters("refund_fee",refundMoney);
         refundHandle.setParameters("op_user_id",partner);
         //签名

@@ -3,6 +3,7 @@ package com.quxin.freshfun.dao;
 import com.quxin.freshfun.model.order.OrderDetailsPOJO;
 import com.quxin.freshfun.model.order.OrderQueryParam;
 import com.quxin.freshfun.model.order.OrderSaleInfo;
+import com.quxin.freshfun.model.order.OrdersPOJO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -137,4 +138,11 @@ public interface OrderDetailsMapper {
      * @return 订单详情
      */
     OrderDetailsPOJO selectOrderDetailByOrderId(Long orderId);
+
+    /**
+     * 查询父级订单信息
+     * @param orderId 订单编号
+     * @return
+     */
+    OrdersPOJO selectParentPayPrice(Long orderId);
 }

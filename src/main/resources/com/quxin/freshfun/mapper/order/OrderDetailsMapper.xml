@@ -64,7 +64,8 @@
       from order_details
       where is_deleted = 0
     <if test="appId != null">
-      and app_id = #{appId}
+      and (app_id = #{appId}
+      or fans_app_id = #{appId})
     </if>
     <if test="orderStatus != null and orderStatus != 0 and orderStatus != 70">
       and order_status = #{orderStatus}
@@ -164,7 +165,8 @@
   <select id="selectOrderNum" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(*) from order_details where order_status = #{orderStatus}
     <if test="appId != null">
-      and app_id = #{appId}
+      and (app_id = #{appId}
+      or fans_app_id = #{appId})
     </if>
       and is_deleted = 0
   </select>
@@ -248,5 +250,9 @@
   <!--根据订单Id查询订单详情-->
   <select id="selectOrderDetailByOrderId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select `id` as `order_id`,`user_id`,`actual_price`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code` from order_details where is_deleted = 0 and id = #{orderId}
+  </select>
+  <!--查询父级订单信息-->
+  <select id="selectParentPayPrice" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.order.OrdersPOJO">
+    select `actual_price` as `actualPrice` from orders where id = #{orderId}
   </select>
 </mapper>

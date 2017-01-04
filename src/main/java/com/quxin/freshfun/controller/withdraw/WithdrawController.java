@@ -60,7 +60,7 @@ public class WithdrawController {
     @RequestMapping(value = "/queryUserFlows", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> queryUserFlows(Integer currentPage, Integer pageSize, HttpServletRequest request) {
-        List<Map> flowlist = new ArrayList<>();
+        List<Map> flowList = new ArrayList<>();
         Long appId = getAppIdByRequest(request);
         if (appId == null) {
             return ResultUtil.fail(1004, "获取appId有误");
@@ -106,11 +106,11 @@ public class WithdrawController {
                 }
                 map.put("content", content);//通过orderId查询商品title
                 map.put("money", flowMoney);
-                flowlist.add(map);
+                flowList.add(map);
             }
         }
         Map<String, Object> data = new HashMap<>();
-        data.put("flows", flowlist);
+        data.put("flows", flowList);
         data.put("totalPage", totalPage);
         data.put("total", count);
         return ResultUtil.success(data);

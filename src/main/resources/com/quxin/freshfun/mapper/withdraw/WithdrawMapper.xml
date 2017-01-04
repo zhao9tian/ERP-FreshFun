@@ -33,12 +33,12 @@
     <!--根据appId查询累计入账金额从订单-->
     <select id="selectTotalMoneyByAppId" parameterType="Long" resultType="Integer">
         select sum(actual_price) from order_details
-        where is_deleted = 0 and (app_id = #{appId} or fans_app_id=#{appId}) and order_status <![CDATA[>=]]> 30 and order_status <![CDATA[<=]]> 100
+        where is_deleted = 0 and (app_id = #{appId} or (fans_app_id=#{appId} and app_id = 888888)) and order_status <![CDATA[>=]]> 30 and order_status <![CDATA[<=]]> 100
     </select>
     <!--根据appId查询未入账金额从订单-->
     <select id="selectUnrecordMoneyByAppId" parameterType="Long" resultType="Integer">
         select sum(actual_price) from order_details
-        where is_deleted = 0 and (app_id = #{appId} or fans_app_id=#{appId}) and order_status <![CDATA[>=]]> 30 and order_status <![CDATA[<]]> 100
+        where is_deleted = 0 and (app_id = #{appId} or (fans_app_id=#{appId} and app_id = 888888)) and order_status <![CDATA[>=]]> 30 and order_status <![CDATA[<]]> 100
     </select>
 
     <!--查询提现申请-->
