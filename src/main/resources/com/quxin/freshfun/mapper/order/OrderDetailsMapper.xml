@@ -117,7 +117,7 @@
   </select>
   <!--查询所有订单数量-->
   <select id="selectBackstageOrdersCount" parameterType="com.quxin.freshfun.model.order.OrderQueryParam" resultType="java.lang.Integer" >
-    select count(id) from order_details where is_deleted = 0
+    select count(*) from order_details where is_deleted = 0
     <if test="appId != null">
       and (app_id = #{appId} or (fans_app_id=#{appId} and app_id = 888888))
     </if>
@@ -163,19 +163,13 @@
     select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code` from order_details where order_status in (70,100) and is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
   </select>
   <select id="selectFinishOrderCount" resultType="java.lang.Integer">
-    select count(id) from order_details where order_status in (70,100) and is_deleted = 0
+    select count(*) from order_details where order_status in (70,100) and is_deleted = 0
   </select>
   <!--根据条件查询订单数量-->
   <select id="selectOrderNumCondition" resultMap="OrderNumMap">
-    select count(1) as `orderNum`,order_status from order_details where is_deleted = 0
+    select count(*) as `orderNum`,order_status from order_details where is_deleted = 0
     <if test="appId != null">
       and (app_id = #{appId} or (fans_app_id=#{appId} and app_id = 888888))
-    </if>
-    <if test="orderStatus != null and orderStatus != 0 and orderStatus != 70">
-      and order_status = #{orderStatus}
-    </if>
-    <if test="orderStatus == 70">
-      and order_status in (70,100)
     </if>
     <if test='userId != null and userId != ""'>
       and user_id = #{userId}
@@ -231,7 +225,7 @@
   </select>
   <!--查询待收货数量-->
   <select id="selectOrderByOrderStatusCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
-    select count(id) from order_details where is_deleted = 0 and order_status = #{orderStatus}
+    select count(*) from order_details where is_deleted = 0 and order_status = #{orderStatus}
   </select>
 
   <!--根据appId批量查询下单数-->

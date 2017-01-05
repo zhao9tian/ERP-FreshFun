@@ -81,12 +81,12 @@ public class OrderImpl implements OrderService {
         List<OrderDetailsPOJO> orderDetails = null;
         Integer totalPage = 0;
         queryOrder(orderParam);
-        OrderNumParam orderNumParam = new OrderNumParam();
+        //OrderNumParam orderNumParam = new OrderNumParam();
         if (!judgeQueryCondition(orderParam)){
             orderDetails = orderDetailsMapper.selectBackstageOrders(orderParam);
             //查询总页码
             totalPage = getTotalPage(orderParam);
-            queryOrderNum(orderParam,orderNumParam);
+            //queryOrderNum(orderParam,orderNumParam);
         }
         //设置用户信息
         orderDetails = getOrderDetails(orderDetails);
@@ -99,7 +99,7 @@ public class OrderImpl implements OrderService {
         map.put("total",totalPage);
         map.put("page",orderParam.getPage());
         map.put("pageSize",orderParam.getPageSize());
-        map.put("orderNum",orderNumParam);
+        //map.put("orderNum",orderNumParam);
         map.put("list",orderDetails == null ? new ArrayList<>() : orderDetails);
         return map;
     }
@@ -518,11 +518,14 @@ public class OrderImpl implements OrderService {
     }
 
     @Override
-    public Map<String, Object> getOrderNum(Long appId) {
+    public Map<String, Object> getOrderNum(OrderQueryParam orderParam) {
         Map<String,Object> map = new HashMap<>();
-        List<OrderNumPOJO> orderNumList = orderDetailsMapper.selectOrderNum(appId);
         OrderNumParam orderNumParam = new OrderNumParam();
-        setOrderNum(orderNumParam,orderNumList);
+        queryOrder(orderParam);
+        if (!judgeQueryCondition(orderParam)){
+            List<OrderNumPOJO> orderNumList = orderDetailsMapper.selectOrderNumCondition(orderParam);
+            setOrderNum(orderNumParam,orderNumList);
+        }
         //等待付款
         map.put("awaitPayment",orderNumParam.getAwaitPayment());
         //待发货
@@ -731,6 +734,8 @@ public class OrderImpl implements OrderService {
         }
         return state;
     }
+
+
 
     /**
      * 修改驳回退款信息

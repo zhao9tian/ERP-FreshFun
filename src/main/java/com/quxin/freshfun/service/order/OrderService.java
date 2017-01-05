@@ -92,7 +92,7 @@ public interface OrderService {
      * 后去订单数量
      * @return
      */
-    Map<String,Object> getOrderNum(Long appId);
+    Map<String,Object> getOrderNum(OrderQueryParam orderParam);
 
     /**
      * 根据订单编号查询退款详情
