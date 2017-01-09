@@ -48,7 +48,7 @@ public class ExportExcelTest extends TestBase {
     @org.junit.Test
     public void queryAllGoods() throws Exception {
         Map<String, Object> qc = Maps.newHashMap();
-        qc.put("pageSize", 500);
+        qc.put("pageSize", 700);
         List<GoodsPOJO> goods = goodsService.queryAllGoods(qc);
         List<GoodsPOJO> goodslist = new ArrayList<>();
         for (GoodsPOJO g : goods) {

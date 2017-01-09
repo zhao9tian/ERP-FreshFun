@@ -7,6 +7,8 @@ import com.quxin.freshfun.model.goods.GoodsStandardPOJO;
 import com.quxin.freshfun.service.goods.GoodsService;
 import org.junit.After;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +21,7 @@ import java.util.Map;
  */
 public class GoodsTest extends TestBase {
 
+    Logger logger = LoggerFactory.getLogger(GoodsTest.class);
 
     private GoodsController goodsController;
     private GoodsService goodsService;
@@ -54,11 +57,12 @@ public class GoodsTest extends TestBase {
 
     @org.junit.Test
     public void queryAllGoods(){
-        Map<String,Object> qc = new HashMap<>();
-        qc.put("subTitle","阿");
-        qc.put("isOnSale" , 0);
-        qc.put("orderByCreate",1);
-        System.out.println(goodsService.queryAllGoods(null).size());
+        logger.error("ceshirizhi");
+//        Map<String,Object> qc = new HashMap<>();
+//        qc.put("subTitle","阿");
+//        qc.put("isOnSale" , 0);
+//        qc.put("orderByCreate",1);
+//        System.out.println(goodsService.queryAllGoods(null).size());
 
     }
 
@@ -90,22 +94,6 @@ public class GoodsTest extends TestBase {
     public void changePic(){
         System.out.println(goodsService.changeGoodsImgs());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         private GoodsPOJO createGoods(){
         GoodsPOJO goodsPOJO = new GoodsPOJO();

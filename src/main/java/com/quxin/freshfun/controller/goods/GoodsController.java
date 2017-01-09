@@ -93,6 +93,19 @@ public class GoodsController {
 
 
     /**
+     * 日志测试
+     * @return
+     */
+    @RequestMapping(value = "/logTest", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> test(){
+        Map<String, Object> aa = new HashMap<>();
+        logger.error("测试log目录");
+        aa.put("test" , "log");
+        return aa;
+    }
+
+    /**
      * 返回列表信息
      *
      * @return 返回查询结果

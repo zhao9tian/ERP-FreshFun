@@ -6,7 +6,7 @@
         <Encoding>UTF-8</Encoding>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <fileNamePattern>Logs/ERP-FreshFun/service.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>../logs/ERP-dev/service.%d{yyyy-MM-dd}.log</fileNamePattern>
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -25,7 +25,7 @@
         <Encoding>UTF-8</Encoding>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <fileNamePattern>Logs/ERP-FreshFun/datasource.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>../logs/ERP-dev/datasource.%d{yyyy-MM-dd}.log</fileNamePattern>
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
         <layout class="ch.qos.logback.classic.PatternLayout">
