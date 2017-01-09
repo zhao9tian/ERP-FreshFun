@@ -55,17 +55,17 @@ public class OrderImpl implements OrderService {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     //待支付
-    public final static Integer AWAIT_PAYMENT = 10;
+    public final static int AWAIT_PAYMENT = 10;
     //待发货
-    public final static Integer AWAIT_DELIVERY = 30;
+    public final static int AWAIT_DELIVERY = 30;
     //待收货
-    public final static Integer AWAIT_TAKE_GOODS = 50;
+    public final static int AWAIT_TAKE_GOODS = 50;
     //退款中
-    public final static Integer REFUNDING = 40;
+    public final static int REFUNDING = 40;
     //退款完成
-    public final static Integer WAIT_DELIVERY = 20;
+    public final static int WAIT_DELIVERY = 20;
     //关闭
-    public final static Integer CLOSE_ORDER = 15;
+    public final static int CLOSE_ORDER = 15;
 
     /**
      * 查询所有订单信息
@@ -78,10 +78,16 @@ public class OrderImpl implements OrderService {
         Map<String,Object> map = new HashMap<>();
         orderParam.setPage((orderParam.getPage() - 1) * orderParam.getPageSize());
         //根据条件查询订单信息
-        List<OrderDetailsPOJO> orderDetails = queryOrder(orderParam);
-        //查询总页码
-        Integer totalPage = getTotalPage(orderParam);
-
+        List<OrderDetailsPOJO> orderDetails = null;
+        Integer totalPage = 0;
+        queryOrder(orderParam);
+        //OrderNumParam orderNumParam = new OrderNumParam();
+        if (!judgeQueryCondition(orderParam)){
+            orderDetails = orderDetailsMapper.selectBackstageOrders(orderParam);
+            //查询总页码
+            totalPage = getTotalPage(orderParam);
+            //queryOrderNum(orderParam,orderNumParam);
+        }
         //设置用户信息
         orderDetails = getOrderDetails(orderDetails);
         //设置金额格式
@@ -93,8 +99,53 @@ public class OrderImpl implements OrderService {
         map.put("total",totalPage);
         map.put("page",orderParam.getPage());
         map.put("pageSize",orderParam.getPageSize());
+        //map.put("orderNum",orderNumParam);
         map.put("list",orderDetails == null ? new ArrayList<>() : orderDetails);
         return map;
+    }
+
+    /**
+     * 查询订单数量
+     * @param orderParam 订单条件
+     */
+    private void queryOrderNum(OrderQueryParam orderParam,OrderNumParam orderNumParam) {
+        List<OrderNumPOJO> orderNumList = orderDetailsMapper.selectOrderNumCondition(orderParam);
+        setOrderNum(orderNumParam, orderNumList);
+    }
+
+    /**
+     * 设置订单数量
+     * @param orderNumParam 订单数量出参
+     * @param orderNumList 订单状态集合
+     */
+    private void setOrderNum(OrderNumParam orderNumParam, List<OrderNumPOJO> orderNumList) {
+        for (OrderNumPOJO orderNum : orderNumList) {
+            switch (orderNum.getOrderStatus()){
+                case AWAIT_PAYMENT:
+                    orderNumParam.setAwaitPayment(orderNum.getOrderNum());
+                    break;
+                case AWAIT_DELIVERY:
+                    orderNumParam.setAwaitDelivery(orderNum.getOrderNum());
+                    break;
+                case AWAIT_TAKE_GOODS:
+                    orderNumParam.setTakeGoods(orderNum.getOrderNum());
+                    break;
+                case REFUNDING:
+                    orderNumParam.setRefunding(orderNum.getOrderNum());
+                    break;
+                case WAIT_DELIVERY:
+                    orderNumParam.setRefunded(orderNum.getOrderNum());
+                    break;
+                case CLOSE_ORDER:
+                    orderNumParam.setCloseOrder(orderNum.getOrderNum());
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public List<OrderDetailsPOJO> selectCountByAppId(Long[] ids) {
+        return orderDetailsMapper.selectCountByAppId(ids);
     }
 
     /**
@@ -103,7 +154,6 @@ public class OrderImpl implements OrderService {
      * @return
      */
     private int getTotalPage(OrderQueryParam orderParam) {
-        if (judgeQueryCondition(orderParam)) return 0;
         return orderDetailsMapper.selectBackstageOrdersCount(orderParam);
     }
 
@@ -112,7 +162,7 @@ public class OrderImpl implements OrderService {
      * @param orderParam 条件参数
      * @return
      */
-    private List<OrderDetailsPOJO> queryOrder(OrderQueryParam orderParam) {
+    private void queryOrder(OrderQueryParam orderParam) {
         //根据商品信息查询
         if(!StringUtils.isEmpty(orderParam.getGoodsName()) && StringUtils.isEmpty(orderParam.getGoodsTitle()))
             orderParam.setGoodsIdList(goodsMapper.selectGoodsIdByGoodsName(orderParam));
@@ -122,10 +172,6 @@ public class OrderImpl implements OrderService {
         //根据用户昵称
         if(!StringUtils.isEmpty(orderParam.getNickName()))
             orderParam.setUserIdList(userBaseMapper.selectUserIdByNickName(orderParam.getNickName()));
-
-        if (judgeQueryCondition(orderParam)) return null;
-
-        return orderDetailsMapper.selectBackstageOrders(orderParam);
     }
 
     /**
@@ -198,7 +244,7 @@ public class OrderImpl implements OrderService {
      */
     private void setFansAscription(OrderDetailsPOJO order,OrderQueryParam orderQueryParam) {
         if (order != null){
-            if(order.getAppId().equals(orderQueryParam.getAppId()))
+            if(order.getFansAppId().equals(orderQueryParam.getAppId()))
                 order.setFansSource("我的");
             else
                 order.setFansSource("其他");
@@ -472,20 +518,26 @@ public class OrderImpl implements OrderService {
     }
 
     @Override
-    public Map<String, Object> getOrderNum(Long appId) {
+    public Map<String, Object> getOrderNum(OrderQueryParam orderParam) {
         Map<String,Object> map = new HashMap<>();
+        OrderNumParam orderNumParam = new OrderNumParam();
+        queryOrder(orderParam);
+        if (!judgeQueryCondition(orderParam)){
+            List<OrderNumPOJO> orderNumList = orderDetailsMapper.selectOrderNumCondition(orderParam);
+            setOrderNum(orderNumParam,orderNumList);
+        }
         //等待付款
-        map.put("awaitPayment",orderDetailsMapper.selectOrderNum(AWAIT_PAYMENT,appId));
+        map.put("awaitPayment",orderNumParam.getAwaitPayment());
         //待发货
-        map.put("awaitDelivery",orderDetailsMapper.selectOrderNum(AWAIT_DELIVERY,appId));
+        map.put("awaitDelivery",orderNumParam.getAwaitDelivery());
         //待收货
-        map.put("takeGoods",orderDetailsMapper.selectOrderNum(AWAIT_TAKE_GOODS,appId));
+        map.put("takeGoods",orderNumParam.getTakeGoods());
         //退款中
-        map.put("refunding",orderDetailsMapper.selectOrderNum(REFUNDING,appId));
+        map.put("refunding",orderNumParam.getRefunding());
         //退款完成
-        map.put("refunded",orderDetailsMapper.selectOrderNum(WAIT_DELIVERY,appId));
+        map.put("refunded",orderNumParam.getRefunded());
         //订单关闭
-        map.put("closeOrder",orderDetailsMapper.selectOrderNum(CLOSE_ORDER,appId));
+        map.put("closeOrder",orderNumParam.getCloseOrder());
         return map;
     }
 
@@ -523,7 +575,11 @@ public class OrderImpl implements OrderService {
     public List<OrderDetailsPOJO> exportOrder(OrderQueryParam orderQueryParam) {
         if(orderQueryParam == null)
             logger.error("订单导出参数为null");
-        List<OrderDetailsPOJO> orderList = queryOrder(orderQueryParam);
+        List<OrderDetailsPOJO> orderList = null;
+        queryOrder(orderQueryParam);
+        if (!judgeQueryCondition(orderQueryParam)){
+            orderList = orderDetailsMapper.selectBackstageOrders(orderQueryParam);
+        }
         //设置金额格式
         MoneyFormatUtils.setBackstageMoney(orderList);
         exportOrderUserAddress(orderList);
@@ -562,7 +618,8 @@ public class OrderImpl implements OrderService {
         if(StringUtils.isEmpty(appId))
             throw new BusinessException("根据appId查询订单销售信息不能为null");
         OrderSaleInfo orderSaleInfo = orderDetailsMapper.selectSaleInfo(appId);
-        orderSaleInfo.setSumActualMoney(MoneyFormatUtils.getMoneyFromInteger(orderSaleInfo.getSumActualPrice()));
+        Integer totalMoney = withdrawService.queryTotalMoney(appId);
+        orderSaleInfo.setSumActualMoney(MoneyFormatUtils.getMoneyFromInteger(totalMoney));
         orderSaleInfo.setSumActualPrice(null);
         Integer availableMoney = withdrawService.queryAvailableMoney(appId);
         orderSaleInfo.setWithdrawMoney(MoneyFormatUtils.getMoneyFromInteger(availableMoney));
@@ -677,6 +734,8 @@ public class OrderImpl implements OrderService {
         }
         return state;
     }
+
+
 
     /**
      * 修改驳回退款信息

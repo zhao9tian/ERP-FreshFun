@@ -2,8 +2,11 @@ package com.quxin.freshfun.service.erpuser.impl;
 
 import com.quxin.freshfun.dao.ErpAppInfoMapper;
 import com.quxin.freshfun.model.erpuser.ErpAppInfoPOJO;
+import com.quxin.freshfun.model.order.OrderDetailsPOJO;
 import com.quxin.freshfun.model.outparam.AppInfoOutParam;
 import com.quxin.freshfun.service.erpuser.ErpAppInfoService;
+import com.quxin.freshfun.service.order.OrderService;
+import com.quxin.freshfun.utils.MoneyFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
 
     @Autowired
     private ErpAppInfoMapper erpAppInfoMapper;
+    @Autowired
+    private OrderService orderService;
     /**
      * 插入平台信息
      * @param appName 平台名称
@@ -73,7 +78,32 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
         Map<String ,Object> map = new HashMap<String ,Object>();
         map.put("begin",begin);
         map.put("pageSize",pageSize);
-        return erpAppInfoMapper.selectErpAppInfo(map);
+        List<AppInfoOutParam> list = erpAppInfoMapper.selectErpAppInfo(map);
+        return sealList(list);
+    }
+
+    //封装平台信息列表
+    private List<AppInfoOutParam> sealList(List<AppInfoOutParam> list){
+
+        if(list!=null){
+            Long[] ids = new Long[list.size()];
+            for(int i = 0;i<list.size();i++){
+                ids[i] = list.get(i).getAppId();
+            }
+            List<OrderDetailsPOJO> orderList = orderService.selectCountByAppId(ids);
+            for(AppInfoOutParam appInfo : list){
+                appInfo.setOrderNumber(0);
+                Integer totalMoney = 0;
+                for(OrderDetailsPOJO order : orderList){
+                    if(order.getAppId().equals(appInfo.getAppId())||(order.getFansAppId().equals(appInfo.getAppId())&&order.getAppId()==888888)){
+                        appInfo.setOrderNumber(appInfo.getOrderNumber()+1);
+                        totalMoney+=order.getActualPrice();
+                    }
+                }
+                appInfo.setSumActualMoney(totalMoney.toString());
+            }
+        }
+        return list;
     }
 
     @Override
@@ -149,7 +179,8 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
         map.put("appName",appName);
         map.put("begin",begin);
         map.put("pageSize",pageSize);
-        return erpAppInfoMapper.selectAppsByName(map);
+        List<AppInfoOutParam> list = erpAppInfoMapper.selectAppsByName(map);
+        return sealList(list);
     }
 
     @Override

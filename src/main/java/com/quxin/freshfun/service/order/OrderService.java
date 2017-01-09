@@ -17,6 +17,8 @@ public interface OrderService {
      */
     Map<String,Object> selectBackstageOrders(OrderQueryParam orderParam) throws BusinessException;
 
+    List<OrderDetailsPOJO> selectCountByAppId(Long[] ids);
+
     /**
      * 根据平台查询所有订单
      * @param orderQueryParam
@@ -90,7 +92,7 @@ public interface OrderService {
      * 后去订单数量
      * @return
      */
-    Map<String,Object> getOrderNum(Long appId);
+    Map<String,Object> getOrderNum(OrderQueryParam orderParam);
 
     /**
      * 根据订单编号查询退款详情

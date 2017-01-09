@@ -188,8 +188,12 @@ public class OrderController {
      */
     @RequestMapping("/getOrderNum")
     @ResponseBody
-    public Map<String, Object> getOrderNum() {
-        Map<String, Object> orderNumList = orderService.getOrderNum(null);
+    public Map<String, Object> getOrderNum(OrderQueryParam orderParam) {
+        if(orderParam == null)
+            return ResultUtil.fail(1004, "参数不能为空");
+        //设置字符编码
+        setQueryCoding(orderParam);
+        Map<String, Object> orderNumList = orderService.getOrderNum(orderParam);
         if (orderNumList == null)
             orderNumList = new HashMap<>();
         return ResultUtil.success(orderNumList);
@@ -200,7 +204,9 @@ public class OrderController {
     public Map<String, Object> getPlatformOrderNum(HttpServletRequest request) throws BusinessException {
         //获取AppId
         Long appId = getAppId(request);
-        Map<String, Object> orderNumList = orderService.getOrderNum(appId);
+        OrderQueryParam orderParam = new OrderQueryParam();
+        orderParam.setAppId(appId);
+        Map<String, Object> orderNumList = orderService.getOrderNum(orderParam);
         if (orderNumList == null)
             orderNumList = new HashMap<>();
         return ResultUtil.success(orderNumList);

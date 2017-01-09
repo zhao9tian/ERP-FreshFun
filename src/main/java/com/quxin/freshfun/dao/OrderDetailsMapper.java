@@ -1,9 +1,6 @@
 package com.quxin.freshfun.dao;
 
-import com.quxin.freshfun.model.order.OrderDetailsPOJO;
-import com.quxin.freshfun.model.order.OrderQueryParam;
-import com.quxin.freshfun.model.order.OrderSaleInfo;
-import com.quxin.freshfun.model.order.OrdersPOJO;
+import com.quxin.freshfun.model.order.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -26,10 +23,23 @@ public interface OrderDetailsMapper {
     Integer selectBackstageOrdersCount(OrderQueryParam orderQueryParam);
 
     /**
+     * 根据条件查询订单数量
+     * @return
+     */
+    List<OrderNumPOJO> selectOrderNumCondition(OrderQueryParam orderQueryParam);
+
+    /**
      * 查询订单数量
      * @return
      */
-    Integer selectOrderNum(@Param("orderStatus") Integer orderState,@Param("appId") Long appId);
+    List<OrderNumPOJO> selectOrderNum(@Param("appId") Long appId);
+
+    /**
+     * 根据appId批量查询下单数
+     * @param ids appIds
+     * @return 查询结果
+     */
+    List<OrderDetailsPOJO> selectCountByAppId(Long[] ids);
 
     /**
      * 根据订单状态查询订单列表
