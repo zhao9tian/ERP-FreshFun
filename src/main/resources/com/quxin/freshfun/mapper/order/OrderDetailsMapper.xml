@@ -52,6 +52,11 @@
     <result column="id" jdbcType="BIGINT" property="id"/>
   </resultMap>
 
+  <resultMap id="OrderNumMap" type="com.quxin.freshfun.model.order.OrderNumPOJO">
+    <result column="orderNum" jdbcType="INTEGER" property="orderNum"/>
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id,user_id , order_id, order_details_id, goods_id, actual_price, delivery_num, delivery_name , address_id,
     comment_id, payment_method, pay_time, comment_status, order_status, refund_status,
@@ -64,8 +69,7 @@
       from order_details
       where is_deleted = 0
     <if test="appId != null">
-      and (app_id = #{appId}
-      or fans_app_id = #{appId})
+      and (app_id = #{appId} or (fans_app_id=#{appId} and app_id = 888888))
     </if>
     <if test="orderStatus != null and orderStatus != 0 and orderStatus != 70">
       and order_status = #{orderStatus}
@@ -113,9 +117,9 @@
   </select>
   <!--查询所有订单数量-->
   <select id="selectBackstageOrdersCount" parameterType="com.quxin.freshfun.model.order.OrderQueryParam" resultType="java.lang.Integer" >
-    select count(id) from order_details where is_deleted = 0
+    select count(*) from order_details where is_deleted = 0
     <if test="appId != null">
-      and app_id = #{appId}
+      and (app_id = #{appId} or (fans_app_id=#{appId} and app_id = 888888))
     </if>
     <if test="orderStatus != null and orderStatus != 0 and orderStatus != 70">
       and order_status = #{orderStatus}
@@ -159,20 +163,57 @@
     select `id` as `order_id`,`user_id`,`count`,`order_status`,`pay_plateform`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code` from order_details where order_status in (70,100) and is_deleted = 0 order by create_date desc limit #{currentPage},#{pageSize}
   </select>
   <select id="selectFinishOrderCount" resultType="java.lang.Integer">
-    select count(id) from order_details where order_status in (70,100) and is_deleted = 0
+    select count(*) from order_details where order_status in (70,100) and is_deleted = 0
+  </select>
+  <!--根据条件查询订单数量-->
+  <select id="selectOrderNumCondition" resultMap="OrderNumMap">
+    select count(*) as `orderNum`,order_status from order_details where is_deleted = 0
+    <if test="appId != null">
+      and (app_id = #{appId} or (fans_app_id=#{appId} and app_id = 888888))
+    </if>
+    <if test='userId != null and userId != ""'>
+      and user_id = #{userId}
+    </if>
+    <if test='orderId != null and orderId != ""'>
+      and id = #{orderId}
+    </if>
+    <if test="beginTime != null and endTime != null">
+      and create_date between #{beginTime} and #{endTime}
+    </if>
+    <if test='deliveryName != null and deliveryName !=""'>
+      and `name` LIKE CONCAT(#{deliveryName},'%')
+    </if>
+    <if test="appIdList != null and appIdList.size() > 0">
+      and `app_id` in
+      <foreach item="item" index="index" collection="appIdList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="goodsIdList != null and goodsIdList.size() > 0">
+      and goods_id in
+      <foreach item="item" index="index" collection="goodsIdList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="userIdList != null and userIdList.size() > 0">
+      and user_id in
+      <foreach item="item" index="index" collection="userIdList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    GROUP BY order_status
   </select>
   <!--查询订单数目-->
-  <select id="selectOrderNum" parameterType="java.util.Map" resultType="java.lang.Integer">
-    select count(*) from order_details where order_status = #{orderStatus}
+  <select id="selectOrderNum" resultMap="OrderNumMap">
+    select count(1) as `orderNum`,order_status from order_details where is_deleted = 0
     <if test="appId != null">
-      and (app_id = #{appId}
-      or fans_app_id = #{appId})
+      and (app_id = #{appId} or (fans_app_id=#{appId} and app_id = 888888))
     </if>
-      and is_deleted = 0
+    GROUP BY order_status
   </select>
   <!--查询销售信息-->
   <select id="selectSaleInfo" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.order.OrderSaleInfo">
-    select count(*) as `orderNumber`,IFNULL(SUM(actual_price),0) as `sumActualPrice` from order_details where order_status >= 30 and app_id=#{appId} and is_deleted = 0
+    select count(*) as `orderNumber` from order_details where order_status >= 30 and (app_id=#{appId} or (fans_app_id=#{appId} and app_id = 888888)) and is_deleted = 0
   </select>
 
   <!--根据订单状态查询订单列表-->
@@ -184,7 +225,7 @@
   </select>
   <!--查询待收货数量-->
   <select id="selectOrderByOrderStatusCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
-    select count(id) from order_details where is_deleted = 0 and order_status = #{orderStatus}
+    select count(*) from order_details where is_deleted = 0 and order_status = #{orderStatus}
   </select>
 
   <!--根据appId批量查询下单数-->
