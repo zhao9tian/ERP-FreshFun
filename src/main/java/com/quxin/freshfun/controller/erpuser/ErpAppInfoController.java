@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class ErpAppInfoController {
         if (appInfoList == null) {
             return ResultUtil.fail(1004, "公司列表获取失败");
         } else if (appInfoList.size() < 1) {
-            map.put("appList", null);
+            map.put("appList",appInfoList);
             map.put("total", 0);
             return ResultUtil.success(map);
         } else {

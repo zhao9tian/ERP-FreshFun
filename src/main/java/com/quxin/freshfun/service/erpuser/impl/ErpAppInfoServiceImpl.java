@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Ziming on 2016/11/7.
@@ -85,7 +82,7 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
     //封装平台信息列表
     private List<AppInfoOutParam> sealList(List<AppInfoOutParam> list){
 
-        if(list!=null){
+        if(list!=null&&list.size()>0){
             Long[] ids = new Long[list.size()];
             for(int i = 0;i<list.size();i++){
                 ids[i] = list.get(i).getAppId();
@@ -102,6 +99,8 @@ public class ErpAppInfoServiceImpl implements ErpAppInfoService {
                 }
                 appInfo.setSumActualMoney(totalMoney.toString());
             }
+        }else{
+            list = new ArrayList<>();
         }
         return list;
     }
