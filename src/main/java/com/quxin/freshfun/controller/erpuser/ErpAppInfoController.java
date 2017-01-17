@@ -5,10 +5,7 @@ import com.quxin.freshfun.model.outparam.AppInfoOutParam;
 import com.quxin.freshfun.service.erpuser.ErpAppInfoService;
 import com.quxin.freshfun.service.order.OrderService;
 import com.quxin.freshfun.service.withdraw.WithdrawService;
-import com.quxin.freshfun.utils.BusinessException;
-import com.quxin.freshfun.utils.FreshFunEncoder;
-import com.quxin.freshfun.utils.MoneyFormatUtils;
-import com.quxin.freshfun.utils.ResultUtil;
+import com.quxin.freshfun.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Ziming on 2016/11/7.
@@ -34,8 +28,6 @@ public class ErpAppInfoController {
 
     @Autowired
     private ErpAppInfoService erpAppInfoService;
-    @Autowired
-    private OrderService orderService;
     @Autowired
     private WithdrawService withdrawService;
 
@@ -67,7 +59,7 @@ public class ErpAppInfoController {
         if (appInfoList == null) {
             return ResultUtil.fail(1004, "公司列表获取失败");
         } else if (appInfoList.size() < 1) {
-            map.put("appList",appInfoList);
+            map.put("appList", appInfoList);
             map.put("total", 0);
             return ResultUtil.success(map);
         } else {
