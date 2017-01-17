@@ -226,6 +226,9 @@ public class ExportOrderExcelUtils {
             case 70:
                 state = "已完成订单";
                 break;
+            case 100:
+                state = "已完成订单";
+                break;
             default:
                 state = "所有订单";
                 break;

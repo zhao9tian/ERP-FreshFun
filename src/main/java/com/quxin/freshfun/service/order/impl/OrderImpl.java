@@ -64,6 +64,10 @@ public class OrderImpl implements OrderService {
     public final static int REFUNDING = 40;
     //退款完成
     public final static int WAIT_DELIVERY = 20;
+    //确认收货
+    public final static int CONFIRM_ORDER = 70;
+    //订单完成
+    public final static int FINISH_ORDER = 100;
     //关闭
     public final static int CLOSE_ORDER = 15;
 
@@ -123,21 +127,35 @@ public class OrderImpl implements OrderService {
             switch (orderNum.getOrderStatus()){
                 case AWAIT_PAYMENT:
                     orderNumParam.setAwaitPayment(orderNum.getOrderNum());
+                    orderNumParam.setTotalOrder(orderNumParam.getTotalOrder()+orderNum.getOrderNum());
                     break;
                 case AWAIT_DELIVERY:
                     orderNumParam.setAwaitDelivery(orderNum.getOrderNum());
+                    orderNumParam.setTotalOrder(orderNumParam.getTotalOrder()+orderNum.getOrderNum());
                     break;
                 case AWAIT_TAKE_GOODS:
                     orderNumParam.setTakeGoods(orderNum.getOrderNum());
+                    orderNumParam.setTotalOrder(orderNumParam.getTotalOrder()+orderNum.getOrderNum());
                     break;
                 case REFUNDING:
                     orderNumParam.setRefunding(orderNum.getOrderNum());
+                    orderNumParam.setTotalOrder(orderNumParam.getTotalOrder()+orderNum.getOrderNum());
                     break;
                 case WAIT_DELIVERY:
                     orderNumParam.setRefunded(orderNum.getOrderNum());
+                    orderNumParam.setTotalOrder(orderNumParam.getTotalOrder()+orderNum.getOrderNum());
+                    break;
+                case CONFIRM_ORDER:
+                    orderNumParam.setFinishOrder(orderNumParam.getFinishOrder()+orderNum.getOrderNum());
+                    orderNumParam.setTotalOrder(orderNumParam.getTotalOrder()+orderNum.getOrderNum());
+                    break;
+                case FINISH_ORDER:
+                    orderNumParam.setFinishOrder(orderNumParam.getFinishOrder()+orderNum.getOrderNum());
+                    orderNumParam.setTotalOrder(orderNumParam.getTotalOrder()+orderNum.getOrderNum());
                     break;
                 case CLOSE_ORDER:
                     orderNumParam.setCloseOrder(orderNum.getOrderNum());
+                    orderNumParam.setTotalOrder(orderNumParam.getTotalOrder()+orderNum.getOrderNum());
                     break;
             }
         }
@@ -259,7 +277,7 @@ public class OrderImpl implements OrderService {
         if(!StringUtils.isEmpty(order.getName()))
             order.setName(order.getName().replaceAll("([\\u4e00-\\u9fa5{1}])([\\u4e00-\\u9fa5]+)","$1**"));
         if(!StringUtils.isEmpty(order.getTel()))
-            order.setTel(order.getTel().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+            order.setTel(order.getTel().replaceAll("(\\d{3})(\\d{4})\\d{4}","$1$2****"));
         order.setAddress("******");
     }
 
@@ -538,6 +556,10 @@ public class OrderImpl implements OrderService {
         map.put("refunded",orderNumParam.getRefunded());
         //订单关闭
         map.put("closeOrder",orderNumParam.getCloseOrder());
+        //所有订单
+        map.put("totalOrder",orderNumParam.getTotalOrder());
+        //完成订单
+        map.put("finishOrder",orderNumParam.getFinishOrder());
         return map;
     }
 
@@ -568,23 +590,52 @@ public class OrderImpl implements OrderService {
 
     /**
      * 导出订单
-     * @param orderQueryParam
-     * @return
+     * @param orderQueryParam 前端参数
+     * @return 订单excel
      */
     @Override
     public List<OrderDetailsPOJO> exportOrder(OrderQueryParam orderQueryParam) {
-        if(orderQueryParam == null)
-            logger.error("订单导出参数为null");
-        List<OrderDetailsPOJO> orderList = null;
+        if (orderQueryParam == null)
+            return null;
+        List<OrderDetailsPOJO> orderList = new ArrayList<>();
         queryOrder(orderQueryParam);
         if (!judgeQueryCondition(orderQueryParam)){
-            orderList = orderDetailsMapper.selectBackstageOrders(orderQueryParam);
+            orderList = orderDetailsMapper.selectExportOrder(orderQueryParam);
         }
         //设置金额格式
         MoneyFormatUtils.setBackstageMoney(orderList);
         exportOrderUserAddress(orderList);
         return orderList;
     }
+
+    @Override
+    public List<OrderDetailsPOJO> exportPlatformOrder(OrderQueryParam orderQueryParam) {
+        if (orderQueryParam == null)
+            return new ArrayList<>();
+        List<OrderDetailsPOJO> orderList = new ArrayList<>();
+        queryOrder(orderQueryParam);
+        if (!judgeQueryCondition(orderQueryParam)){
+            orderList = orderDetailsMapper.selectExportOrder(orderQueryParam);
+        }
+        //设置金额格式
+        MoneyFormatUtils.setBackstageMoney(orderList);
+        exportPlatformOrderInfo(orderList);
+        return orderList;
+    }
+
+    /**
+     * 设置导出订单信息
+     * @param orderList 订单list
+     */
+    private void exportPlatformOrderInfo(List<OrderDetailsPOJO> orderList) {
+        if (orderList == null)
+            return;
+        for (OrderDetailsPOJO order : orderList) {
+            getAddress(order);
+            setUserPrivacy(order);
+        }
+    }
+
 
     /**
      * 设置导出订单用户地址

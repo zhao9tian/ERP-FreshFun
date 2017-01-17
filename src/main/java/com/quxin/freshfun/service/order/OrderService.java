@@ -102,9 +102,15 @@ public interface OrderService {
 
     /**
      * 导出订单
-     * @return
+     * @return 订单集合
      */
     List<OrderDetailsPOJO> exportOrder(OrderQueryParam orderQueryParam);
+
+    /**
+     * 导出平台订单
+     * @return 订单集合
+     */
+    List<OrderDetailsPOJO> exportPlatformOrder(OrderQueryParam orderQueryParam);
 
     /**
      * 根据订单Id查询订单详情

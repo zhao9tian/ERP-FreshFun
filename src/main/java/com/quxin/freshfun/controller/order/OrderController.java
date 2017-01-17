@@ -104,7 +104,7 @@ public class OrderController {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> resultMap = new HashMap<>();
         Map<String, Object> resultData = new HashMap<>();
-        if (orderParam == null || orderParam.getOrderStatus() == null || orderParam.getPage() == null || orderParam.getPageSize() == null) {
+        if (orderParam == null || orderParam.getPage() == null || orderParam.getPageSize() == null) {
             map.put("code", 1004);
             map.put("msg", "参数不能为null");
             resultMap.put("status", map);
@@ -201,10 +201,11 @@ public class OrderController {
 
     @RequestMapping("/getPlatformOrderNum")
     @ResponseBody
-    public Map<String, Object> getPlatformOrderNum(HttpServletRequest request) throws BusinessException {
+    public Map<String, Object> getPlatformOrderNum(OrderQueryParam orderParam,HttpServletRequest request) throws BusinessException {
+        if(orderParam == null)
+            return ResultUtil.fail(1004, "参数不能为空");
         //获取AppId
         Long appId = getAppId(request);
-        OrderQueryParam orderParam = new OrderQueryParam();
         orderParam.setAppId(appId);
         Map<String, Object> orderNumList = orderService.getOrderNum(orderParam);
         if (orderNumList == null)
@@ -446,7 +447,7 @@ public class OrderController {
     @RequestMapping("/exportOrder")
     public String exportOrder(HttpServletResponse response, OrderQueryParam orderQueryParam) throws BusinessException {
         if (orderQueryParam == null) {
-            return null;
+            return "";
         }
         try {
             setExcelTitle(response);
@@ -460,7 +461,34 @@ public class OrderController {
         } catch (IOException e) {
             logger.error("导出Excel订单IO异常", e);
         }
-        return null;
+        return "";
+    }
+
+    /**
+     * 导出平台订单
+     * @param orderQueryParam 前端参数
+     * @return 订单excel
+     */
+    @RequestMapping("/exportPlatformOrder")
+    public  String exportPlatformOrder(HttpServletRequest request,HttpServletResponse response,OrderQueryParam orderQueryParam) throws BusinessException {
+        if (orderQueryParam == null)
+            return "";
+        try {
+            setExcelTitle(response);
+            //设置字符编码
+            setQueryCoding(orderQueryParam);
+            //从cookie中获取appId
+            Long appId = getAppId(request);
+            orderQueryParam.setAppId(appId);
+            List<OrderDetailsPOJO> orderList = orderService.exportPlatformOrder(orderQueryParam);
+            if (orderList != null) {
+                ExportOrderExcelUtils exportOrder = new ExportOrderExcelUtils();
+                exportOrder.ExportExcel(orderList, response.getOutputStream(), orderQueryParam.getOrderStatus());
+            }
+        } catch (IOException e) {
+            logger.error("导出Excel订单IO异常", e);
+        }
+        return "";
     }
 
     /**

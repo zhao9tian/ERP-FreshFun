@@ -28,6 +28,30 @@ public class OrderNumParam {
      * 订单关闭
      */
     private int closeOrder;
+    /**
+     * 完成订单
+     */
+    private int finishOrder;
+    /**
+     * 所有订单
+     */
+    private int totalOrder;
+
+    public int getTotalOrder() {
+        return totalOrder;
+    }
+
+    public void setTotalOrder(int totalOrder) {
+        this.totalOrder = totalOrder;
+    }
+
+    public int getFinishOrder() {
+        return finishOrder;
+    }
+
+    public void setFinishOrder(int finishOrder) {
+        this.finishOrder = finishOrder;
+    }
 
     public int getAwaitPayment() {
         return awaitPayment;

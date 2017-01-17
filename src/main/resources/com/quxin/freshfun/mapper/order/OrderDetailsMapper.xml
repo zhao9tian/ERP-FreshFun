@@ -111,10 +111,57 @@
     <if test="page != null and pageSize != null">
       limit #{page},#{pageSize}
     </if>
-    <if test="page == null or pageSize == null">
-      limit 10000
-    </if>
   </select>
+  <!--查询导出订单-->
+  <select id="selectExportOrder" parameterType="com.quxin.freshfun.model.order.OrderQueryParam" resultMap="BaseResultMap">
+    select `id` as `order_id`,`actual_price`,`user_id`,`pay_time`,`count`,`order_status`,`goods_id`,`pay_price`,`name`,`tel`,`city`,`address`,`create_date`,`delivery_num`,`delivery_name`,`pay_price`,`goods_cost`,`remark`,`province_code`,`city_code`,`district_code`,`fans_app_id`,`app_id`
+    from order_details
+    where is_deleted = 0
+    <if test="appId != null">
+      and (app_id = #{appId} or (fans_app_id=#{appId} and app_id = 888888))
+    </if>
+    <if test="orderStatus != 0 and orderStatus != 70">
+      and order_status = #{orderStatus}
+    </if>
+    <if test="orderStatus == 0">
+      and order_status >= 20
+    </if>
+    <if test="orderStatus == 70">
+      and order_status in (70,100)
+    </if>
+    <if test='userId != null and userId != ""'>
+      and user_id = #{userId}
+    </if>
+    <if test='orderId != null and orderId != ""'>
+      and id = #{orderId}
+    </if>
+    <if test="beginTime != null and endTime != null">
+      and create_date between #{beginTime} and #{endTime}
+    </if>
+    <if test='deliveryName != null and deliveryName != ""'>
+      and `name` LIKE CONCAT(#{deliveryName},'%')
+    </if>
+    <if test="appIdList != null and appIdList.size() > 0">
+      and `app_id` in
+      <foreach item="item" index="index" collection="appIdList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="goodsIdList != null and goodsIdList.size() > 0">
+      and goods_id in
+      <foreach item="item" index="index" collection="goodsIdList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="userIdList != null and userIdList.size() > 0">
+      and user_id in
+      <foreach item="item" index="index" collection="userIdList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    order by create_date desc limit 10000
+  </select>
+
   <!--查询所有订单数量-->
   <select id="selectBackstageOrdersCount" parameterType="com.quxin.freshfun.model.order.OrderQueryParam" resultType="java.lang.Integer" >
     select count(*) from order_details where is_deleted = 0

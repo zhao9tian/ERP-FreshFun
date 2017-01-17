@@ -15,7 +15,12 @@ public interface OrderDetailsMapper {
      * @return
      */
     List<OrderDetailsPOJO> selectBackstageOrders(OrderQueryParam orderQueryParam);
-
+    /**
+     * 查询导出订单
+     * @param orderQueryParam 订单条件
+     * @return 订单集合
+     */
+    List<OrderDetailsPOJO> selectExportOrder(OrderQueryParam orderQueryParam);
     /**
      * 查询所有订单数量
      * @return

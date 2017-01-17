@@ -54,7 +54,7 @@ public class OrderQueryParam {
     /**
      * 订单状态
      */
-    private Integer orderStatus;
+    private int orderStatus;
     /**
      * 下单开始时间
      */
@@ -144,11 +144,11 @@ public class OrderQueryParam {
         this.deliveryName = deliveryName;
     }
 
-    public Integer getOrderStatus() {
+    public int getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(Integer orderStatus) {
+    public void setOrderStatus(int orderStatus) {
         this.orderStatus = orderStatus;
     }
 
