@@ -182,7 +182,7 @@ public class OrderImpl implements OrderService {
      */
     private void queryOrder(OrderQueryParam orderParam) {
         //根据商品信息查询
-        if(!StringUtils.isEmpty(orderParam.getGoodsName()) && StringUtils.isEmpty(orderParam.getGoodsTitle()))
+        if(!StringUtils.isEmpty(orderParam.getGoodsName()) || !StringUtils.isEmpty(orderParam.getGoodsTitle()))
             orderParam.setGoodsIdList(goodsMapper.selectGoodsIdByGoodsName(orderParam));
         //根据公号名称
         if(!StringUtils.isEmpty(orderParam.getAppName()))
