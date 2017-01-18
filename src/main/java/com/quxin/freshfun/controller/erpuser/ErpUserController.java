@@ -293,7 +293,7 @@ public class ErpUserController {
         adminMenus.add("/officialAccounts");
         adminMenus.add("/withdrawCtrl");
         adminMenus.add("/limitedNum");
-        adminMenus.add("/brandFoods");
-        adminMenus.add("/brandFoodsOrder");
+        //adminMenus.add("/brandFoods");
+        //adminMenus.add("/brandFoodsOrder");
     }
 }
