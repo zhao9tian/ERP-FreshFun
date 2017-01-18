@@ -309,7 +309,7 @@
   <!--退款-->
   <!--根据订单编号查询微信返回的订单编号-->
   <select id="selectOrderTransactionIdInfo" parameterType="java.lang.Long" resultType="com.quxin.freshfun.model.order.OrderDetailsPOJO">
-    select `id`,`order_id` as `orderId`,`payment_method` as `paymentMethod`,`transaction_id` as `transactionId`,`actual_price` as `actualPrice` from order_details where id = #{orderId}
+    select `id`,`order_id` as `orderId`,`payment_method` as `paymentMethod`,`transaction_id` as `transactionId`,`actual_price` as `actualPrice`,`pay_url` as `payUrl` from order_details where id = #{orderId}
   </select>
   <!--根据父级订单编号查询订单信息-->
   <select id="selectOrderIdByParentId" parameterType="java.lang.Long" resultMap="UserIdResultMap">

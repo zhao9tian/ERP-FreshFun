@@ -125,6 +125,16 @@ public class OrderDetailsPOJO {
      */
     private String nickName;
 
+    private String payUrl;
+
+    public String getPayUrl() {
+        return payUrl;
+    }
+
+    public void setPayUrl(String payUrl) {
+        this.payUrl = payUrl;
+    }
+
     public Long getFansAppId() {
         return fansAppId;
     }
